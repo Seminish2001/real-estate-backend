@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -22,9 +22,10 @@ class Property(db.Model):
 with app.app_context():
     db.create_all()
 
+# Serve the frontend (index.html) at the root URL
 @app.route('/')
-def home():
-    return "Welcome to Your Real Estate Platform!"
+def serve_frontend():
+    return send_from_directory('.', 'index.html')
 
 @app.route('/properties', methods=['GET'])
 def get_properties():
@@ -59,4 +60,6 @@ def add_property():
     return jsonify({"message": "Property added successfully!"}), 201
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    import os
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
