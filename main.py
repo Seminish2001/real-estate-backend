@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_from_directory, render_template_string
+from flask import Flask, jsonify, request, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
@@ -31,16 +31,16 @@ class Property(db.Model):
     image_url = db.Column(db.String(255), nullable=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-# Initialize database
+# Initialize the database
 with app.app_context():
     db.create_all()
 
-# Serve the frontend (index.html) at the root URL
+# Serve the frontend
 @app.route('/')
 def serve_frontend():
     return send_from_directory('.', 'index.html')
 
-# Register user
+# Register a new user
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
@@ -69,7 +69,7 @@ def login():
         return jsonify({"access_token": access_token}), 200
     return jsonify({"message": "Invalid credentials!"}), 401
 
-# Add a new property (authentication required)
+# Add a new property (authenticated)
 @app.route('/properties', methods=['POST'])
 @jwt_required()
 def add_property():
@@ -92,7 +92,7 @@ def add_property():
     db.session.commit()
     return jsonify({"message": "Property added successfully!"}), 201
 
-# Fetch all properties
+# Fetch all properties with optional filters
 @app.route('/properties', methods=['GET'])
 def get_properties():
     location = request.args.get('location')
@@ -127,7 +127,7 @@ def get_properties():
     ]
     return jsonify(result)
 
-# Update a property (authentication required)
+# Update a property (authenticated)
 @app.route('/properties/<int:property_id>', methods=['PUT'])
 @jwt_required()
 def update_property(property_id):
@@ -149,7 +149,7 @@ def update_property(property_id):
     db.session.commit()
     return jsonify({"message": "Property updated successfully!"}), 200
 
-# Delete a property (authentication required)
+# Delete a property (authenticated)
 @app.route('/properties/<int:property_id>', methods=['DELETE'])
 @jwt_required()
 def delete_property(property_id):
