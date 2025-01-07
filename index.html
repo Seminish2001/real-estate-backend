@@ -73,6 +73,8 @@
                                             <strong>Bedrooms:</strong> ${property.bedrooms}<br>
                                             <strong>Size:</strong> ${property.size} m²
                                         </p>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteProperty(${property.id})">Delete</button>
+                                        <button class="btn btn-warning btn-sm" onclick="editProperty(${property.id})">Edit</button>
                                     </div>
                                 </div>
                             </div>
@@ -85,11 +87,10 @@
                 });
         }
 
-        // Handle form submission
+        // Add Property Form Submission
         document.getElementById('property-form').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent form from reloading the page
+            event.preventDefault();
 
-            // Gather form data
             const title = document.getElementById('title').value;
             const price = parseFloat(document.getElementById('price').value);
             const location = document.getElementById('location').value;
@@ -97,20 +98,12 @@
             const bedrooms = parseInt(document.getElementById('bedrooms').value, 10);
             const size = parseFloat(document.getElementById('size').value);
 
-            // Send POST request to backend
             fetch(backendUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    title,
-                    price,
-                    location,
-                    type,
-                    bedrooms,
-                    size,
-                }),
+                body: JSON.stringify({ title, price, location, type, bedrooms, size }),
             })
                 .then(response => {
                     if (!response.ok) {
@@ -126,6 +119,9 @@
                     console.error('Error adding property:', error);
                 });
         });
+
+        // Delete and Edit Functions (Already Provided)
+        // See the earlier JavaScript section for deleteProperty() and editProperty()
 
         // Initial fetch to display properties
         fetchProperties();
