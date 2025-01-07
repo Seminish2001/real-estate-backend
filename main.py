@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, render_template_string
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
@@ -29,7 +29,7 @@ class Property(db.Model):
     bedrooms = db.Column(db.Integer, nullable=False)
     size = db.Column(db.Float, nullable=False)
     image_url = db.Column(db.String(255), nullable=True)
-    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # New field to track property owner
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 # Initialize database
 with app.app_context():
@@ -40,25 +40,57 @@ with app.app_context():
 def serve_frontend():
     return send_from_directory('.', 'index.html')
 
-# User registration
-@app.route('/register', methods=['POST'])
+# Register user
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    data = request.json
-    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(username=data['username'], password=hashed_password)
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify({"message": "User registered successfully!"}), 201
+    if request.method == 'POST':
+        data = request.form
+        hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+        new_user = User(username=data['username'], password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"message": "User registered successfully!"}), 201
+
+    # HTML form for registration
+    return render_template_string('''
+        <!DOCTYPE html>
+        <html>
+        <body>
+            <h2>Register</h2>
+            <form method="POST">
+                Username: <input type="text" name="username" required><br>
+                Password: <input type="password" name="password" required><br>
+                <button type="submit">Register</button>
+            </form>
+        </body>
+        </html>
+    ''')
 
 # User login
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    data = request.json
-    user = User.query.filter_by(username=data['username']).first()
-    if user and bcrypt.check_password_hash(user.password, data['password']):
-        access_token = create_access_token(identity=user.id)
-        return jsonify({"access_token": access_token}), 200
-    return jsonify({"message": "Invalid credentials!"}), 401
+    if request.method == 'POST':
+        data = request.form
+        user = User.query.filter_by(username=data['username']).first()
+        if user and bcrypt.check_password_hash(user.password, data['password']):
+            access_token = create_access_token(identity=user.id)
+            return jsonify({"access_token": access_token}), 200
+        return jsonify({"message": "Invalid credentials!"}), 401
+
+    # HTML form for login
+    return render_template_string('''
+        <!DOCTYPE html>
+        <html>
+        <body>
+            <h2>Login</h2>
+            <form method="POST">
+                Username: <input type="text" name="username" required><br>
+                Password: <input type="password" name="password" required><br>
+                <button type="submit">Login</button>
+            </form>
+        </body>
+        </html>
+    ''')
 
 # Add a new property (authentication required)
 @app.route('/properties', methods=['POST'])
@@ -80,7 +112,7 @@ def add_property():
     db.session.commit()
     return jsonify({"message": "Property added successfully!"}), 201
 
-# Fetch all properties (public endpoint)
+# Fetch all properties
 @app.route('/properties', methods=['GET'])
 def get_properties():
     location = request.args.get('location')
@@ -110,7 +142,7 @@ def get_properties():
             "bedrooms": property.bedrooms,
             "size": property.size,
             "image_url": property.image_url,
-            "owner_id": property.owner_id  # Include owner information
+            "owner_id": property.owner_id
         }
         for property in properties
     ]
