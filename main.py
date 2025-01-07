@@ -17,6 +17,7 @@ class Property(db.Model):
     type = db.Column(db.String(50), nullable=False)
     bedrooms = db.Column(db.Integer, nullable=False)
     size = db.Column(db.Float, nullable=False)
+    image_url = db.Column(db.String(255), nullable=True)  # New field for image URLs
 
 # Initialize database
 with app.app_context():
@@ -55,7 +56,8 @@ def get_properties():
             "location": property.location,
             "type": property.type,
             "bedrooms": property.bedrooms,
-            "size": property.size
+            "size": property.size,
+            "image_url": property.image_url  # Include image URL in the response
         }
         for property in properties
     ]
@@ -71,7 +73,8 @@ def add_property():
         location=data['location'],
         type=data['type'],
         bedrooms=data['bedrooms'],
-        size=data['size']
+        size=data['size'],
+        image_url=data.get('image_url')  # Accept image URL (optional)
     )
     db.session.add(new_property)
     db.session.commit()
@@ -100,6 +103,7 @@ def update_property(property_id):
     property_to_update.type = data['type']
     property_to_update.bedrooms = data['bedrooms']
     property_to_update.size = data['size']
+    property_to_update.image_url = data.get('image_url', property_to_update.image_url)  # Update image URL if provided
     db.session.commit()
     return jsonify({"message": "Property updated successfully!"}), 200
 

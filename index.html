@@ -68,6 +68,10 @@
                         <label for="size" class="form-label">Size (m²)</label>
                         <input type="number" class="form-control" id="size" placeholder="e.g., 200" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="image-url" class="form-label">Image URL</label>
+                        <input type="url" class="form-control" id="image-url" placeholder="e.g., https://example.com/image.jpg">
+                    </div>
                     <button type="submit" class="btn btn-primary">Add Property</button>
                 </form>
             </div>
@@ -105,6 +109,7 @@
                         const propertyCard = `
                             <div class="col-md-4 mb-4">
                                 <div class="card shadow-sm">
+                                    <img src="${property.image_url || 'placeholder.jpg'}" class="card-img-top" alt="${property.title}">
                                     <div class="card-body">
                                         <h5 class="card-title">${property.title}</h5>
                                         <p class="card-text">
@@ -138,13 +143,14 @@
             const type = document.getElementById('type').value;
             const bedrooms = parseInt(document.getElementById('bedrooms').value, 10);
             const size = parseFloat(document.getElementById('size').value);
+            const imageUrl = document.getElementById('image-url').value;
 
             fetch(backendUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title, price, location, type, bedrooms, size }),
+                body: JSON.stringify({ title, price, location, type, bedrooms, size, image_url: imageUrl }),
             })
                 .then(response => {
                     if (!response.ok) {
@@ -166,59 +172,6 @@
             event.preventDefault(); // Prevent page reload
             fetchProperties(); // Fetch properties with the applied filters
         });
-
-        // Function to delete a property
-        function deleteProperty(id) {
-            if (confirm('Are you sure you want to delete this property?')) {
-                fetch(`${backendUrl}/${id}`, {
-                    method: 'DELETE',
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to delete property');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log(data.message);
-                        fetchProperties(); // Refresh the property list
-                    })
-                    .catch(error => {
-                        console.error('Error deleting property:', error);
-                    });
-            }
-        }
-
-        // Function to edit a property
-        function editProperty(id) {
-            const title = prompt('Enter new title:');
-            const price = parseFloat(prompt('Enter new price:'));
-            const location = prompt('Enter new location:');
-            const type = prompt('Enter new type:');
-            const bedrooms = parseInt(prompt('Enter new number of bedrooms:'), 10);
-            const size = parseFloat(prompt('Enter new size in m²:'));
-
-            fetch(`${backendUrl}/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ title, price, location, type, bedrooms, size }),
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to update property');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data.message);
-                    fetchProperties(); // Refresh the property list
-                })
-                .catch(error => {
-                    console.error('Error updating property:', error);
-                });
-        }
 
         // Initial fetch to display properties
         fetchProperties();
