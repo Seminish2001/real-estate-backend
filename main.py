@@ -27,6 +27,7 @@ with app.app_context():
 def serve_frontend():
     return send_from_directory('.', 'index.html')
 
+# Fetch all properties
 @app.route('/properties', methods=['GET'])
 def get_properties():
     properties = Property.query.all()
@@ -44,6 +45,7 @@ def get_properties():
     ]
     return jsonify(result)
 
+# Add a new property
 @app.route('/properties', methods=['POST'])
 def add_property():
     data = request.json
@@ -58,6 +60,32 @@ def add_property():
     db.session.add(new_property)
     db.session.commit()
     return jsonify({"message": "Property added successfully!"}), 201
+
+# Delete a property
+@app.route('/properties/<int:property_id>', methods=['DELETE'])
+def delete_property(property_id):
+    property_to_delete = Property.query.get(property_id)
+    if not property_to_delete:
+        return jsonify({"message": "Property not found!"}), 404
+    db.session.delete(property_to_delete)
+    db.session.commit()
+    return jsonify({"message": "Property deleted successfully!"}), 200
+
+# Update a property
+@app.route('/properties/<int:property_id>', methods=['PUT'])
+def update_property(property_id):
+    property_to_update = Property.query.get(property_id)
+    if not property_to_update:
+        return jsonify({"message": "Property not found!"}), 404
+    data = request.json
+    property_to_update.title = data['title']
+    property_to_update.price = data['price']
+    property_to_update.location = data['location']
+    property_to_update.type = data['type']
+    property_to_update.bedrooms = data['bedrooms']
+    property_to_update.size = data['size']
+    db.session.commit()
+    return jsonify({"message": "Property updated successfully!"}), 200
 
 if __name__ == '__main__':
     import os
