@@ -105,8 +105,8 @@
                         <input type="number" class="form-control" id="size" placeholder="e.g., 200" required>
                     </div>
                     <div class="mb-3">
-                        <label for="image-url" class="form-label">Image URL</label>
-                        <input type="url" class="form-control" id="image-url" placeholder="e.g., https://example.com/image.jpg">
+                        <label for="image" class="form-label">Upload Image</label>
+                        <input type="file" class="form-control" id="image" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Add Property</button>
                 </form>
@@ -163,23 +163,39 @@
                 .catch(error => console.error(error));
         }
 
-        // Login and fetch token
-        document.getElementById('login').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
+        // Add property with image upload
+        document.getElementById('property-form').addEventListener('submit', function (event) {
+            event.preventDefault();
 
-            fetch(`${backendUrl}/login`, {
+            const formData = new FormData();
+            formData.append('title', document.getElementById('title').value);
+            formData.append('price', document.getElementById('price').value);
+            formData.append('location', document.getElementById('location').value);
+            formData.append('type', document.getElementById('type').value);
+            formData.append('bedrooms', document.getElementById('bedrooms').value);
+            formData.append('size', document.getElementById('size').value);
+            formData.append('image', document.getElementById('image').files[0]);
+
+            fetch(`${backendUrl}/properties`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password }),
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                },
+                body: formData,
             })
-                .then(response => response.json())
-                .then(data => {
-                    localStorage.setItem('access_token', data.access_token);
-                    alert('Login successful!');
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to add property');
+                    }
+                    return response.json();
                 })
-                .catch(() => alert('Invalid credentials!'));
+                .then(data => {
+                    alert('Property added successfully!');
+                    fetchProperties(); // Refresh the property list
+                })
+                .catch(error => {
+                    alert('Error: ' + error.message);
+                });
         });
 
         // Fetch properties initially

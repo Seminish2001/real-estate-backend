@@ -2,6 +2,9 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+import cloudinary
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
 
 app = Flask(__name__)
 
@@ -12,6 +15,14 @@ app.config['JWT_SECRET_KEY'] = 'your_secret_key_here'  # Replace with a secure k
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
+
+# Cloudinary Configuration
+cloudinary.config(
+    cloud_name="dxearodvf",  # Replace with your Cloudinary cloud name
+    api_key="292532466535494",  # Replace with your Cloudinary API key
+    api_secret="your_api_secret",  # Replace with your Cloudinary API secret
+    secure=True
+)
 
 # User model
 class User(db.Model):
@@ -74,43 +85,49 @@ def login():
 @jwt_required()
 def add_property():
     current_user = get_jwt_identity()
-    data = request.json
-    if not data or 'title' not in data or 'price' not in data:
-        return jsonify({"message": "Invalid data!"}), 400
 
+    # Handle file upload
+    image_file = request.files.get('image')
+    if not image_file:
+        return jsonify({"message": "Image is required!"}), 400
+
+    try:
+        upload_result = cloudinary.uploader.upload(image_file)
+        image_url = upload_result.get('secure_url')
+
+        # Apply auto-formatting and resizing
+        optimized_image_url, _ = cloudinary_url(
+            upload_result['public_id'],
+            fetch_format="auto",
+            quality="auto",
+            width=500,
+            height=500,
+            crop="auto",
+            gravity="auto"
+        )
+    except Exception as e:
+        return jsonify({"message": f"Image upload failed: {str(e)}"}), 500
+
+    # Save property details
+    data = request.form
     new_property = Property(
         title=data['title'],
-        price=data['price'],
+        price=float(data['price']),
         location=data['location'],
         type=data['type'],
-        bedrooms=data['bedrooms'],
-        size=data['size'],
-        image_url=data.get('image_url'),
+        bedrooms=int(data['bedrooms']),
+        size=float(data['size']),
+        image_url=optimized_image_url,
         owner_id=current_user
     )
     db.session.add(new_property)
     db.session.commit()
-    return jsonify({"message": "Property added successfully!"}), 201
+    return jsonify({"message": "Property added successfully!", "image_url": optimized_image_url}), 201
 
-# Fetch all properties with optional filters
+# Fetch all properties
 @app.route('/properties', methods=['GET'])
 def get_properties():
-    location = request.args.get('location')
-    type_ = request.args.get('type')
-    min_price = request.args.get('min_price', type=float)
-    max_price = request.args.get('max_price', type=float)
-
-    query = Property.query
-    if location:
-        query = query.filter(Property.location.ilike(f'%{location}%'))
-    if type_:
-        query = query.filter(Property.type.ilike(f'%{type_}%'))
-    if min_price is not None:
-        query = query.filter(Property.price >= min_price)
-    if max_price is not None:
-        query = query.filter(Property.price <= max_price)
-
-    properties = query.all()
+    properties = Property.query.all()
     result = [
         {
             "id": property.id,
@@ -120,49 +137,11 @@ def get_properties():
             "type": property.type,
             "bedrooms": property.bedrooms,
             "size": property.size,
-            "image_url": property.image_url,
-            "owner_id": property.owner_id
+            "image_url": property.image_url
         }
         for property in properties
     ]
     return jsonify(result)
-
-# Update a property (authenticated)
-@app.route('/properties/<int:property_id>', methods=['PUT'])
-@jwt_required()
-def update_property(property_id):
-    current_user = get_jwt_identity()
-    property_to_update = Property.query.get(property_id)
-    if not property_to_update:
-        return jsonify({"message": "Property not found!"}), 404
-    if property_to_update.owner_id != current_user:
-        return jsonify({"message": "Not authorized to update this property!"}), 403
-
-    data = request.json
-    property_to_update.title = data['title']
-    property_to_update.price = data['price']
-    property_to_update.location = data['location']
-    property_to_update.type = data['type']
-    property_to_update.bedrooms = data['bedrooms']
-    property_to_update.size = data['size']
-    property_to_update.image_url = data.get('image_url', property_to_update.image_url)
-    db.session.commit()
-    return jsonify({"message": "Property updated successfully!"}), 200
-
-# Delete a property (authenticated)
-@app.route('/properties/<int:property_id>', methods=['DELETE'])
-@jwt_required()
-def delete_property(property_id):
-    current_user = get_jwt_identity()
-    property_to_delete = Property.query.get(property_id)
-    if not property_to_delete:
-        return jsonify({"message": "Property not found!"}), 404
-    if property_to_delete.owner_id != current_user:
-        return jsonify({"message": "Not authorized to delete this property!"}), 403
-
-    db.session.delete(property_to_delete)
-    db.session.commit()
-    return jsonify({"message": "Property deleted successfully!"}), 200
 
 if __name__ == '__main__':
     import os
