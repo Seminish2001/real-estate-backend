@@ -8,7 +8,43 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center mb-4">Property Listings</h1>
+        <h1 class="text-center mb-4">Real Estate Platform</h1>
+
+        <!-- Login Form -->
+        <div id="login-form" class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Login</h5>
+                <form id="login">
+                    <div class="mb-3">
+                        <label for="login-username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="login-username" placeholder="Enter your username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="login-password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="login-password" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup-form" class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Signup</h5>
+                <form id="signup">
+                    <div class="mb-3">
+                        <label for="signup-username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="signup-username" placeholder="Choose a username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="signup-password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="signup-password" placeholder="Choose a password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Signup</button>
+                </form>
+            </div>
+        </div>
 
         <!-- Search and Filter Form -->
         <div class="card mb-4">
@@ -84,35 +120,35 @@
     </div>
 
     <script>
-        const backendUrl = 'https://real-estate-backend-wnlh.onrender.com/properties';
+        const backendUrl = 'https://real-estate-backend-wnlh.onrender.com';
+        const token = localStorage.getItem('access_token');
 
-        // Fetch properties and display them as cards
+        // Fetch properties and display them
         function fetchProperties() {
             const location = document.getElementById('search-location').value;
             const type = document.getElementById('filter-type').value;
             const minPrice = document.getElementById('min-price').value;
             const maxPrice = document.getElementById('max-price').value;
 
-            // Build query parameters
             let query = '?';
             if (location) query += `location=${location}&`;
             if (type) query += `type=${type}&`;
             if (minPrice) query += `min_price=${minPrice}&`;
             if (maxPrice) query += `max_price=${maxPrice}&`;
 
-            fetch(`${backendUrl}${query}`)
+            fetch(`${backendUrl}/properties${query}`)
                 .then(response => response.json())
                 .then(data => {
                     const propertyList = document.getElementById('property-list');
-                    propertyList.innerHTML = ''; // Clear the list
+                    propertyList.innerHTML = '';
                     data.forEach(property => {
-                        const propertyCard = `
+                        propertyList.innerHTML += `
                             <div class="col-md-4 mb-4">
                                 <div class="card shadow-sm">
-                                    <img src="${property.image_url || 'https://via.placeholder.com/300'}" class="card-img-top" alt="${property.title}">
+                                    <img src="${property.image_url || 'https://via.placeholder.com/300'}" class="card-img-top">
                                     <div class="card-body">
                                         <h5 class="card-title">${property.title}</h5>
-                                        <p class="card-text">
+                                        <p>
                                             <strong>Price:</strong> €${property.price}<br>
                                             <strong>Location:</strong> ${property.location}<br>
                                             <strong>Type:</strong> ${property.type}<br>
@@ -125,55 +161,30 @@
                                 </div>
                             </div>
                         `;
-                        propertyList.innerHTML += propertyCard;
                     });
                 })
-                .catch(error => {
-                    console.error('Error fetching properties:', error);
-                });
+                .catch(error => console.error(error));
         }
 
-        // Add Property Form Submission
-        document.getElementById('property-form').addEventListener('submit', function (event) {
+        // Login handler
+        document.getElementById('login').addEventListener('submit', event => {
             event.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
 
-            const title = document.getElementById('title').value;
-            const price = parseFloat(document.getElementById('price').value);
-            const location = document.getElementById('location').value;
-            const type = document.getElementById('type').value;
-            const bedrooms = parseInt(document.getElementById('bedrooms').value, 10);
-            const size = parseFloat(document.getElementById('size').value);
-            const imageUrl = document.getElementById('image-url').value;
-
-            fetch(backendUrl, {
+            fetch(`${backendUrl}/login`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ title, price, location, type, bedrooms, size, image_url: imageUrl }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to add property');
-                    }
-                    return response.json();
-                })
+                .then(res => res.json())
                 .then(data => {
-                    console.log('Property added successfully:', data);
-                    fetchProperties(); // Refresh the property list
+                    localStorage.setItem('access_token', data.access_token);
+                    alert('Logged in successfully!');
                 })
-                .catch(error => {
-                    console.error('Error adding property:', error);
-                });
+                .catch(() => alert('Invalid credentials!'));
         });
 
-        // Filter Form Submission
-        document.getElementById('filter-form').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent page reload
-            fetchProperties(); // Fetch properties with the applied filters
-        });
-
-        // Initial fetch to display properties
         fetchProperties();
     </script>
 </body>

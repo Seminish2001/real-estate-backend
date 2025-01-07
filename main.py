@@ -41,56 +41,33 @@ def serve_frontend():
     return send_from_directory('.', 'index.html')
 
 # Register user
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['POST'])
 def register():
-    if request.method == 'POST':
-        data = request.form
-        hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-        new_user = User(username=data['username'], password=hashed_password)
+    data = request.json
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({"message": "Invalid data!"}), 400
+
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    new_user = User(username=data['username'], password=hashed_password)
+    try:
         db.session.add(new_user)
         db.session.commit()
         return jsonify({"message": "User registered successfully!"}), 201
-
-    # HTML form for registration
-    return render_template_string('''
-        <!DOCTYPE html>
-        <html>
-        <body>
-            <h2>Register</h2>
-            <form method="POST">
-                Username: <input type="text" name="username" required><br>
-                Password: <input type="password" name="password" required><br>
-                <button type="submit">Register</button>
-            </form>
-        </body>
-        </html>
-    ''')
+    except Exception:
+        return jsonify({"message": "Username already exists!"}), 409
 
 # User login
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        data = request.form
-        user = User.query.filter_by(username=data['username']).first()
-        if user and bcrypt.check_password_hash(user.password, data['password']):
-            access_token = create_access_token(identity=user.id)
-            return jsonify({"access_token": access_token}), 200
-        return jsonify({"message": "Invalid credentials!"}), 401
+    data = request.json
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({"message": "Invalid data!"}), 400
 
-    # HTML form for login
-    return render_template_string('''
-        <!DOCTYPE html>
-        <html>
-        <body>
-            <h2>Login</h2>
-            <form method="POST">
-                Username: <input type="text" name="username" required><br>
-                Password: <input type="password" name="password" required><br>
-                <button type="submit">Login</button>
-            </form>
-        </body>
-        </html>
-    ''')
+    user = User.query.filter_by(username=data['username']).first()
+    if user and bcrypt.check_password_hash(user.password, data['password']):
+        access_token = create_access_token(identity=user.id)
+        return jsonify({"access_token": access_token}), 200
+    return jsonify({"message": "Invalid credentials!"}), 401
 
 # Add a new property (authentication required)
 @app.route('/properties', methods=['POST'])
@@ -98,6 +75,9 @@ def login():
 def add_property():
     current_user = get_jwt_identity()
     data = request.json
+    if not data or 'title' not in data or 'price' not in data:
+        return jsonify({"message": "Invalid data!"}), 400
+
     new_property = Property(
         title=data['title'],
         price=data['price'],
@@ -106,7 +86,7 @@ def add_property():
         bedrooms=data['bedrooms'],
         size=data['size'],
         image_url=data.get('image_url'),
-        owner_id=current_user  # Set property owner to the current user
+        owner_id=current_user
     )
     db.session.add(new_property)
     db.session.commit()
@@ -121,7 +101,6 @@ def get_properties():
     max_price = request.args.get('max_price', type=float)
 
     query = Property.query
-
     if location:
         query = query.filter(Property.location.ilike(f'%{location}%'))
     if type_:
@@ -154,7 +133,6 @@ def get_properties():
 def update_property(property_id):
     current_user = get_jwt_identity()
     property_to_update = Property.query.get(property_id)
-
     if not property_to_update:
         return jsonify({"message": "Property not found!"}), 404
     if property_to_update.owner_id != current_user:
@@ -177,7 +155,6 @@ def update_property(property_id):
 def delete_property(property_id):
     current_user = get_jwt_identity()
     property_to_delete = Property.query.get(property_id)
-
     if not property_to_delete:
         return jsonify({"message": "Property not found!"}), 404
     if property_to_delete.owner_id != current_user:
