@@ -10,6 +10,35 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">Property Listings</h1>
 
+        <!-- Search and Filter Form -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form id="filter-form">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" id="search-location" class="form-control" placeholder="Search by location">
+                        </div>
+                        <div class="col-md-3">
+                            <select id="filter-type" class="form-select">
+                                <option value="">All Types</option>
+                                <option value="Apartment">Apartment</option>
+                                <option value="Villa">Villa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" id="min-price" class="form-control" placeholder="Min Price">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" id="max-price" class="form-control" placeholder="Max Price">
+                        </div>
+                        <div class="col-md-1">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Form to Add a New Property -->
         <div class="card mb-4">
             <div class="card-body">
@@ -55,7 +84,19 @@
 
         // Fetch properties and display them as cards
         function fetchProperties() {
-            fetch(backendUrl)
+            const location = document.getElementById('search-location').value;
+            const type = document.getElementById('filter-type').value;
+            const minPrice = document.getElementById('min-price').value;
+            const maxPrice = document.getElementById('max-price').value;
+
+            // Build query parameters
+            let query = '?';
+            if (location) query += `location=${location}&`;
+            if (type) query += `type=${type}&`;
+            if (minPrice) query += `min_price=${minPrice}&`;
+            if (maxPrice) query += `max_price=${maxPrice}&`;
+
+            fetch(`${backendUrl}${query}`)
                 .then(response => response.json())
                 .then(data => {
                     const propertyList = document.getElementById('property-list');
@@ -118,6 +159,12 @@
                 .catch(error => {
                     console.error('Error adding property:', error);
                 });
+        });
+
+        // Filter Form Submission
+        document.getElementById('filter-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent page reload
+            fetchProperties(); // Fetch properties with the applied filters
         });
 
         // Function to delete a property

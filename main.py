@@ -27,10 +27,26 @@ with app.app_context():
 def serve_frontend():
     return send_from_directory('.', 'index.html')
 
-# Fetch all properties
+# Fetch all properties with filters
 @app.route('/properties', methods=['GET'])
 def get_properties():
-    properties = Property.query.all()
+    location = request.args.get('location')
+    type_ = request.args.get('type')
+    min_price = request.args.get('min_price', type=float)
+    max_price = request.args.get('max_price', type=float)
+
+    query = Property.query
+
+    if location:
+        query = query.filter(Property.location.ilike(f'%{location}%'))
+    if type_:
+        query = query.filter(Property.type.ilike(f'%{type_}%'))
+    if min_price is not None:
+        query = query.filter(Property.price >= min_price)
+    if max_price is not None:
+        query = query.filter(Property.price <= max_price)
+
+    properties = query.all()
     result = [
         {
             "id": property.id,
