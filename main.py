@@ -46,10 +46,22 @@ class Property(db.Model):
 with app.app_context():
     db.create_all()
 
-# Serve the frontend
+# Serve frontend files
 @app.route('/')
-def serve_frontend():
+def serve_homepage():
     return send_from_directory('.', 'index.html')
+
+@app.route('/login')
+def serve_login():
+    return send_from_directory('.', 'login.html')
+
+@app.route('/signup')
+def serve_signup():
+    return send_from_directory('.', 'signup.html')
+
+@app.route('/add-property')
+def serve_add_property():
+    return send_from_directory('.', 'add-property.html')
 
 # Register a new user
 @app.route('/register', methods=['POST'])

@@ -10,41 +10,13 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">Real Estate Platform</h1>
 
-        <!-- Login Form -->
-        <div id="login-form" class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Login</h5>
-                <form id="login">
-                    <div class="mb-3">
-                        <label for="login-username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="login-username" placeholder="Enter your username" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="login-password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="login-password" placeholder="Enter your password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Signup Form -->
-        <div id="signup-form" class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Signup</h5>
-                <form id="signup">
-                    <div class="mb-3">
-                        <label for="signup-username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="signup-username" placeholder="Choose a username" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="signup-password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="signup-password" placeholder="Choose a password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Signup</button>
-                </form>
-            </div>
-        </div>
+        <!-- Navigation -->
+        <nav class="mb-4">
+            <a href="/" class="btn btn-secondary">Home</a>
+            <a href="/login" class="btn btn-primary">Login</a>
+            <a href="/signup" class="btn btn-info">Signup</a>
+            <a href="/add-property" class="btn btn-success">Add Property</a>
+        </nav>
 
         <!-- Search and Filter Form -->
         <div class="card mb-4">
@@ -71,44 +43,6 @@
                             <button type="submit" class="btn btn-primary w-100">Search</button>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Form to Add a New Property -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Add a New Property</h5>
-                <form id="property-form">
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Title</label>
-                        <input type="text" class="form-control" id="title" placeholder="e.g., Luxury Villa in Vlore" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="price" class="form-label">Price (€)</label>
-                        <input type="number" class="form-control" id="price" placeholder="e.g., 1000" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="location" class="form-label">Location</label>
-                        <input type="text" class="form-control" id="location" placeholder="e.g., Vlore" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="type" class="form-label">Type</label>
-                        <input type="text" class="form-control" id="type" placeholder="e.g., Villa" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="bedrooms" class="form-label">Bedrooms</label>
-                        <input type="number" class="form-control" id="bedrooms" placeholder="e.g., 5" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="size" class="form-label">Size (m²)</label>
-                        <input type="number" class="form-control" id="size" placeholder="e.g., 200" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Upload Image</label>
-                        <input type="file" class="form-control" id="image" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Property</button>
                 </form>
             </div>
         </div>
@@ -163,101 +97,8 @@
                 .catch(error => console.error(error));
         }
 
-        // Add property with image upload
-        document.getElementById('property-form').addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            const formData = new FormData();
-            formData.append('title', document.getElementById('title').value);
-            formData.append('price', document.getElementById('price').value);
-            formData.append('location', document.getElementById('location').value);
-            formData.append('type', document.getElementById('type').value);
-            formData.append('bedrooms', document.getElementById('bedrooms').value);
-            formData.append('size', document.getElementById('size').value);
-            formData.append('image', document.getElementById('
-                                                                                 formData.append('image', document.getElementById('image').files[0]);
-
-                                                                         fetch(`${backendUrl}/properties`, {
-                                                                             method: 'POST',
-                                                                             headers: {
-                                                                                 Authorization: `Bearer ${localStorage.getItem('access_token')}`
-                                                                             },
-                                                                             body: formData,
-                                                                         })
-                                                                             .then(response => {
-                                                                                 if (!response.ok) {
-                                                                                     throw new Error('Failed to add property');
-                                                                                 }
-                                                                                 return response.json();
-                                                                             })
-                                                                             .then(data => {
-                                                                                 alert('Property added successfully!');
-                                                                                 fetchProperties(); // Refresh the property list
-                                                                             })
-                                                                             .catch(error => {
-                                                                                 alert('Error: ' + error.message);
-                                                                             });
-                                                                     });
-
-                                                                     // Login and fetch token
-                                                                     document.getElementById('login').addEventListener('submit', function (event) {
-                                                                         event.preventDefault();
-
-                                                                         const username = document.getElementById('login-username').value;
-                                                                         const password = document.getElementById('login-password').value;
-
-                                                                         fetch(`${backendUrl}/login`, {
-                                                                             method: 'POST',
-                                                                             headers: {
-                                                                                 'Content-Type': 'application/json',
-                                                                             },
-                                                                             body: JSON.stringify({ username, password }),
-                                                                         })
-                                                                             .then(response => {
-                                                                                 if (!response.ok) {
-                                                                                     throw new Error('Login failed');
-                                                                                 }
-                                                                                 return response.json();
-                                                                             })
-                                                                             .then(data => {
-                                                                                 localStorage.setItem('access_token', data.access_token);
-                                                                                 alert('Login successful!');
-                                                                             })
-                                                                             .catch(error => {
-                                                                                 alert('Login error: ' + error.message);
-                                                                             });
-                                                                     });
-
-                                                                     // Signup
-                                                                     document.getElementById('signup').addEventListener('submit', function (event) {
-                                                                         event.preventDefault();
-
-                                                                         const username = document.getElementById('signup-username').value;
-                                                                         const password = document.getElementById('signup-password').value;
-
-                                                                         fetch(`${backendUrl}/register`, {
-                                                                             method: 'POST',
-                                                                             headers: {
-                                                                                 'Content-Type': 'application/json',
-                                                                             },
-                                                                             body: JSON.stringify({ username, password }),
-                                                                         })
-                                                                             .then(response => {
-                                                                                 if (!response.ok) {
-                                                                                     throw new Error('Signup failed');
-                                                                                 }
-                                                                                 return response.json();
-                                                                             })
-                                                                             .then(data => {
-                                                                                 alert('Signup successful!');
-                                                                             })
-                                                                             .catch(error => {
-                                                                                 alert('Signup error: ' + error.message);
-                                                                             });
-                                                                     });
-
-                                                                     // Fetch properties initially
-                                                                     fetchProperties();
-                                                                 </script>
-                                                             </body>
-                                                             </html>
+        // Fetch properties initially
+        fetchProperties();
+    </script>
+</body>
+</html>
