@@ -174,32 +174,90 @@
             formData.append('type', document.getElementById('type').value);
             formData.append('bedrooms', document.getElementById('bedrooms').value);
             formData.append('size', document.getElementById('size').value);
-            formData.append('image', document.getElementById('image').files[0]);
+            formData.append('image', document.getElementById('
+                                                                                 formData.append('image', document.getElementById('image').files[0]);
 
-            fetch(`${backendUrl}/properties`, {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`
-                },
-                body: formData,
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to add property');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    alert('Property added successfully!');
-                    fetchProperties(); // Refresh the property list
-                })
-                .catch(error => {
-                    alert('Error: ' + error.message);
-                });
-        });
+                                                                         fetch(`${backendUrl}/properties`, {
+                                                                             method: 'POST',
+                                                                             headers: {
+                                                                                 Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                                                                             },
+                                                                             body: formData,
+                                                                         })
+                                                                             .then(response => {
+                                                                                 if (!response.ok) {
+                                                                                     throw new Error('Failed to add property');
+                                                                                 }
+                                                                                 return response.json();
+                                                                             })
+                                                                             .then(data => {
+                                                                                 alert('Property added successfully!');
+                                                                                 fetchProperties(); // Refresh the property list
+                                                                             })
+                                                                             .catch(error => {
+                                                                                 alert('Error: ' + error.message);
+                                                                             });
+                                                                     });
 
-        // Fetch properties initially
-        fetchProperties();
-    </script>
-</body>
-</html>
+                                                                     // Login and fetch token
+                                                                     document.getElementById('login').addEventListener('submit', function (event) {
+                                                                         event.preventDefault();
+
+                                                                         const username = document.getElementById('login-username').value;
+                                                                         const password = document.getElementById('login-password').value;
+
+                                                                         fetch(`${backendUrl}/login`, {
+                                                                             method: 'POST',
+                                                                             headers: {
+                                                                                 'Content-Type': 'application/json',
+                                                                             },
+                                                                             body: JSON.stringify({ username, password }),
+                                                                         })
+                                                                             .then(response => {
+                                                                                 if (!response.ok) {
+                                                                                     throw new Error('Login failed');
+                                                                                 }
+                                                                                 return response.json();
+                                                                             })
+                                                                             .then(data => {
+                                                                                 localStorage.setItem('access_token', data.access_token);
+                                                                                 alert('Login successful!');
+                                                                             })
+                                                                             .catch(error => {
+                                                                                 alert('Login error: ' + error.message);
+                                                                             });
+                                                                     });
+
+                                                                     // Signup
+                                                                     document.getElementById('signup').addEventListener('submit', function (event) {
+                                                                         event.preventDefault();
+
+                                                                         const username = document.getElementById('signup-username').value;
+                                                                         const password = document.getElementById('signup-password').value;
+
+                                                                         fetch(`${backendUrl}/register`, {
+                                                                             method: 'POST',
+                                                                             headers: {
+                                                                                 'Content-Type': 'application/json',
+                                                                             },
+                                                                             body: JSON.stringify({ username, password }),
+                                                                         })
+                                                                             .then(response => {
+                                                                                 if (!response.ok) {
+                                                                                     throw new Error('Signup failed');
+                                                                                 }
+                                                                                 return response.json();
+                                                                             })
+                                                                             .then(data => {
+                                                                                 alert('Signup successful!');
+                                                                             })
+                                                                             .catch(error => {
+                                                                                 alert('Signup error: ' + error.message);
+                                                                             });
+                                                                     });
+
+                                                                     // Fetch properties initially
+                                                                     fetchProperties();
+                                                                 </script>
+                                                             </body>
+                                                             </html>
