@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
@@ -62,6 +62,10 @@ def serve_signup():
 @app.route('/add-property')
 def serve_add_property():
     return send_from_directory('.', 'add-property.html')
+
+@app.route('/property/<int:property_id>')
+def serve_property_details(property_id):
+    return render_template('property-details.html', property_id=property_id)
 
 # Register a new user
 @app.route('/register', methods=['POST'])
@@ -154,6 +158,23 @@ def get_properties():
         for property in properties
     ]
     return jsonify(result)
+
+# Fetch a specific property by ID
+@app.route('/properties/<int:property_id>', methods=['GET'])
+def get_property_details(property_id):
+    property = Property.query.get(property_id)
+    if not property:
+        return jsonify({"message": "Property not found!"}), 404
+    return jsonify({
+        "id": property.id,
+        "title": property.title,
+        "price": property.price,
+        "location": property.location,
+        "type": property.type,
+        "bedrooms": property.bedrooms,
+        "size": property.size,
+        "image_url": property.image_url
+    })
 
 if __name__ == '__main__':
     import os
