@@ -63,6 +63,10 @@ def serve_signup():
 def serve_add_property():
     return send_from_directory('.', 'add-property.html')
 
+@app.route('/dashboard')
+def serve_dashboard():
+    return send_from_directory('.', 'dashboard.html')
+
 @app.route('/property/<int:property_id>')
 def serve_property_details(property_id):
     return render_template('property-details.html', property_id=property_id)
@@ -139,6 +143,27 @@ def add_property():
     db.session.add(new_property)
     db.session.commit()
     return jsonify({"message": "Property added successfully!", "image_url": optimized_image_url}), 201
+
+# Fetch all properties for the logged-in user
+@app.route('/dashboard', methods=['GET'])
+@jwt_required()
+def user_dashboard():
+    current_user = get_jwt_identity()
+    properties = Property.query.filter_by(owner_id=current_user).all()
+    result = [
+        {
+            "id": property.id,
+            "title": property.title,
+            "price": property.price,
+            "location": property.location,
+            "type": property.type,
+            "bedrooms": property.bedrooms,
+            "size": property.size,
+            "image_url": property.image_url
+        }
+        for property in properties
+    ]
+    return jsonify(result), 200
 
 # Fetch all properties
 @app.route('/properties', methods=['GET'])
