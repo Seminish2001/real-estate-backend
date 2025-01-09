@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Real Estate Platform</title>
+    <title>Signup - Real Estate Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -11,74 +12,185 @@
             background-color: #f8f9fa;
         }
 
-        .signup-container {
-            max-width: 400px;
-            margin: 80px auto;
-            background: white;
-            padding: 30px;
+        .form-card {
+            background-color: white;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .signup-container h1 {
-            font-size: 1.8rem;
-            text-align: center;
-            margin-bottom: 20px;
+        .progress-bar {
+            height: 5px;
         }
 
-        footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #343a40;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
+        .tooltip-inner {
+            background-color: #333;
+            color: #fff;
         }
 
-        footer a {
-            color: #17a2b8;
-            text-decoration: none;
+        .form-label {
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
+
 <body>
-    <div class="signup-container">
-        <h1>Sign Up</h1>
-        <form id="signup-form">
-            <div class="mb-3">
-                <label for="signup-username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="signup-username" placeholder="Choose a username" required>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Real Estate Platform</a>
+        </div>
+    </nav>
+
+    <!-- Signup Form -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="form-card">
+                    <h2 class="text-center mb-4">Signup</h2>
+
+                    <!-- Progress Bar -->
+                    <div class="progress mb-4">
+                        <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%;">
+                        </div>
+                    </div>
+
+                    <form id="signup-form">
+                        <!-- Name -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name / Agency Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" placeholder="Enter your full name or agency name" required>
+                        </div>
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                        </div>
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password" placeholder="Choose a strong password" required>
+                        </div>
+                        <!-- User Type -->
+                        <div class="mb-3">
+                            <label class="form-label">Signup as <span class="text-danger">*</span></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="private-owner" name="user-type" value="Private Owner" required>
+                                <label class="form-check-label" for="private-owner">Private Owner</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="real-estate-agency" name="user-type" value="Real Estate Agency" required>
+                                <label class="form-check-label" for="real-estate-agency">Real Estate Agency</label>
+                            </div>
+                        </div>
+                        <!-- Agency Details -->
+                        <div id="agency-details" style="display: none;">
+                            <div class="mb-3">
+                                <label for="agency-name" class="form-label">Agency Name</label>
+                                <input type="text" class="form-control" id="agency-name" placeholder="Enter your agency's name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="license-number" class="form-label">License Number</label>
+                                <input type="text" class="form-control" id="license-number" placeholder="Enter your license number">
+                            </div>
+                            <div class="mb-3">
+                                <label for="website" class="form-label">Website</label>
+                                <input type="url" class="form-control" id="website" placeholder="Enter your business website (optional)">
+                            </div>
+                        </div>
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" placeholder="Enter your phone number (optional)">
+                        </div>
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" rows="2" placeholder="Enter your address (optional)"></textarea>
+                        </div>
+                        <!-- Terms -->
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="terms" required>
+                            <label class="form-check-label" for="terms">I agree to the terms and conditions</label>
+                        </div>
+                        <!-- Submit -->
+                        <button type="submit" class="btn btn-primary w-100">Signup</button>
+                    </form>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="signup-password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="signup-password" placeholder="Choose a password" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
-        </form>
-        <p class="text-center mt-3">Already have an account? <a href="/login">Login here</a></p>
+        </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Real Estate Platform. All rights reserved.</p>
-    </footer>
-
     <script>
-        const backendUrl = '/register';
+        const backendUrl = 'https://real-estate-backend-wnlh.onrender.com';
 
-        // Handle Signup
+        // Show/Hide Agency Details
+        document.querySelectorAll('input[name="user-type"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                const agencyDetails = document.getElementById('agency-details');
+                if (this.value === 'Real Estate Agency') {
+                    agencyDetails.style.display = 'block';
+                } else {
+                    agencyDetails.style.display = 'none';
+                }
+                updateProgressBar();
+            });
+        });
+
+        // Update Progress Bar
+        function updateProgressBar() {
+            const formFields = [...document.querySelectorAll('#signup-form input, #signup-form textarea')];
+            const filledFields = formFields.filter(field => field.value.trim() !== '');
+            const progress = Math.round((filledFields.length / formFields.length) * 100);
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+        }
+
+        // Monitor Form Input
+        document.querySelectorAll('#signup-form input, #signup-form textarea').forEach(field => {
+            field.addEventListener('input', updateProgressBar);
+        });
+
+        // Signup Form Submission
         document.getElementById('signup-form').addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const username = document.getElementById('signup-username').value;
-            const password = document.getElementById('signup-password').value;
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const userType = document.querySelector('input[name="user-type"]:checked').value;
+            const phone = document.getElementById('phone').value || null;
+            const address = document.getElementById('address').value || null;
+            const agencyName = document.getElementById('agency-name').value || null;
+            const licenseNumber = document.getElementById('license-number').value || null;
+            const website = document.getElementById('website').value || null;
 
-            fetch(backendUrl, {
+            const userData = {
+                name,
+                email,
+                password,
+                user_type: userType,
+                phone,
+                address,
+                agency_name: agencyName,
+                license_number: licenseNumber,
+                website,
+            };
+
+            fetch(`${backendUrl}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify(userData),
             })
                 .then(response => {
                     if (!response.ok) {
@@ -87,7 +199,7 @@
                     return response.json();
                 })
                 .then(data => {
-                    alert('Signup successful! You can now login.');
+                    alert('Signup successful!');
                     window.location.href = '/login';
                 })
                 .catch(error => {
@@ -95,6 +207,6 @@
                 });
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
