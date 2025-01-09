@@ -67,6 +67,10 @@ def serve_add_property():
 def serve_dashboard():
     return send_from_directory('.', 'dashboard.html')
 
+@app.route('/edit-property/<int:property_id>')
+def serve_edit_property(property_id):
+    return render_template('edit-property.html', property_id=property_id)
+
 @app.route('/property/<int:property_id>')
 def serve_property_details(property_id):
     return render_template('property-details.html', property_id=property_id)
@@ -144,26 +148,33 @@ def add_property():
     db.session.commit()
     return jsonify({"message": "Property added successfully!", "image_url": optimized_image_url}), 201
 
-# Fetch all properties for the logged-in user
-@app.route('/dashboard', methods=['GET'])
+# Edit a property (authenticated)
+@app.route('/properties/<int:property_id>', methods=['PUT'])
 @jwt_required()
-def user_dashboard():
+def update_property(property_id):
     current_user = get_jwt_identity()
-    properties = Property.query.filter_by(owner_id=current_user).all()
-    result = [
-        {
-            "id": property.id,
-            "title": property.title,
-            "price": property.price,
-            "location": property.location,
-            "type": property.type,
-            "bedrooms": property.bedrooms,
-            "size": property.size,
-            "image_url": property.image_url
-        }
-        for property in properties
-    ]
-    return jsonify(result), 200
+    property_to_update = Property.query.get(property_id)
+
+    if not property_to_update:
+        return jsonify({"message": "Property not found!"}), 404
+    if property_to_update.owner_id != current_user:
+        return jsonify({"message": "Not authorized to update this property!"}), 403
+
+    data = request.form
+    property_to_update.title = data['title']
+    property_to_update.price = float(data['price'])
+    property_to_update.location = data['location']
+    property_to_update.type = data['type']
+    property_to_update.bedrooms = int(data['bedrooms'])
+    property_to_update.size = float(data['size'])
+
+    image_file = request.files.get('image')
+    if image_file:
+        upload_result = cloudinary.uploader.upload(image_file)
+        property_to_update.image_url = upload_result.get('secure_url')
+
+    db.session.commit()
+    return jsonify({"message": "Property updated successfully!"}), 200
 
 # Fetch all properties
 @app.route('/properties', methods=['GET'])
