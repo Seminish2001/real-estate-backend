@@ -15,3 +15,5 @@ flask-bcrypt
 flask-jwt-extended
 cloudinary
 flask-cors
+decouple
+flask-limiter

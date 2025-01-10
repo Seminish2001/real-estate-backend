@@ -5,59 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real Estate Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
         }
 
+        /* Navbar Styling */
         .navbar {
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #003366;
+            padding: 15px 0;
         }
 
+        .navbar-brand, .navbar-nav .nav-link {
+            color: #fff !important;
+            font-weight: 500;
+        }
+
+        .navbar-brand:hover, .navbar-nav .nav-link:hover {
+            color: #ffcc00 !important;
+        }
+
+        .navbar-toggler {
+            border: none;
+        }
+
+        /* Hero Section */
         .hero-section {
-            background: url('https://source.unsplash.com/1600x900/?real-estate') no-repeat center center/cover;
+            position: relative;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://source.unsplash.com/1600x900/?house,real-estate') no-repeat center center/cover;
+            height: 80vh;
             color: white;
-            height: 60vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            text-align: center;
         }
 
         .hero-section h1 {
             font-size: 3.5rem;
             font-weight: bold;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
         }
 
         .hero-section p {
             font-size: 1.2rem;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-section .btn {
+            font-size: 1.2rem;
+            padding: 10px 30px;
+            background-color: #ffcc00;
+            color: #003366;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .hero-section .btn:hover {
+            background-color: #ffd633;
+        }
+
+        .search-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-form input, .search-form select, .search-form button {
+            border-radius: 5px;
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
         }
 
         .card img {
             height: 200px;
             object-fit: cover;
+            border-radius: 10px 10px 0 0;
         }
 
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Footer */
         footer {
-            background-color: #343a40;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
+            background-color: #003366;
+            color: #fff;
+            padding: 40px 0;
         }
 
         footer a {
-            color: #17a2b8;
+            color: #ffcc00;
             text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer .footer-column {
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="/">Real Estate Platform</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,96 +147,76 @@
 
     <!-- Hero Section -->
     <section class="hero-section">
-        <div>
+        <div class="text-center">
             <h1>Find Your Dream Home</h1>
-            <p>Browse the best real estate properties at unbeatable prices.</p>
-            <a href="/add-property" class="btn btn-success btn-lg">List Your Property</a>
+            <p>Search among the best properties tailored for your needs.</p>
+            <a href="/add-property" class="btn">List Your Property</a>
         </div>
     </section>
 
-    <!-- Search and Filter -->
+    <!-- Search Form -->
     <div class="container mt-5">
-        <h2 class="text-center mb-4">Search for Properties</h2>
-        <div class="card mb-4">
-            <div class="card-body">
-                <form id="filter-form">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <input type="text" id="search-location" class="form-control" placeholder="Location">
-                        </div>
-                        <div class="col-md-3">
-                            <select id="filter-type" class="form-select">
-                                <option value="">All Types</option>
-                                <option value="Apartment">Apartment</option>
-                                <option value="Villa">Villa</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="number" id="min-price" class="form-control" placeholder="Min Price">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="number" id="max-price" class="form-control" placeholder="Max Price">
-                        </div>
-                        <div class="col-md-1">
-                            <button type="submit" class="btn btn-primary w-100">Search</button>
-                        </div>
+        <div class="search-form mx-auto">
+            <form id="filter-form">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" id="search-location" class="form-control" placeholder="Location">
                     </div>
-                </form>
-            </div>
+                    <div class="col-md-3">
+                        <select id="filter-type" class="form-select">
+                            <option value="">All Types</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Villa">Villa</option>
+                            <option value="Office">Office</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" id="min-price" class="form-control" placeholder="Min Price">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" id="max-price" class="form-control" placeholder="Max Price">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </div>
+                </div>
+            </form>
         </div>
+    </div>
 
-        <!-- Properties Section -->
+    <!-- Featured Properties Section -->
+    <div class="container mt-5">
         <h2 class="text-center mb-4">Featured Properties</h2>
         <div id="property-list" class="row">
-            <!-- Cards will be dynamically inserted here -->
+            <!-- Cards will be dynamically added here -->
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="mt-5">
+    <footer>
         <div class="container">
-            <p>&copy; 2025 Real Estate Platform. All rights reserved.</p>
-            <p><a href="/contact">Contact Us</a></p>
+            <div class="row">
+                <div class="col-md-4 footer-column">
+                    <h5>Real Estate Platform</h5>
+                    <p>Find your perfect property with ease.</p>
+                </div>
+                <div class="col-md-4 footer-column">
+                    <h5>Quick Links</h5>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 footer-column">
+                    <h5>Contact</h5>
+                    <p>Email: support@realestate.com</p>
+                    <p>Phone: +49 123 456 789</p>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <script>
-        const backendUrl = '/properties';
-
-        // Fetch and display properties
-        function fetchProperties() {
-            fetch(`${backendUrl}`)
-                .then(response => response.json())
-                .then(data => {
-                    const propertyList = document.getElementById('property-list');
-                    propertyList.innerHTML = '';
-                    data.forEach(property => {
-                        propertyList.innerHTML += `
-                            <div class="col-md-4 mb-4">
-                                <div class="card shadow-sm">
-                                    <img src="${property.image_url || 'https://via.placeholder.com/300'}" class="card-img-top">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${property.title}</h5>
-                                        <p>
-                                            <strong>Price:</strong> €${property.price}<br>
-                                            <strong>Location:</strong> ${property.location}<br>
-                                            <strong>Type:</strong> ${property.type}<br>
-                                            <strong>Bedrooms:</strong> ${property.bedrooms}<br>
-                                            <strong>Size:</strong> ${property.size} m²
-                                        </p>
-                                        <a href="/property/${property.id}" class="btn btn-primary">View Details</a>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                })
-                .catch(error => console.error(error));
-        }
-
-        // Fetch properties initially
-        fetchProperties();
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

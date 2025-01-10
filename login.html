@@ -26,6 +26,11 @@
             margin-bottom: 20px;
         }
 
+        .login-container p {
+            text-align: center;
+            margin-top: 15px;
+        }
+
         footer {
             position: fixed;
             bottom: 0;
@@ -47,8 +52,8 @@
         <h1>Login</h1>
         <form id="login-form">
             <div class="mb-3">
-                <label for="login-username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="login-username" placeholder="Enter your username" required>
+                <label for="login-email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="login-email" placeholder="Enter your email" required>
             </div>
             <div class="mb-3">
                 <label for="login-password" class="form-label">Password</label>
@@ -56,7 +61,7 @@
             </div>
             <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
-        <p class="text-center mt-3">Don't have an account? <a href="/signup">Sign up here</a></p>
+        <p>Don't have an account? <a href="/signup">Sign up here</a></p>
     </div>
 
     <footer>
@@ -70,7 +75,7 @@
         document.getElementById('login-form').addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const username = document.getElementById('login-username').value;
+            const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
             fetch(backendUrl, {
@@ -78,11 +83,11 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ email, password }),
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Login failed');
+                        throw new Error('Login failed. Please check your email and password.');
                     }
                     return response.json();
                 })
