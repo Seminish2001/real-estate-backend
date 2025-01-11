@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_from_directory, render_template
+from flask import Flask, jsonify, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
@@ -18,9 +18,9 @@ jwt = JWTManager(app)
 
 # Cloudinary Configuration
 cloudinary.config(
-    cloud_name="dxearodvf",  # Replace with your Cloudinary cloud name
-    api_key="292532466535494",  # Replace with your Cloudinary API key
-    api_secret="your_api_secret",  # Replace with your Cloudinary API secret
+    cloud_name="dxearodvf",
+    api_key="292532466535494",
+    api_secret="7C58WhO-JWQsAG8Lze9C5hMfkD4",
     secure=True
 )
 
@@ -52,26 +52,27 @@ class Property(db.Model):
 with app.app_context():
     db.create_all()
 
-# Serve frontend files
+# Routes to serve templates
 @app.route('/')
 def serve_homepage():
-    return send_from_directory('.', 'index.html')
+    homepage_image_url = "https://res.cloudinary.com/dxearodvf/image/upload/v1736524504/jll-future-vision-real-estate-social-1200x628_iiuwf9.jpg"
+    return render_template('index.html', homepage_image_url=homepage_image_url)
 
 @app.route('/login')
 def serve_login():
-    return send_from_directory('.', 'login.html')
+    return render_template('login.html')
 
 @app.route('/signup')
 def serve_signup():
-    return send_from_directory('.', 'signup.html')
+    return render_template('signup.html')
 
 @app.route('/add-property')
 def serve_add_property():
-    return send_from_directory('.', 'add-property.html')
+    return render_template('add-property.html')
 
 @app.route('/dashboard')
 def serve_dashboard():
-    return send_from_directory('.', 'dashboard.html')
+    return render_template('dashboard.html')
 
 @app.route('/edit-property/<int:property_id>')
 def serve_edit_property(property_id):
@@ -121,7 +122,75 @@ def login():
         return jsonify({"access_token": access_token}), 200
     return jsonify({"message": "Invalid credentials!"}), 401
 
-# Other routes remain unchanged...
+# Add a new property (authenticated)
+@app.route('/properties', methods=['POST'])
+@jwt_required()
+def add_property():
+    current_user = get_jwt_identity()
+
+    # Handle file upload
+    image_file = request.files.get('image')
+    if not image_file:
+        return jsonify({"message": "Image is required!"}), 400
+
+    try:
+        upload_result = cloudinary.uploader.upload(image_file)
+        image_url = upload_result.get('secure_url')
+    except Exception as e:
+        return jsonify({"message": f"Image upload failed: {str(e)}"}), 500
+
+    # Save property details
+    data = request.form
+    new_property = Property(
+        title=data['title'],
+        price=float(data['price']),
+        location=data['location'],
+        type=data['type'],
+        bedrooms=int(data['bedrooms']),
+        size=float(data['size']),
+        image_url=image_url,
+        owner_id=current_user
+    )
+    db.session.add(new_property)
+    db.session.commit()
+    return jsonify({"message": "Property added successfully!"}), 201
+
+# Fetch properties
+@app.route('/properties', methods=['GET'])
+def get_properties():
+    properties = Property.query.all()
+    result = [
+        {
+            "id": property.id,
+            "title": property.title,
+            "price": property.price,
+            "location": property.location,
+            "type": property.type,
+            "bedrooms": property.bedrooms,
+            "size": property.size,
+            "image_url": property.image_url
+        }
+        for property in properties
+    ]
+    return jsonify(result)
+
+# Fetch a specific property
+@app.route('/properties/<int:property_id>', methods=['GET'])
+def get_property_details(property_id):
+    property = Property.query.get(property_id)
+    if not property:
+        return jsonify({"message": "Property not found!"}), 404
+    return jsonify({
+        "id": property.id,
+        "title": property.title,
+        "price": property.price,
+        "location": property.location,
+        "type": property.type,
+        "bedrooms": property.bedrooms,
+        "size": property.size,
+        "image_url": property.image_url
+    })
+
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))

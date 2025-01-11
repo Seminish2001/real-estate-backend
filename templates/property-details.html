@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Details - Real Estate Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .property-image {
+            height: 400px;
+            object-fit: cover;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .property-info {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            background: white;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        footer a {
+            color: #17a2b8;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand" href="/">Real Estate Platform</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Property Details -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <img id="property-image" src="https://via.placeholder.com/800" alt="Property Image" class="property-image">
+            </div>
+            <div class="col-md-4">
+                <div class="property-info">
+                    <h3 id="property-title">Property Title</h3>
+                    <p><strong>Price:</strong> €<span id="property-price">0</span></p>
+                    <p><strong>Location:</strong> <span id="property-location">Unknown</span></p>
+                    <p><strong>Type:</strong> <span id="property-type">Unknown</span></p>
+                    <p><strong>Bedrooms:</strong> <span id="property-bedrooms">0</span></p>
+                    <p><strong>Size:</strong> <span id="property-size">0</span> m²</p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <h4>Description</h4>
+            <p id="property-description">No description available.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5">
+        <div class="container">
+            <p>&copy; 2025 Real Estate Platform. All rights reserved.</p>
+            <p><a href="/contact">Contact Us</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const propertyId = "{{ property_id }}"; // Injected from the backend
+        const backendUrl = `/properties/${propertyId}`;
+
+        // Fetch Property Details
+        function fetchPropertyDetails() {
+            fetch(backendUrl)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('property-title').textContent = data.title;
+                    document.getElementById('property-price').textContent = data.price;
+                    document.getElementById('property-location').textContent = data.location;
+                    document.getElementById('property-type').textContent = data.type;
+                    document.getElementById('property-bedrooms').textContent = data.bedrooms;
+                    document.getElementById('property-size').textContent = data.size;
+                    document.getElementById('property-description').textContent = data.description || 'No description available.';
+                    document.getElementById('property-image').src = data.image_url || 'https://via.placeholder.com/800';
+                })
+                .catch(error => alert('Failed to load property details: ' + error.message));
+        }
+
+        // Fetch property details when the page loads
+        fetchPropertyDetails();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

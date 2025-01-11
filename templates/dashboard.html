@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Real Estate Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-container {
+            margin-top: 50px;
+        }
+
+        .property-card img {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .property-card {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .property-card .card-body {
+            padding: 15px;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer a {
+            color: #17a2b8;
+            text-decoration: none;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .actions button, .actions a {
+            width: 48%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand" href="/">Real Estate Platform</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/add-property">Add Property</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard -->
+    <div class="container dashboard-container">
+        <h1 class="text-center mb-4">My Properties</h1>
+        <div id="property-list" class="row">
+            <!-- Property cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5">
+        <div class="container">
+            <p>&copy; 2025 Real Estate Platform. All rights reserved.</p>
+            <p><a href="/contact">Contact Us</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const backendUrl = '/dashboard'; // Backend route for fetching user's properties
+        const propertyList = document.getElementById('property-list');
+
+        // Fetch and display user's properties
+        function fetchDashboardProperties() {
+            fetch(backendUrl, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch properties.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    propertyList.innerHTML = '';
+                    if (data.length === 0) {
+                        propertyList.innerHTML = '<p class="text-center">No properties found. <a href="/add-property">Add a property</a></p>';
+                        return;
+                    }
+
+                    data.forEach(property => {
+                        propertyList.innerHTML += `
+                            <div class="col-md-4 mb-4">
+                                <div class="card property-card">
+                                    <img src="${property.image_url || 'https://via.placeholder.com/300'}" class="card-img-top" alt="Property Image">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${property.title}</h5>
+                                        <p>
+                                            <strong>Price:</strong> €${property.price}<br>
+                                            <strong>Location:</strong> ${property.location}<br>
+                                            <strong>Type:</strong> ${property.type}<br>
+                                            <strong>Bedrooms:</strong> ${property.bedrooms}<br>
+                                            <strong>Size:</strong> ${property.size} m²
+                                        </p>
+                                        <div class="actions">
+                                            <a href="/edit-property/${property.id}" class="btn btn-warning">Edit</a>
+                                            <button class="btn btn-danger" onclick="deleteProperty(${property.id})">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    propertyList.innerHTML = `<p class="text-center text-danger">${error.message}</p>`;
+                });
+        }
+
+        // Delete a property
+        function deleteProperty(propertyId) {
+            if (!confirm('Are you sure you want to delete this property?')) return;
+
+            fetch(`/properties/${propertyId}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete property.');
+                    }
+                    alert('Property deleted successfully.');
+                    fetchDashboardProperties();
+                })
+                .catch(error => alert('Error: ' + error.message));
+        }
+
+        // Fetch properties when the page loads
+        fetchDashboardProperties();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
