@@ -67,14 +67,17 @@ def serve_signup():
     return render_template('signup.html')
 
 @app.route('/add-property')
+@jwt_required()
 def serve_add_property():
     return render_template('add-property.html')
 
 @app.route('/dashboard')
+@jwt_required()
 def serve_dashboard():
     return render_template('dashboard.html')
 
 @app.route('/edit-property/<int:property_id>')
+@jwt_required()
 def serve_edit_property(property_id):
     return render_template('edit-property.html', property_id=property_id)
 
@@ -121,6 +124,38 @@ def login():
         access_token = create_access_token(identity=user.id)
         return jsonify({"access_token": access_token}), 200
     return jsonify({"message": "Invalid credentials!"}), 401
+
+# Dashboard data for logged-in user
+@app.route('/dashboard-data', methods=['GET'])
+@jwt_required()
+def get_dashboard_data():
+    current_user = get_jwt_identity()
+    user = User.query.get(current_user)
+
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    properties = Property.query.filter_by(owner_id=current_user).all()
+    properties_list = [
+        {
+            "id": property.id,
+            "title": property.title,
+            "price": property.price,
+            "location": property.location,
+            "type": property.type,
+            "bedrooms": property.bedrooms,
+            "size": property.size,
+            "image_url": property.image_url
+        }
+        for property in properties
+    ]
+
+    return jsonify({
+        "name": user.name,
+        "email": user.email,
+        "user_type": user.user_type,
+        "properties": properties_list
+    })
 
 # Add a new property (authenticated)
 @app.route('/properties', methods=['POST'])
