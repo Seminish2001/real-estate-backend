@@ -111,34 +111,12 @@
 
     <!-- Dashboard Header -->
     <div class="dashboard-header">
-        <h1>Welcome, User!</h1>
+        <h1 id="user-name">Welcome!</h1>
         <p>Your personalized dashboard to manage properties and account.</p>
     </div>
 
     <!-- Dashboard Content -->
     <div class="container dashboard-section">
-        <!-- Stats Section -->
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="stats-card">
-                    <h4>5</h4>
-                    <p>Properties Listed</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stats-card" style="background-color: #28a745;">
-                    <h4>2</h4>
-                    <p>Properties Sold</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stats-card" style="background-color: #ffc107;">
-                    <h4>3</h4>
-                    <p>Properties Rented</p>
-                </div>
-            </div>
-        </div>
-
         <!-- Add Property -->
         <div class="add-property-card mb-4" onclick="window.location.href='/add-property';">
             <h4>+ Add New Property</h4>
@@ -146,21 +124,9 @@
         </div>
 
         <!-- My Properties -->
-        <h2>My Properties</h2>
-        <div class="row">
-            <!-- Example Property -->
-            <div class="col-md-4">
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300" alt="Property">
-                    <div class="card-body">
-                        <h5 class="card-title">Luxury Apartment</h5>
-                        <p><strong>Price:</strong> €200,000<br><strong>Location:</strong> Tirana<br><strong>Type:</strong> Apartment</p>
-                        <button class="btn btn-primary btn-sm">Edit</button>
-                        <button class="btn btn-danger btn-sm">Delete</button>
-                    </div>
-                </div>
-            </div>
-            <!-- Repeat properties dynamically -->
+        <h2>Your Listed Properties</h2>
+        <div id="property-list" class="row">
+            <!-- User properties will be dynamically added here -->
         </div>
     </div>
 
@@ -169,6 +135,67 @@
         <p>&copy; 2025 Real Estate Platform. All rights reserved.</p>
     </footer>
 
+    <script>
+        const backendUrl = '/dashboard-data';
+        const token = localStorage.getItem('access_token');
+
+        // Fetch user dashboard data
+        fetch(backendUrl, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display user's name
+            document.getElementById('user-name').innerText = `Welcome, ${data.name}!`;
+
+            // Populate properties
+            const propertyList = document.getElementById('property-list');
+            if (data.properties.length === 0) {
+                propertyList.innerHTML = '<p>No properties listed yet.</p>';
+            } else {
+                data.properties.forEach(property => {
+                    propertyList.innerHTML += `
+                        <div class="col-md-4">
+                            <div class="property-card">
+                                <img src="${property.image_url || 'https://via.placeholder.com/300'}" alt="Property">
+                                <div class="card-body">
+                                    <h5 class="card-title">${property.title}</h5>
+                                    <p>
+                                        <strong>Price:</strong> €${property.price}<br>
+                                        <strong>Location:</strong> ${property.location}<br>
+                                        <strong>Type:</strong> ${property.type}
+                                    </p>
+                                    <button class="btn btn-primary btn-sm" onclick="window.location.href='/edit-property/${property.id}';">Edit</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteProperty(${property.id});">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        })
+        .catch(error => console.error('Error:', error));
+
+        // Delete property
+        function deleteProperty(id) {
+            fetch(`/properties/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Property deleted successfully!');
+                    window.location.reload();
+                } else {
+                    alert('Error deleting property.');
+                }
+            });
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
