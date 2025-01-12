@@ -4,7 +4,6 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import cloudinary
 import cloudinary.uploader
-from cloudinary.utils import cloudinary_url
 
 app = Flask(__name__)
 
@@ -24,7 +23,7 @@ cloudinary.config(
     secure=True
 )
 
-# User model
+# Models
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -36,7 +35,6 @@ class User(db.Model):
     agency_name = db.Column(db.String(100), nullable=True)
     license_number = db.Column(db.String(50), nullable=True)
 
-# Property model
 class Property(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -66,31 +64,39 @@ def serve_login():
 def serve_signup():
     return render_template('signup.html')
 
+@app.route('/dashboard')
+@jwt_required()
+def serve_dashboard():
+    current_user_id = get_jwt_identity()
+    user_properties = Property.query.filter_by(owner_id=current_user_id).all()
+    return render_template('dashboard.html', properties=user_properties)
+
 @app.route('/add-property')
 @jwt_required()
 def serve_add_property():
     return render_template('add-property.html')
 
-@app.route('/dashboard')
-@jwt_required()
-def serve_dashboard():
-    return render_template('dashboard.html')
-
 @app.route('/edit-property/<int:property_id>')
 @jwt_required()
 def serve_edit_property(property_id):
-    return render_template('edit-property.html', property_id=property_id)
+    current_user_id = get_jwt_identity()
+    property_to_edit = Property.query.get(property_id)
+    if property_to_edit and property_to_edit.owner_id == current_user_id:
+        return render_template('edit-property.html', property=property_to_edit)
+    return jsonify({"message": "Not authorized or property not found"}), 403
 
 @app.route('/property/<int:property_id>')
 def serve_property_details(property_id):
-    return render_template('property-details.html', property_id=property_id)
+    property_details = Property.query.get(property_id)
+    if not property_details:
+        return jsonify({"message": "Property not found!"}), 404
+    return render_template('property-details.html', property=property_details)
 
-# Register a new user
+# User registration
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
     required_fields = ['name', 'email', 'password', 'user_type']
-
     if not all(field in data and data[field] for field in required_fields):
         return jsonify({"message": "Missing required fields!"}), 400
 
@@ -125,45 +131,11 @@ def login():
         return jsonify({"access_token": access_token}), 200
     return jsonify({"message": "Invalid credentials!"}), 401
 
-# Dashboard data for logged-in user
-@app.route('/dashboard-data', methods=['GET'])
-@jwt_required()
-def get_dashboard_data():
-    current_user = get_jwt_identity()
-    user = User.query.get(current_user)
-
-    if not user:
-        return jsonify({"message": "User not found"}), 404
-
-    properties = Property.query.filter_by(owner_id=current_user).all()
-    properties_list = [
-        {
-            "id": property.id,
-            "title": property.title,
-            "price": property.price,
-            "location": property.location,
-            "type": property.type,
-            "bedrooms": property.bedrooms,
-            "size": property.size,
-            "image_url": property.image_url
-        }
-        for property in properties
-    ]
-
-    return jsonify({
-        "name": user.name,
-        "email": user.email,
-        "user_type": user.user_type,
-        "properties": properties_list
-    })
-
-# Add a new property (authenticated)
+# Add a new property
 @app.route('/properties', methods=['POST'])
 @jwt_required()
 def add_property():
     current_user = get_jwt_identity()
-
-    # Handle file upload
     image_file = request.files.get('image')
     if not image_file:
         return jsonify({"message": "Image is required!"}), 400
@@ -174,7 +146,6 @@ def add_property():
     except Exception as e:
         return jsonify({"message": f"Image upload failed: {str(e)}"}), 500
 
-    # Save property details
     data = request.form
     new_property = Property(
         title=data['title'],
@@ -190,7 +161,7 @@ def add_property():
     db.session.commit()
     return jsonify({"message": "Property added successfully!"}), 201
 
-# Fetch properties
+# Fetch all properties
 @app.route('/properties', methods=['GET'])
 def get_properties():
     properties = Property.query.all()
