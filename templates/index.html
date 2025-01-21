@@ -3,140 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Your Dream Home | Real Estate Platform</title>
+    <title>Real Estate Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
         }
-        
+
         .navbar {
-            transition: all 0.4s ease-in-out;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        .navbar.scrolled {
-            background: #212529;
-            padding: 10px 0;
-        }
-        .navbar-brand {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #17a2b8 !important;
-        }
-        .nav-link {
-            color: #fff !important;
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-        .btn-primary {
-            background-color: #17a2b8;
-            border: none;
-            padding: 10px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-        }
+
         .hero-section {
-            background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1736524504/jll-future-vision-real-estate-social-1200x628_iiuwf9.jpg') no-repeat center center/cover;
-            height: 90vh;
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+            background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1736524504/jll-future-vision-real-estate-social-1200x628_iiuwf9.jpg') no-repeat center center/cover;
+            height: 80vh;
             color: white;
         }
+
         .hero-overlay {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.5);
         }
-        .hero-content h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            animation: fadeIn 1.5s ease-in-out;
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(-20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        .search-bar-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .advanced-search {
-            display: none;
-            transition: all 0.3s ease;
-        }
-        .section {
-            padding: 80px 0;
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
         }
-        footer {
-            background-color: #212529;
-            color: white;
-            padding: 50px 0;
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
         }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        .search-bar-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .info-section {
+            padding: 50px 0;
+            background-color: #ffffff;
+            text-align: center;
+        }
+
+        .info-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .info-section p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        .info-card h5 {
+            margin-bottom: 15px;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
         footer .footer-links a {
             color: #17a2b8;
-            margin: 0 20px;
             text-decoration: none;
-            font-weight: 500;
+            margin: 0 15px;
         }
-        .social-icons a {
-            color: #17a2b8;
-            font-size: 1.5rem;
-            margin: 0 10px;
+
+        footer .social-icons a {
+            color: white;
+            margin-right: 15px;
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg fixed-top">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container">
-            <a class="navbar-brand" href="#">DreamHome</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="/">Real Estate Platform</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse text-center" id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Properties</a></li>
-                    <li class="nav-item"><a class="nav-link btn btn-primary" href="/login">Sign In</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1>Find Your Dream Home</h1>
-            <p>Search from thousands of properties across the country.</p>
-            <a href="#" class="btn btn-primary mt-3">Get Started</a>
+            <p>Search properties tailored to your needs.</p>
+            <div class="search-bar-container">
+                <form id="filter-form">
+                    <div class="row g-2">
+                        <div class="col-md-3">
+                            <select id="filter-city" class="form-select">
+                                <option value="">Select City</option>
+                                <option value="Tirana">Tirana</option>
+                                <option value="Durres">Durres</option>
+                                <option value="Vlore">Vlore</option>
+                                <option value="Shkoder">Shkoder</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="filter-type" class="form-select">
+                                <option value="">Property Type</option>
+                                <option value="Apartment">Apartment</option>
+                                <option value="Villa">Villa</option>
+                                <option value="Land">Land</option>
+                                <option value="Commercial">Commercial</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="filter-purpose" class="form-select">
+                                <option value="">Buy or Rent</option>
+                                <option value="Buy">Buy</option>
+                                <option value="Rent">Rent</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </section>
 
+    <!-- Info Sections -->
+    <section class="info-section">
+        <h2>For Sellers</h2>
+        <p>Maximize your property's exposure and find buyers quickly. Join our growing platform today.</p>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <h5>Expert Guidance</h5>
+                        <p>Our team helps you list your property the right way.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <h5>Wide Reach</h5>
+                        <p>Reach thousands of potential buyers in your area and beyond.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <h5>Seamless Process</h5>
+                        <p>We make selling your property smooth and efficient.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="info-section">
+        <h2>For Buyers</h2>
+        <p>Discover properties tailored to your needs, with detailed insights and competitive prices.</p>
+    </section>
+
+    <!-- Footer -->
     <footer>
-        <div class="container text-center">
-            <p>&copy; 2025 DreamHome. All rights reserved.</p>
+        <div class="container">
+            <p>&copy; 2025 Real Estate Platform. All rights reserved.</p>
             <div class="footer-links">
-                <a href="#">About Us</a>
-                <a href="#">For Buyers</a>
-                <a href="#">For Agents</a>
+                <a href="/about">About Us</a>
+                <a href="/contact">Contact Us</a>
+                <a href="/privacy">Privacy Policy</a>
             </div>
             <div class="social-icons mt-3">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="fa fa-facebook"></a>
+                <a href="#" class="fa fa-twitter"></a>
+                <a href="#" class="fa fa-linkedin"></a>
             </div>
         </div>
     </footer>
