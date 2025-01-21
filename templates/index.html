@@ -13,6 +13,7 @@
             background-color: #f4f7f6;
             color: #333;
         }
+        
         .navbar {
             transition: all 0.4s ease-in-out;
             padding: 20px 0;
@@ -21,6 +22,23 @@
         .navbar.scrolled {
             background: #212529;
             padding: 10px 0;
+        }
+        .navbar-brand {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #17a2b8 !important;
+        }
+        .nav-link {
+            color: #fff !important;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: #17a2b8;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: 600;
         }
         .hero-section {
             background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1736524504/jll-future-vision-real-estate-social-1200x628_iiuwf9.jpg') no-repeat center center/cover;
@@ -43,13 +61,36 @@
             font-weight: 700;
             animation: fadeIn 1.5s ease-in-out;
         }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
         .search-bar-container {
             background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
+            padding: 30px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
+        }
+        .advanced-search {
+            display: none;
+            transition: all 0.3s ease;
+        }
+        .section {
+            padding: 80px 0;
+            text-align: center;
+        }
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 50px 0;
+        }
+        footer .footer-links a {
+            color: #17a2b8;
+            margin: 0 20px;
+            text-decoration: none;
+            font-weight: 500;
         }
         .social-icons a {
             color: #17a2b8;
@@ -62,6 +103,16 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">DreamHome</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse text-center" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Properties</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-primary" href="/login">Sign In</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -69,46 +120,19 @@
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1>Find Your Dream Home</h1>
-            <div class="search-bar-container">
-                <form>
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <select class="form-select">
-                                <option selected>All Types</option>
-                                <option>Apartment</option>
-                                <option>Villa</option>
-                                <option>Office</option>
-                                <option>Land</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-select">
-                                <option selected>Tirana</option>
-                                <option>Durres</option>
-                                <option>Shkoder</option>
-                                <option>Vlore</option>
-                                <option>Fier</option>
-                                <option>Korce</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-select">
-                                <option selected>Buy</option>
-                                <option>Rent</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-primary">Search</button>
-                    </div>
-                </form>
-            </div>
+            <p>Search from thousands of properties across the country.</p>
+            <a href="#" class="btn btn-primary mt-3">Get Started</a>
         </div>
     </section>
 
     <footer>
         <div class="container text-center">
             <p>&copy; 2025 DreamHome. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">For Buyers</a>
+                <a href="#">For Agents</a>
+            </div>
             <div class="social-icons mt-3">
                 <a href="#"><i class="fab fa-facebook"></i></a>
                 <a href="#"><i class="fab fa-twitter"></i></a>
