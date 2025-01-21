@@ -22,6 +22,10 @@
             background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1736524504/jll-future-vision-real-estate-social-1200x628_iiuwf9.jpg') no-repeat center center/cover;
             height: 80vh;
             color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
 
         .hero-overlay {
@@ -33,41 +37,24 @@
             background: rgba(0, 0, 0, 0.6);
         }
 
-        .hero-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-
         .hero-content h1 {
             font-size: 4rem;
             font-weight: bold;
             text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
         }
 
-        .search-bar-container {
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .info-section {
+        .features-section {
             padding: 60px 0;
             background-color: #ffffff;
             text-align: center;
         }
 
-        .info-section h2 {
+        .features-section h2 {
             font-size: 2.5rem;
             margin-bottom: 30px;
         }
 
-        .info-card {
+        .feature-card {
             padding: 30px;
             border-radius: 10px;
             background: #17a2b8;
@@ -75,9 +62,22 @@
             transition: all 0.3s ease;
         }
 
-        .info-card:hover {
+        .feature-card:hover {
             background: #138496;
             transform: translateY(-5px);
+        }
+
+        .testimonials-section {
+            padding: 60px 0;
+            background-color: #f8f9fa;
+        }
+
+        .testimonial {
+            border-left: 5px solid #17a2b8;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         footer {
@@ -116,34 +116,34 @@
         <div class="hero-content">
             <h1>Find Your Dream Home</h1>
             <p>Search and discover the best properties available in Albania.</p>
-            <div class="search-bar-container mt-4">
-                <form id="filter-form">
-                    <div class="row g-2">
-                        <div class="col-md-3">
-                            <select id="filter-city" class="form-select">
-                                <option value="">Select City</option>
-                                <option value="Tirana">Tirana</option>
-                                <option value="Durres">Durrës</option>
-                                <option value="Vlore">Vlorë</option>
-                                <option value="Shkoder">Shkodër</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select id="filter-type" class="form-select">
-                                <option value="">Property Type</option>
-                                <option value="Apartment">Apartment</option>
-                                <option value="Villa">Villa</option>
-                                <option value="Commercial">Commercial</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" id="filter-price" class="form-control" placeholder="Max Price (€)">
-                        </div>
-                        <div class="col-md-3">
-                            <button type="submit" class="btn btn-primary w-100">Search</button>
-                        </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <h2>Why Choose Us?</h2>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-home fa-3x mb-3"></i>
+                        <h5>Wide Selection</h5>
+                        <p>Thousands of properties listed across Albania.</p>
                     </div>
-                </form>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-handshake fa-3x mb-3"></i>
+                        <h5>Trusted Agents</h5>
+                        <p>Verified and professional agents ready to assist.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-wallet fa-3x mb-3"></i>
+                        <h5>Best Prices</h5>
+                        <p>Get the most competitive prices in the market.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
