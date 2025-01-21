@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Estate Platform - Find Your Dream Home</title>
+    <title>Real Estate Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -12,40 +12,44 @@
             background-color: #f8f9fa;
         }
 
-        /* Navigation Bar */
+        /* Navbar */
         .navbar {
             position: fixed;
             width: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            transition: all 0.4s ease;
+            background: transparent;
             padding: 20px 0;
-            z-index: 1000;
-            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px 0;
         }
 
         .navbar-brand {
             font-size: 2rem;
             font-weight: bold;
-            color: #17a2b8 !important;
+            color: #fff !important;
         }
 
         .nav-link {
-            color: #fff !important;
+            color: white !important;
             font-size: 1.1rem;
             margin: 0 15px;
         }
 
-        .btn-cta {
-            background: #17a2b8;
+        .btn-login {
+            border: 2px solid #fff;
+            padding: 8px 20px;
             color: #fff;
             border-radius: 50px;
-            padding: 10px 30px;
         }
 
-        /* Hero Section */
         .hero-section {
-            position: relative;
             background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1736524504/jll-future-vision-real-estate-social-1200x628_iiuwf9.jpg') no-repeat center center/cover;
-            height: 90vh;
+            height: 85vh;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -57,7 +61,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.5);
         }
 
         .hero-content {
@@ -68,76 +72,51 @@
         .hero-content h1 {
             font-size: 4rem;
             font-weight: bold;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
         }
 
-        /* Search Bar */
         .search-bar-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            max-width: 1000px;
-            margin: 20px auto;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        /* Featured Listings */
-        .featured-listings {
+        .advanced-search {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .section {
             padding: 80px 0;
             text-align: center;
         }
 
         .listing-card {
-            border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            border-radius: 10px;
         }
 
         .listing-card img {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
             width: 100%;
             height: 250px;
             object-fit: cover;
         }
 
-        .listing-card h5 {
-            margin-top: 15px;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        /* Testimonials Section */
-        .testimonials {
-            padding: 80px 0;
-            background: #17a2b8;
-            color: white;
-            text-align: center;
-        }
-
-        .testimonial-card {
-            padding: 30px;
-            background: white;
-            color: #343a40;
-            border-radius: 10px;
-        }
-
-        /* Footer */
         footer {
             background-color: #343a40;
             color: white;
             padding: 40px 0;
         }
 
-        footer .social-icons a {
+        footer .footer-links a {
             color: #17a2b8;
-            font-size: 1.5rem;
             margin: 0 15px;
         }
 
-        @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 3rem;
-            }
-        }
     </style>
 </head>
 <body>
@@ -145,16 +124,14 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="#">Real Estate</a>
+            <a class="navbar-brand" href="#">Real Estate Platform</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse text-center" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Properties</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-                    <li class="nav-item"><a class="nav-link btn-cta" href="#">List Your Property</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                    <li class="nav-item"><a class="nav-link btn-login" href="/login">Login</a></li>
                 </ul>
             </div>
         </div>
@@ -165,43 +142,33 @@
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1>Your Dream Home Awaits</h1>
-            <p>Explore the best real estate options in Albania.</p>
+            <p>Find the best properties tailored to your needs.</p>
             <div class="search-bar-container">
                 <form>
-                    <div class="row g-2">
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" placeholder="Search by location">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" placeholder="Enter location">
                         </div>
                         <div class="col-md-4">
                             <select class="form-select">
-                                <option>Property Type</option>
-                                <option>Apartment</option>
-                                <option>Villa</option>
+                                <option>Buy</option>
+                                <option>Rent</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <button type="submit" class="btn btn-primary w-100">Search</button>
                         </div>
                     </div>
                 </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Listings -->
-    <section class="featured-listings">
-        <h2>Featured Listings</h2>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 listing-card">
-                    <img src="https://via.placeholder.com/400" alt="Property">
-                    <h5>Modern Apartment</h5>
-                    <p>€200,000 - Tirana</p>
-                </div>
-                <div class="col-md-4 listing-card">
-                    <img src="https://via.placeholder.com/400" alt="Property">
-                    <h5>Luxury Villa</h5>
-                    <p>€450,000 - Durres</p>
+                <button class="btn btn-link mt-2" onclick="toggleAdvancedSearch()">Advanced Search</button>
+                <div class="advanced-search">
+                    <select class="form-select mt-2">
+                        <option>Property Type</option>
+                        <option>Apartment</option>
+                        <option>Villa</option>
+                    </select>
+                    <input type="number" class="form-control mt-2" placeholder="Max Price (€)">
+                    <input type="number" class="form-control mt-2" placeholder="Min Bedrooms">
                 </div>
             </div>
         </div>
@@ -209,14 +176,26 @@
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2025 Real Estate Platform. All rights reserved.</p>
-        <div class="social-icons">
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
+        <div class="container text-center">
+            <p>&copy; 2025 Real Estate Platform. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">For Owners</a>
+                <a href="#">For Searchers</a>
+                <a href="#">For Partners</a>
+            </div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.addEventListener('scroll', function() {
+            document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        function toggleAdvancedSearch() {
+            document.querySelector('.advanced-search').style.display = 
+                document.querySelector('.advanced-search').style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
 </body>
 </html>
