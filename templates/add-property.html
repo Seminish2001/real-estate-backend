@@ -58,7 +58,7 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="title" class="form-label">Property Title</label>
-                        <input type="text" class="form-control" id="title" placeholder="e.g., Modern Villa in Berlin" required>
+                        <input type="text" class="form-control" id="title" placeholder="e.g., Modern Villa in Tirana" required>
                     </div>
                     <div class="col-md-6">
                         <label for="price" class="form-label">Price (€)</label>
@@ -66,7 +66,21 @@
                     </div>
                     <div class="col-md-6">
                         <label for="location" class="form-label">Location</label>
-                        <input type="text" class="form-control" id="location" placeholder="e.g., Berlin" required>
+                        <select id="location" class="form-select" required>
+                            <option value="">Select City</option>
+                            <option value="Tirana">Tirana</option>
+                            <option value="Durres">Durrës</option>
+                            <option value="Vlore">Vlorë</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="area" class="form-label">Area</label>
+                        <select id="area" class="form-select" required>
+                            <option value="">Select Area</option>
+                            <option value="Blloku">Blloku</option>
+                            <option value="Kombinat">Kombinat</option>
+                            <option value="21 Dhjetori">21 Dhjetori</option>
+                        </select>
                     </div>
                     <div class="col-md-6">
                         <label for="type" class="form-label">Type</label>
@@ -84,6 +98,10 @@
                     <div class="col-md-6">
                         <label for="size" class="form-label">Size (m²)</label>
                         <input type="number" class="form-control" id="size" placeholder="e.g., 200" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="amenities" class="form-label">Amenities</label>
+                        <input type="text" class="form-control" id="amenities" placeholder="e.g., Pool, Garage, Garden">
                     </div>
                     <div class="col-md-12">
                         <label for="description" class="form-label">Description</label>
@@ -107,27 +125,5 @@
             <p><a href="/contact">Contact Us</a></p>
         </div>
     </footer>
-
-    <script>
-        document.getElementById('add-property-form').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-
-            fetch('/properties', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Property added successfully!');
-                window.location.href = '/dashboard';
-            })
-            .catch(error => {
-                alert('Error: ' + error.message);
-            });
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
