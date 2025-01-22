@@ -74,6 +74,27 @@ def serve_add_property():
 def serve_dashboard():
     return render_template('dashboard.html')
 
+@app.route('/manage-properties')
+def serve_manage_properties():
+    properties = Property.query.all()
+    return render_template('manage-properties.html', properties=properties)
+
+@app.route('/manage-clients')
+def serve_manage_clients():
+    return render_template('manage-clients.html')
+
+@app.route('/reports')
+def serve_reports():
+    return render_template('reports.html')
+
+@app.route('/settings')
+def serve_account_settings():
+    return render_template('account-settings.html')
+
+@app.route('/support')
+def serve_support():
+    return render_template('support.html')
+
 @app.route('/edit-property/<int:property_id>')
 def serve_edit_property(property_id):
     return render_template('edit-property.html', property_id=property_id)
@@ -81,12 +102,6 @@ def serve_edit_property(property_id):
 @app.route('/property/<int:property_id>')
 def serve_property_details(property_id):
     return render_template('property-details.html', property_id=property_id)
-
-# New route for Manage Properties
-@app.route('/manage-properties')
-def serve_manage_properties():
-    properties = Property.query.all()
-    return render_template('manage-properties.html', properties=properties)
 
 # Register a new user
 @app.route('/register', methods=['POST'])
@@ -117,7 +132,7 @@ def register():
 
 # User login
 @app.route('/login', methods=['POST'])
-def login():
+def login_user():
     data = request.json
     if not data or 'email' not in data or 'password' not in data:
         return jsonify({"message": "Invalid data!"}), 400
