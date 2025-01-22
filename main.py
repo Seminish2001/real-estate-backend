@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
 import cloudinary
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
@@ -55,8 +55,7 @@ with app.app_context():
 # Routes to serve templates
 @app.route('/')
 def serve_homepage():
-    homepage_image_url = "https://res.cloudinary.com/dxearodvf/image/upload/v1736524504/jll-future-vision-real-estate-social-1200x628_iiuwf9.jpg"
-    return render_template('index.html', homepage_image_url=homepage_image_url)
+    return render_template('index.html')
 
 @app.route('/login')
 def serve_login():
@@ -65,10 +64,6 @@ def serve_login():
 @app.route('/signup')
 def serve_signup():
     return render_template('signup.html')
-
-@app.route('/add-property')
-def serve_add_property():
-    return render_template('add-property.html')
 
 @app.route('/dashboard')
 def serve_dashboard():
@@ -81,7 +76,7 @@ def serve_manage_properties():
 
 @app.route('/clients')
 def serve_manage_clients():
-    return render_template('manage-clients.html')
+    return render_template('clients.html')
 
 @app.route('/reports')
 def serve_reports():
@@ -95,122 +90,40 @@ def serve_account_settings():
 def serve_support():
     return render_template('support.html')
 
-@app.route('/edit-property/<int:property_id>')
-def serve_edit_property(property_id):
-    return render_template('edit-property.html', property_id=property_id)
-
-@app.route('/property/<int:property_id>')
-def serve_property_details(property_id):
-    return render_template('property-details.html', property_id=property_id)
+@app.route('/logout', methods=['POST'])
+def logout():
+    response = jsonify({"message": "Successfully logged out!"})
+    unset_jwt_cookies(response)
+    return response
 
 # Register a new user
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
     required_fields = ['name', 'email', 'password', 'user_type']
-
     if not all(field in data and data[field] for field in required_fields):
         return jsonify({"message": "Missing required fields!"}), 400
-
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(
-        name=data['name'],
-        email=data['email'],
-        password=hashed_password,
-        user_type=data['user_type'],
-        phone=data.get('phone'),
-        address=data.get('address'),
-        agency_name=data.get('agency_name'),
-        license_number=data.get('license_number')
-    )
-    try:
-        db.session.add(new_user)
-        db.session.commit()
-        return jsonify({"message": "User registered successfully!"}), 201
-    except Exception:
-        return jsonify({"message": "Email already exists!"}), 409
+    new_user = User(name=data['name'], email=data['email'], password=hashed_password, user_type=data['user_type'])
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"message": "User registered successfully!"}), 201
 
 # User login
 @app.route('/login', methods=['POST'])
 def login_user():
     data = request.json
-    if not data or 'email' not in data or 'password' not in data:
-        return jsonify({"message": "Invalid data!"}), 400
-
     user = User.query.filter_by(email=data['email']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
         access_token = create_access_token(identity=user.id)
         return jsonify({"access_token": access_token}), 200
     return jsonify({"message": "Invalid credentials!"}), 401
 
-# Add a new property (authenticated)
-@app.route('/properties', methods=['POST'])
-@jwt_required()
-def add_property():
-    current_user = get_jwt_identity()
-
-    # Handle file upload
-    image_file = request.files.get('image')
-    if not image_file:
-        return jsonify({"message": "Image is required!"}), 400
-
-    try:
-        upload_result = cloudinary.uploader.upload(image_file)
-        image_url = upload_result.get('secure_url')
-    except Exception as e:
-        return jsonify({"message": f"Image upload failed: {str(e)}"}), 500
-
-    # Save property details
-    data = request.form
-    new_property = Property(
-        title=data['title'],
-        price=float(data['price']),
-        location=data['location'],
-        type=data['type'],
-        bedrooms=int(data['bedrooms']),
-        size=float(data['size']),
-        image_url=image_url,
-        owner_id=current_user
-    )
-    db.session.add(new_property)
-    db.session.commit()
-    return jsonify({"message": "Property added successfully!"}), 201
-
 # Fetch properties
 @app.route('/properties', methods=['GET'])
 def get_properties():
     properties = Property.query.all()
-    result = [
-        {
-            "id": property.id,
-            "title": property.title,
-            "price": property.price,
-            "location": property.location,
-            "type": property.type,
-            "bedrooms": property.bedrooms,
-            "size": property.size,
-            "image_url": property.image_url
-        }
-        for property in properties
-    ]
-    return jsonify(result)
-
-# Fetch a specific property
-@app.route('/properties/<int:property_id>', methods=['GET'])
-def get_property_details(property_id):
-    property = Property.query.get(property_id)
-    if not property:
-        return jsonify({"message": "Property not found!"}), 404
-    return jsonify({
-        "id": property.id,
-        "title": property.title,
-        "price": property.price,
-        "location": property.location,
-        "type": property.type,
-        "bedrooms": property.bedrooms,
-        "size": property.size,
-        "image_url": property.image_url
-    })
+    return jsonify([{"id": p.id, "title": p.title, "price": p.price, "location": p.location} for p in properties])
 
 if __name__ == '__main__':
     import os
