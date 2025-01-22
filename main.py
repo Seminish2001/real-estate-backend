@@ -90,6 +90,11 @@ def serve_account_settings():
 def serve_support():
     return render_template('support.html')
 
+@app.route('/properties-page')
+def serve_properties_page():
+    properties = Property.query.all()
+    return render_template('properties.html', properties=properties)
+
 @app.route('/logout', methods=['POST'])
 def logout():
     response = jsonify({"message": "Successfully logged out!"})
@@ -123,14 +128,9 @@ def login_user():
 @app.route('/properties', methods=['GET'])
 def get_properties():
     properties = Property.query.all()
-    return jsonify([{"id": p.id, "title": p.title, "price": p.price, "location": p.location} for p in properties])
+    return jsonify([{ "id": p.id, "title": p.title, "price": p.price, "location": p.location } for p in properties])
 
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-    
-@app.route('/properties')
-def serve_properties_page():
-    properties = Property.query.all()
-    return render_template('properties.html', properties=properties)
