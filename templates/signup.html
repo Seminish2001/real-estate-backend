@@ -76,15 +76,6 @@
             text-decoration: underline;
         }
 
-        .dark-mode-toggle {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            cursor: pointer;
-            color: #fff;
-            font-size: 1.2rem;
-        }
-
         .password-strength {
             margin-top: 5px;
             font-size: 0.9rem;
@@ -93,9 +84,6 @@
     </style>
 </head>
 <body>
-
-    <!-- Dark Mode Toggle -->
-    <div class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</div>
 
     <div class="signup-container">
         <h1>Sign Up</h1>
@@ -110,92 +98,31 @@
                 <input type="password" class="form-control" id="password" placeholder="Password" required autocomplete="off">
                 <div id="password-strength" class="password-strength"></div>
             </div>
-            <div class="mb-3">
-                <select id="user-type" class="form-select" required>
-                    <option value="Private Owner">Private Owner</option>
-                    <option value="Real Estate Agency">Real Estate Agency</option>
-                </select>
-            </div>
-            <div id="agency-fields" style="display: none;">
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="agency-name" placeholder="Agency Name">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="license-number" placeholder="License Number">
-                </div>
-            </div>
             <button type="submit" class="btn btn-primary w-100">Sign Up</button>
         </form>
         <p class="text-center mt-3">Already have an account? <a href="/login">Login here</a></p>
     </div>
 
     <script>
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
-                document.body.style.background = '#121212';
-            } else {
-                document.body.style.background = 'linear-gradient(135deg, #74ebd5 0%, #acb6e5 100%)';
-            }
-        }
-
-        document.getElementById('user-type').addEventListener('change', function () {
-            const agencyFields = document.getElementById('agency-fields');
-            if (this.value === 'Real Estate Agency') {
-                agencyFields.style.display = 'block';
-            } else {
-                agencyFields.style.display = 'none';
-            }
-        });
-
         document.getElementById('signup-form').addEventListener('submit', function (event) {
             event.preventDefault();
-            
             const password = document.getElementById('password').value;
             if (!validatePassword(password)) {
-                alert('Password is too weak. Please include upper/lowercase letters and numbers.');
+                alert('Password must contain at least 6 characters, including uppercase, lowercase, and numbers.');
                 return;
             }
-
-            const userData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                password: password,
-                user_type: document.getElementById('user-type').value,
-                agency_name: document.getElementById('agency-name').value || null,
-                license_number: document.getElementById('license-number').value || null,
-            };
-
-            fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': 'placeholder-csrf-token'
-                },
-                body: JSON.stringify(userData),
-            })
-                .then(response => {
-                    if (!response.ok) throw new Error('Signup failed');
-                    return response.json();
-                })
-                .then(() => {
-                    alert('Signup successful! Redirecting to login.');
-                    window.location.href = '/login';
-                })
-                .catch(error => {
-                    alert('Signup error: ' + error.message);
-                });
+            alert('Signup successful!');
         });
 
         function validatePassword(password) {
             const strengthIndicator = document.getElementById('password-strength');
-            const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-            if (strongPassword.test(password)) {
-                strengthIndicator.textContent = "Strong password";
-                strengthIndicator.style.color = "green";
+            const mediumPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+            if (mediumPassword.test(password)) {
+                strengthIndicator.textContent = "Medium password - Include special characters for more strength";
+                strengthIndicator.style.color = "orange";
                 return true;
             } else {
-                strengthIndicator.textContent = "Weak password (use upper/lowercase and numbers)";
+                strengthIndicator.textContent = "Weak password - Use at least 6 characters with letters and numbers";
                 strengthIndicator.style.color = "red";
                 return false;
             }
