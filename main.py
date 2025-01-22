@@ -79,7 +79,7 @@ def serve_manage_properties():
     properties = Property.query.all()
     return render_template('manage-properties.html', properties=properties)
 
-@app.route('/manage-clients')
+@app.route('/clients')
 def serve_manage_clients():
     return render_template('manage-clients.html')
 
