@@ -98,12 +98,35 @@
                 <input type="password" class="form-control" id="password" placeholder="Password" required autocomplete="off">
                 <div id="password-strength" class="password-strength"></div>
             </div>
+            <div class="mb-3">
+                <select id="user-type" class="form-select" required>
+                    <option value="Private Owner">Private Owner</option>
+                    <option value="Real Estate Agency">Real Estate Agency</option>
+                </select>
+            </div>
+            <div id="agency-fields" style="display: none;">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="agency-name" placeholder="Agency Name">
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="license-number" placeholder="License Number">
+                </div>
+            </div>
             <button type="submit" class="btn btn-primary w-100">Sign Up</button>
         </form>
         <p class="text-center mt-3">Already have an account? <a href="/login">Login here</a></p>
     </div>
 
     <script>
+        document.getElementById('user-type').addEventListener('change', function () {
+            const agencyFields = document.getElementById('agency-fields');
+            if (this.value === 'Real Estate Agency') {
+                agencyFields.style.display = 'block';
+            } else {
+                agencyFields.style.display = 'none';
+            }
+        });
+
         document.getElementById('signup-form').addEventListener('submit', function (event) {
             event.preventDefault();
             const password = document.getElementById('password').value;
