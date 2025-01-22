@@ -82,6 +82,12 @@ def serve_edit_property(property_id):
 def serve_property_details(property_id):
     return render_template('property-details.html', property_id=property_id)
 
+# New route for Manage Properties
+@app.route('/manage-properties')
+def serve_manage_properties():
+    properties = Property.query.all()
+    return render_template('manage-properties.html', properties=properties)
+
 # Register a new user
 @app.route('/register', methods=['POST'])
 def register():
