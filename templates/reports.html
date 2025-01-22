@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics - Real Estate Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7fa;
+            color: #343a40;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+
+        .header-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .header-btn {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="mb-4">Reports & Analytics</h2>
+
+    <div class="header-btn mb-4">
+        <input type="date" class="form-control w-25" id="start-date" placeholder="Start Date">
+        <input type="date" class="form-control w-25" id="end-date" placeholder="End Date">
+        <button class="btn btn-primary" onclick="generateReport()"><i class="fas fa-chart-line"></i> Generate Report</button>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="chart-container">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="chart-container">
+                <canvas id="propertyChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <p class="page-footer">&copy; 2025 Real Estate Platform. All rights reserved.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function generateReport() {
+        alert('Generating report for selected dates...');
+    }
+
+    // Sample chart data
+    const ctx1 = document.getElementById('salesChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May'],
+            datasets: [{
+                label: 'Monthly Sales',
+                data: [12000, 15000, 18000, 22000, 20000],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 2
+            }]
+        }
+    });
+
+    const ctx2 = document.getElementById('propertyChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: ['Apartments', 'Villas', 'Commercial', 'Lands'],
+            datasets: [{
+                label: 'Properties Listed',
+                data: [50, 30, 20, 15],
+                backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545'],
+                borderWidth: 1
+            }]
+        }
+    });
+</script>
+</body>
+</html>
