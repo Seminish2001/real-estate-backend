@@ -125,7 +125,7 @@ def login_user():
     return jsonify({"message": "Invalid credentials!"}), 401
 
 # Fetch properties
-@app.route('/properties', methods=['GET'])
+@app.route('/properties-page', methods=['GET'])
 def get_properties():
     properties = Property.query.all()
     return jsonify([{ "id": p.id, "title": p.title, "price": p.price, "location": p.location } for p in properties])
