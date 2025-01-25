@@ -124,14 +124,7 @@ def login_user():
         return jsonify({"access_token": access_token}), 200
     return jsonify({"message": "Invalid credentials!"}), 401
 
-# Fetch properties
-@app.route('/properties')
-def serve_properties_page():
-    properties = Property.query.all()
-    return render_template('properties.html', properties=properties)
-    
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-
