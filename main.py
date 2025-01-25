@@ -66,34 +66,10 @@ def serve_signup():
     return render_template('signup.html')
 
 @app.route('/dashboard')
+@jwt_required()
 def serve_dashboard():
-    return render_template('dashboard.html')
-
-@app.route('/manage-properties')
-def serve_manage_properties():
-    properties = Property.query.all()
-    return render_template('manage-properties.html', properties=properties)
-
-@app.route('/clients')
-def serve_manage_clients():
-    return render_template('clients.html')
-
-@app.route('/reports')
-def serve_reports():
-    return render_template('reports.html')
-
-@app.route('/settings')
-def serve_account_settings():
-    return render_template('account-settings.html')
-
-@app.route('/support')
-def serve_support():
-    return render_template('support.html')
-
-@app.route('/properties-page')
-def serve_properties_page():
-    properties = Property.query.all()
-    return render_template('properties.html', properties=properties)
+    current_user = get_jwt_identity()
+    return render_template('dashboard.html', user=current_user)
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -121,7 +97,7 @@ def login_user():
     user = User.query.filter_by(email=data['email']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
         access_token = create_access_token(identity=user.id)
-        return jsonify({"access_token": access_token}), 200
+        return jsonify({"access_token": access_token, "message": "Login successful!"}), 200
     return jsonify({"message": "Invalid credentials!"}), 401
 
 if __name__ == '__main__':
