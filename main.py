@@ -73,10 +73,21 @@ def serve_dashboard():
         user = User.query.get(current_user_id)  # Fetch the user from the database
 
         if user:
-            # Pass the user data to the dashboard template
-            return render_template('dashboard.html', user=user)
+            # Check if the request comes from fetch (API request) or browser
+            if request.headers.get('Accept') == 'application/json':
+                return jsonify({
+                    "message": "Dashboard loaded successfully",
+                    "user": {
+                        "id": user.id,
+                        "name": user.name,
+                        "email": user.email,
+                        "user_type": user.user_type
+                    }
+                }), 200
+            else:
+                # Render the dashboard HTML for browser requests
+                return render_template('dashboard.html', user=user)
         else:
-            # User not found
             return jsonify({"message": "User not found"}), 404
 
     except Exception as e:
@@ -116,10 +127,7 @@ def login_user():
     user = User.query.filter_by(email=data['email']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
         access_token = create_access_token(identity=user.id)
-        # Redirect to dashboard after login success
-        response = jsonify({"access_token": access_token, "message": "Login successful!"})
-        response.headers['Location'] = '/dashboard'
-        return response, 200
+        return jsonify({"access_token": access_token, "message": "Login successful!"}), 200
     return jsonify({"message": "Invalid credentials!"}), 401
 
 # Error handling for JWT
