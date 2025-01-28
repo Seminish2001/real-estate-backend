@@ -68,11 +68,15 @@ def serve_signup():
 @app.route('/dashboard')
 @jwt_required()
 def serve_dashboard():
-    current_user_id = get_jwt_identity()
-    user = User.query.get(current_user_id)
-    if user:
-        return render_template('dashboard.html', user=user)
-    return jsonify({"message": "User not found"}), 404
+    try:
+        current_user_id = get_jwt_identity()  # Extract user ID from the token
+        user = User.query.get(current_user_id)  # Query the user from the database
+        if user:
+            return render_template('dashboard.html', user=user)
+        else:
+            return jsonify({"message": "User not found"}), 404
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
 
 @app.route('/for-owners')
 def serve_for_owners():
