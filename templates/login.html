@@ -116,7 +116,7 @@
     </div>
 
     <script>
-        document.getElementById('login-form').addEventListener('submit', function (event) {
+        document.getElementById('login-form').addEventListener('submit', async function (event) {
             event.preventDefault();
 
             const formData = {
@@ -124,27 +124,29 @@
                 password: document.getElementById('password').value
             };
 
-            fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.access_token) {
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store the token and redirect to dashboard
                     localStorage.setItem('access_token', data.access_token);
-                    alert('Login successful! Redirecting to dashboard...');
-                    window.location.href = '/dashboard';
+                    window.location.href = '/dashboard'; // Redirect directly without alert
                 } else {
+                    // Show an error message
                     alert('Login failed: ' + data.message);
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred during login.');
-            });
+            }
         });
     </script>
 
