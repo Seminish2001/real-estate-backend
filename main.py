@@ -68,8 +68,11 @@ def serve_signup():
 @app.route('/dashboard')
 @jwt_required()
 def serve_dashboard():
-    current_user = get_jwt_identity()
-    return render_template('dashboard.html', user=current_user)
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if user:
+        return render_template('dashboard.html', user=user)
+    return jsonify({"message": "User not found"}), 404
 
 @app.route('/for-owners')
 def serve_for_owners():
@@ -88,6 +91,8 @@ def register():
     required_fields = ['name', 'email', 'password', 'user_type']
     if not all(field in data and data[field] for field in required_fields):
         return jsonify({"message": "Missing required fields!"}), 400
+    if User.query.filter_by(email=data['email']).first():
+        return jsonify({"message": "Email already registered!"}), 409
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
     new_user = User(name=data['name'], email=data['email'], password=hashed_password, user_type=data['user_type'])
     db.session.add(new_user)
@@ -103,6 +108,11 @@ def login_user():
         access_token = create_access_token(identity=user.id)
         return jsonify({"access_token": access_token, "message": "Login successful!"}), 200
     return jsonify({"message": "Invalid credentials!"}), 401
+
+# Error handling for JWT
+@jwt.unauthorized_loader
+def unauthorized_callback(callback):
+    return jsonify({"message": "Missing or invalid token. Please log in again."}), 401
 
 if __name__ == '__main__':
     import os
