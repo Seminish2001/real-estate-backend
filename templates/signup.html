@@ -89,6 +89,23 @@
         .footer-link a:hover {
             text-decoration: underline;
         }
+
+        .spinner {
+            display: none;
+            margin: 10px auto;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #007bff;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -111,6 +128,7 @@
                     <option value="Real Estate Agency">Real Estate Agency</option>
                 </select>
             </div>
+            <div class="spinner" id="spinner"></div>
             <button type="submit" class="btn btn-primary">Sign Up</button>
         </form>
         <div class="text-center mt-3">
@@ -119,8 +137,11 @@
     </div>
 
     <script>
-        document.getElementById('signup-form').addEventListener('submit', function(event) {
+        document.getElementById('signup-form').addEventListener('submit', async function(event) {
             event.preventDefault();
+
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'block'; // Show spinner
 
             const formData = {
                 name: document.getElementById('full-name').value,
@@ -129,26 +150,30 @@
                 user_type: document.getElementById('user-type').value
             };
 
-            fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message === "User registered successfully!") {
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                spinner.style.display = 'none'; // Hide spinner
+
+                if (response.ok) {
                     alert('Sign up successful! Redirecting to login...');
                     window.location.href = '/login';
                 } else {
                     alert('Signup failed: ' + data.message);
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred during signup.');
-            });
+                spinner.style.display = 'none'; // Hide spinner
+            }
         });
     </script>
 
