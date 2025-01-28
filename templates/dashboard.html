@@ -103,7 +103,7 @@
     </nav>
 
     <div class="dashboard-header">
-        <h1 id="user-name">Welcome, [User Name]</h1>
+        <h1 id="user-name">Welcome, {{ user.name if user else 'Guest' }}</h1>
         <p>Manage your properties, clients, and account efficiently.</p>
     </div>
 
