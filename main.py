@@ -71,6 +71,10 @@ def serve_dashboard():
     current_user = get_jwt_identity()
     return render_template('dashboard.html', user=current_user)
 
+@app.route('/for-owners')
+def serve_for_owners():
+    return render_template('for-owners.html')
+
 @app.route('/logout', methods=['POST'])
 def logout():
     response = jsonify({"message": "Successfully logged out!"})
