@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, request, render_template, redirect, url_for
+from flask import Flask, jsonify, request, render_template, redirect, url_for, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import (
@@ -50,13 +50,37 @@ user_schema = UserSchema()
 def serve_homepage():
     return render_template('index.html')
 
-@app.route('/login', methods=['GET'])
-def serve_login():
-    return render_template('login.html')
+@app.route('/login', methods=['GET', 'POST'])
+def login_user():
+    if request.method == 'GET':
+        return render_template('login.html')
 
-@app.route('/signup')
-def serve_signup():
-    return render_template('signup.html')
+    try:
+        data = request.json or request.form
+        if not data or 'email' not in data or 'password' not in data:
+            return jsonify({"message": "Invalid input!"}), 400
+
+        user = User.query.filter_by(email=data['email']).first()
+        if user and bcrypt.check_password_hash(user.password, data['password']):
+            access_token = create_access_token(identity=user.id)
+            refresh_token = create_refresh_token(identity=user.id)
+
+            # If the request is from a browser, redirect to the dashboard and set token in cookies
+            if request.headers.get('Accept') != 'application/json':
+                response = make_response(redirect(url_for('serve_dashboard')))
+                response.set_cookie('access_token', access_token, httponly=True)
+                return response
+
+            return jsonify({
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "message": "Login successful!"
+            }), 200
+
+        return jsonify({"message": "Invalid credentials!"}), 401
+    except Exception as e:
+        logger.error(f"Login error: {e}")
+        return jsonify({"message": "An error occurred during login"}), 500
 
 @app.route('/dashboard')
 @jwt_required()
@@ -66,28 +90,24 @@ def serve_dashboard():
         user = User.query.get(current_user_id)
 
         if user:
-            if request.headers.get('Accept') == 'application/json':
-                return jsonify({
-                    "message": "Dashboard loaded successfully",
-                    "user": {
-                        "id": user.id,
-                        "name": user.name,
-                        "email": user.email,
-                        "user_type": user.user_type
-                    }
-                }), 200
-            else:
+            # If the request is from a browser, serve the dashboard template
+            if request.headers.get('Accept') != 'application/json':
                 return render_template('dashboard.html', user=user)
-        else:
-            return jsonify({"message": "User not found"}), 404
 
+            return jsonify({
+                "message": "Dashboard loaded successfully",
+                "user": {
+                    "id": user.id,
+                    "name": user.name,
+                    "email": user.email,
+                    "user_type": user.user_type
+                }
+            }), 200
+
+        return jsonify({"message": "User not found"}), 404
     except Exception as e:
         logger.error(f"Error in /dashboard: {e}")
         return jsonify({"message": "An error occurred while loading the dashboard"}), 500
-
-@app.route('/for-owners')
-def serve_for_owners():
-    return render_template('for-owners.html')
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -117,29 +137,6 @@ def register():
     except Exception as e:
         logger.error(f"Error in /register: {e}")
         return jsonify({"message": "An error occurred during registration"}), 500
-
-# User login
-@app.route('/login', methods=['POST'])
-def login_user():
-    try:
-        data = request.json
-        if not data or 'email' not in data or 'password' not in data:
-            return jsonify({"message": "Invalid input!"}), 400
-
-        user = User.query.filter_by(email=data['email']).first()
-        if user and bcrypt.check_password_hash(user.password, data['password']):
-            access_token = create_access_token(identity=user.id)
-            refresh_token = create_refresh_token(identity=user.id)
-            return jsonify({
-                "access_token": access_token,
-                "refresh_token": refresh_token,
-                "message": "Login successful!"
-            }), 200
-        return jsonify({"message": "Invalid credentials!"}), 401
-
-    except Exception as e:
-        logger.error(f"Login error: {e}")
-        return jsonify({"message": "An error occurred during login"}), 500
 
 # Refresh token
 @app.route('/refresh', methods=['POST'])
