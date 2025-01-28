@@ -136,26 +136,13 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Store the token and send it with the next request
+                    // Store the token and redirect to the dashboard
                     localStorage.setItem('access_token', data.access_token);
 
-                    // Fetch the dashboard or redirect
-                    const dashboardResponse = await fetch('/dashboard', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': 'Bearer ' + localStorage.getItem('access_token')
-                        }
-                    });
-
-                    if (dashboardResponse.ok) {
-                        window.location.href = '/dashboard'; // Redirect directly to the dashboard
-                    } else {
-                        const dashboardError = await dashboardResponse.json();
-                        alert('Failed to load dashboard: ' + dashboardError.message);
-                    }
+                    // Redirect to dashboard directly without making a second fetch call
+                    window.location.href = '/dashboard';
                 } else {
-                    // Show an error message
-                    alert('Login failed: ' + data.message);
+                    alert('Login failed: ' + (data.message || 'Unknown error'));
                 }
             } catch (error) {
                 console.error('Error:', error);
