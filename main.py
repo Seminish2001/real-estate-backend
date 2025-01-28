@@ -70,13 +70,19 @@ def serve_signup():
 def serve_dashboard():
     try:
         current_user_id = get_jwt_identity()  # Extract user ID from the token
-        user = User.query.get(current_user_id)  # Query the user from the database
+        user = User.query.get(current_user_id)  # Fetch the user from the database
+
         if user:
+            # Pass the user data to the dashboard template
             return render_template('dashboard.html', user=user)
         else:
+            # User not found
             return jsonify({"message": "User not found"}), 404
+
     except Exception as e:
-        return jsonify({"message": str(e)}), 500
+        # Log the error and return a proper message
+        app.logger.error(f"Error in /dashboard: {e}")
+        return jsonify({"message": "An error occurred while loading the dashboard"}), 500
 
 @app.route('/for-owners')
 def serve_for_owners():
