@@ -17,3 +17,4 @@ cloudinary
 flask-cors
 decouple
 flask-limiter
+marshmallow==3.19.0
