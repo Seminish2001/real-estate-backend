@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
@@ -57,7 +57,7 @@ with app.app_context():
 def serve_homepage():
     return render_template('index.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET'])
 def serve_login():
     return render_template('login.html')
 
@@ -106,7 +106,10 @@ def login_user():
     user = User.query.filter_by(email=data['email']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
         access_token = create_access_token(identity=user.id)
-        return jsonify({"access_token": access_token, "message": "Login successful!"}), 200
+        # Redirect to dashboard after login success
+        response = jsonify({"access_token": access_token, "message": "Login successful!"})
+        response.headers['Location'] = '/dashboard'
+        return response, 200
     return jsonify({"message": "Invalid credentials!"}), 401
 
 # Error handling for JWT
