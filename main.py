@@ -2,9 +2,6 @@ from flask import Flask, jsonify, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-import cloudinary
-import cloudinary.uploader
-from cloudinary.utils import cloudinary_url
 
 app = Flask(__name__)
 
@@ -16,14 +13,6 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
-# Cloudinary Configuration
-cloudinary.config(
-    cloud_name="dxearodvf",
-    api_key="292532466535494",
-    api_secret="7C58WhO-JWQsAG8Lze9C5hMfkD4",
-    secure=True
-)
-
 # User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,22 +20,6 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     user_type = db.Column(db.String(50), nullable=False)  # "Private Owner" or "Real Estate Agency"
-    phone = db.Column(db.String(15), nullable=True)
-    address = db.Column(db.String(255), nullable=True)
-    agency_name = db.Column(db.String(100), nullable=True)
-    license_number = db.Column(db.String(50), nullable=True)
-
-# Property model
-class Property(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    location = db.Column(db.String(100), nullable=False)
-    type = db.Column(db.String(50), nullable=False)
-    bedrooms = db.Column(db.Integer, nullable=False)
-    size = db.Column(db.Float, nullable=False)
-    image_url = db.Column(db.String(255), nullable=True)
-    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 # Initialize the database
 with app.app_context():
@@ -66,14 +39,15 @@ def serve_signup():
     return render_template('signup.html')
 
 @app.route('/dashboard')
-@jwt_required()
+@jwt_required()  # Requires a valid token
 def serve_dashboard():
     try:
-        current_user_id = get_jwt_identity()  # Extract user ID from the token
-        user = User.query.get(current_user_id)  # Fetch the user from the database
+        # Retrieve logged-in user ID from the token
+        current_user_id = get_jwt_identity()
+        user = User.query.get(current_user_id)
 
         if user:
-            # Check if the request comes from fetch (API request) or browser
+            # Check request type (browser vs. API)
             if request.headers.get('Accept') == 'application/json':
                 return jsonify({
                     "message": "Dashboard loaded successfully",
@@ -85,13 +59,11 @@ def serve_dashboard():
                     }
                 }), 200
             else:
-                # Render the dashboard HTML for browser requests
                 return render_template('dashboard.html', user=user)
         else:
             return jsonify({"message": "User not found"}), 404
 
     except Exception as e:
-        # Log the error and return a proper message
         app.logger.error(f"Error in /dashboard: {e}")
         return jsonify({"message": "An error occurred while loading the dashboard"}), 500
 
@@ -126,11 +98,12 @@ def login_user():
     data = request.json
     user = User.query.filter_by(email=data['email']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
+        # Generate token and send it
         access_token = create_access_token(identity=user.id)
         return jsonify({"access_token": access_token, "message": "Login successful!"}), 200
     return jsonify({"message": "Invalid credentials!"}), 401
 
-# Error handling for JWT
+# Redirect unauthorized users to login page
 @jwt.unauthorized_loader
 def unauthorized_callback(callback):
     return jsonify({"message": "Missing or invalid token. Please log in again."}), 401
