@@ -211,6 +211,10 @@ def privacy():
 def terms():
     return render_template('terms.html')
 
+@app.route('/properties')
+def serve_properties():
+    return render_template('properties.html')
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
