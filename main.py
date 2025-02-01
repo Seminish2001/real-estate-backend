@@ -134,7 +134,7 @@ def login_user():
 
         user = User.query.filter_by(email=data['email']).first()
         if user and bcrypt.check_password_hash(user.password, data['password']):
-            # Cast user.id to string, damit das Subject im Token ein String ist.
+            # Cast user.id to string to satisfy JWT subject requirement
             access_token = create_access_token(identity=str(user.id))
             refresh_token = create_refresh_token(identity=str(user.id))
             
@@ -159,7 +159,6 @@ def login_user():
 def refresh_token():
     try:
         current_user_id = get_jwt_identity()
-        # Hier sollte current_user_id bereits ein String sein, falls der Login-Endpoint korrekt angepasst wurde.
         new_access_token = create_access_token(identity=current_user_id)
         response = jsonify({"access_token": new_access_token})
         set_access_cookies(response, new_access_token)
@@ -172,6 +171,45 @@ def refresh_token():
 @jwt.unauthorized_loader
 def unauthorized_callback(callback):
     return jsonify({"message": "Missing or invalid token. Please log in again."}), 401
+
+# Neue Routen für die Dashboard-Optionen
+@app.route('/add-property')
+@jwt_required()
+def add_property():
+    return render_template('add-property.html')
+
+@app.route('/manage-properties')
+@jwt_required()
+def manage_properties():
+    return render_template('manage-properties.html')
+
+@app.route('/clients')
+@jwt_required()
+def clients():
+    return render_template('clients.html')
+
+@app.route('/reports')
+@jwt_required()
+def reports():
+    return render_template('reports.html')
+
+@app.route('/settings')
+@jwt_required()
+def settings():
+    return render_template('settings.html')
+
+@app.route('/support')
+@jwt_required()
+def support():
+    return render_template('support.html')
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
