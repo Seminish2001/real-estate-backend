@@ -134,8 +134,9 @@ def login_user():
 
         user = User.query.filter_by(email=data['email']).first()
         if user and bcrypt.check_password_hash(user.password, data['password']):
-            access_token = create_access_token(identity=user.id)
-            refresh_token = create_refresh_token(identity=user.id)
+            # Cast user.id to string, damit das Subject im Token ein String ist.
+            access_token = create_access_token(identity=str(user.id))
+            refresh_token = create_refresh_token(identity=str(user.id))
             
             response = jsonify({"message": "Login successful!"})
             set_access_cookies(response, access_token)
@@ -158,6 +159,7 @@ def login_user():
 def refresh_token():
     try:
         current_user_id = get_jwt_identity()
+        # Hier sollte current_user_id bereits ein String sein, falls der Login-Endpoint korrekt angepasst wurde.
         new_access_token = create_access_token(identity=current_user_id)
         response = jsonify({"access_token": new_access_token})
         set_access_cookies(response, new_access_token)
