@@ -1,38 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Discover your dream home with our advanced real estate platform.">
-  <meta name="keywords" content="real estate, property search, homes, apartments, villas">
-  <meta name="author" content="Real Estate Platform">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Discover your dream home with our advanced real estate platform." />
+  <meta name="keywords" content="real estate, property search, homes, apartments, villas, Albania" />
+  <meta name="author" content="Real Estate Platform" />
   <title>Real Estate Platform | Find Your Dream Home</title>
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Awesomplete CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css" />
   <style>
     /* General Styles */
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #f4f7f9;
       color: #333;
+      margin: 0;
+      padding-top: 0;
     }
     a {
       text-decoration: none;
     }
-    /* Navbar */
-    .navbar {
-      background: rgba(0, 0, 0, 0.8);
+    /* Header merged with Hero */
+    header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+      padding: 20px 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
     }
-    .navbar-brand, .navbar-nav .nav-link {
+    .navbar {
+      padding: 0 20px;
+    }
+    .navbar-brand {
+      color: #fff !important;
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    .navbar-nav .nav-link {
       color: #fff !important;
       font-weight: 500;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #ffd700; /* Accent color on hover */
     }
     /* Hero Section */
     .hero-section {
       position: relative;
-      background: url('https://via.placeholder.com/1920x800?text=Your+Dream+Home') no-repeat center center/cover;
+      background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1736524504/jll-future-vision-real-estate-social-1200x628_iiuwf9.jpg') no-repeat center center/cover;
       height: 80vh;
       display: flex;
       align-items: center;
@@ -41,15 +64,18 @@
     }
     .hero-overlay {
       position: absolute;
-      top: 0; left: 0;
+      top: 0; 
+      left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.4);
     }
     .hero-content {
       position: relative;
       z-index: 2;
       text-align: center;
+      max-width: 800px;
+      padding: 0 20px;
     }
     .hero-content h1 {
       font-size: 3rem;
@@ -60,12 +86,34 @@
       font-size: 1.2rem;
       margin-bottom: 30px;
     }
-    /* Search Bar */
+    /* Search Container with Background (merged with hero) */
+    .search-container {
+      position: relative;
+      margin: 0 auto;
+      max-width: 800px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .search-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: inherit;
+      filter: brightness(0.7);
+      z-index: -1;
+    }
     .search-bar {
-      background: #fff;
+      background: rgba(255, 255, 255, 0.95);
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .search-bar .form-control,
+    .search-bar .form-select {
+      border-radius: 5px;
     }
     /* Featured Listings */
     .featured-listings .card {
@@ -82,23 +130,7 @@
       height: 200px;
       object-fit: cover;
     }
-    /* Testimonials */
-    .testimonials {
-      background: #fff;
-      padding: 60px 20px;
-    }
-    .testimonial-item {
-      text-align: center;
-      padding: 20px;
-    }
-    .testimonial-item p {
-      font-style: italic;
-    }
-    .testimonial-item h5 {
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    /* Interactive Map Placeholder */
+    /* Interactive Map Section */
     .interactive-map {
       background: #e9ecef;
       padding: 60px 0;
@@ -113,76 +145,89 @@
     }
     /* Footer */
     .footer {
-      background: #111;
-      color: #bbb;
+      background: linear-gradient(135deg, #007bff, #00d4ff);
+      color: #fff;
       padding: 40px 0;
       text-align: center;
     }
+    .footer p {
+      margin: 0 0 10px;
+    }
     .footer a {
-      color: #bbb;
+      color: #fff;
       margin: 0 10px;
+      transition: color 0.3s ease;
     }
     .footer a:hover {
-      color: #fff;
+      color: #ffd700;
     }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg">
-    <div class="container">
-      <a class="navbar-brand" href="/">🏡 Real Estate Platform</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="/properties">Properties</a></li>
-          <li class="nav-item"><a class="nav-link" href="/for-owners">For Owners</a></li>
-          <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-          <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
-        </ul>
+  <!-- Header merged with Hero -->
+  <header>
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand" href="/">🏡 Real Estate Platform</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/properties">Properties</a></li>
+            <li class="nav-item"><a class="nav-link" href="/for-owners">For Owners</a></li>
+            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </header>
 
-  <!-- Hero Section with Search -->
+  <!-- Hero Section with Enhanced Search -->
   <section class="hero-section">
     <div class="hero-overlay"></div>
     <div class="hero-content container">
-      <h1>Find Your Dream Home</h1>
-      <p>Explore top properties with our advanced search platform.</p>
-      <div class="search-bar mx-auto shadow">
-        <form class="row g-2">
-          <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Enter Location" required>
-          </div>
-          <div class="col-md-3">
-            <select class="form-select" required>
-              <option value="" disabled selected>Property Type</option>
-              <option value="apartment">Apartment</option>
-              <option value="house">House</option>
-              <option value="villa">Villa</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <select class="form-select" required>
-              <option value="" disabled selected>Purpose</option>
-              <option value="buy">Buy</option>
-              <option value="rent">Rent</option>
-            </select>
-          </div>
-          <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Search</button>
-          </div>
-        </form>
+      <h1>Find Your Dream Home in Albania</h1>
+      <p>Explore top properties and discover the best places to live.</p>
+      <div class="search-container">
+        <div class="search-bar">
+          <form id="search-form" class="row g-2">
+            <div class="col-md-5">
+              <input
+                id="location"
+                name="location"
+                class="form-control"
+                placeholder="Type a city or area..."
+                required />
+            </div>
+            <div class="col-md-3">
+              <select name="type" class="form-select" required>
+                <option value="" disabled selected>Property Type</option>
+                <option value="apartment">Apartment</option>
+                <option value="house">House</option>
+                <option value="villa">Villa</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <select name="purpose" class="form-select" required>
+                <option value="" disabled selected>Purpose</option>
+                <option value="buy">Buy</option>
+                <option value="rent">Rent</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Featured Listings -->
+  <!-- Featured Listings Section -->
   <section class="featured-listings py-5">
     <div class="container">
       <h2 class="text-center mb-4">Featured Listings</h2>
@@ -190,64 +235,34 @@
         <!-- Property Card 1 -->
         <div class="col-md-4">
           <div class="card">
-            <img src="https://via.placeholder.com/400x200?text=Property+1" class="card-img-top" alt="Luxury Apartment">
+            <img src="https://via.placeholder.com/400x200?text=Property+1" class="card-img-top" alt="Luxury Apartment" />
             <div class="card-body">
               <h5 class="card-title">Luxury Apartment</h5>
               <p class="card-text">$500,000 - 3 Beds, 2 Baths</p>
-              <a href="/property-details" class="btn btn-outline-primary">View Details</a>
+              <a href="/property-details" class="btn btn-outline-light">View Details</a>
             </div>
           </div>
         </div>
         <!-- Property Card 2 -->
         <div class="col-md-4">
           <div class="card">
-            <img src="https://via.placeholder.com/400x200?text=Property+2" class="card-img-top" alt="Cozy Family House">
+            <img src="https://via.placeholder.com/400x200?text=Property+2" class="card-img-top" alt="Cozy Family House" />
             <div class="card-body">
               <h5 class="card-title">Cozy Family House</h5>
               <p class="card-text">$350,000 - 4 Beds, 3 Baths</p>
-              <a href="/property-details" class="btn btn-outline-primary">View Details</a>
+              <a href="/property-details" class="btn btn-outline-light">View Details</a>
             </div>
           </div>
         </div>
         <!-- Property Card 3 -->
         <div class="col-md-4">
           <div class="card">
-            <img src="https://via.placeholder.com/400x200?text=Property+3" class="card-img-top" alt="Modern Villa">
+            <img src="https://via.placeholder.com/400x200?text=Property+3" class="card-img-top" alt="Modern Villa" />
             <div class="card-body">
               <h5 class="card-title">Modern Villa</h5>
               <p class="card-text">$1,200,000 - 5 Beds, 4 Baths</p>
-              <a href="/property-details" class="btn btn-outline-primary">View Details</a>
+              <a href="/property-details" class="btn btn-outline-light">View Details</a>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonials Section -->
-  <section class="testimonials py-5">
-    <div class="container">
-      <h2 class="text-center mb-4">What Our Clients Say</h2>
-      <div class="row">
-        <!-- Testimonial 1 -->
-        <div class="col-md-4">
-          <div class="testimonial-item">
-            <p>"This platform made finding our new home a breeze. Highly recommended!"</p>
-            <h5>- John Doe</h5>
-          </div>
-        </div>
-        <!-- Testimonial 2 -->
-        <div class="col-md-4">
-          <div class="testimonial-item">
-            <p>"An intuitive experience with amazing property options and great support."</p>
-            <h5>- Jane Smith</h5>
-          </div>
-        </div>
-        <!-- Testimonial 3 -->
-        <div class="col-md-4">
-          <div class="testimonial-item">
-            <p>"The best real estate website out there. The search functionality is on point!"</p>
-            <h5>- Mark Johnson</h5>
           </div>
         </div>
       </div>
@@ -258,6 +273,7 @@
   <section class="interactive-map py-5">
     <div class="container">
       <h2 class="text-center mb-4">Explore Properties on the Map</h2>
+      <!-- Replace the placeholder with your preferred map API integration -->
       <div class="map-placeholder"></div>
     </div>
   </section>
@@ -282,5 +298,33 @@
 
   <!-- Bootstrap Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Awesomplete JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+  <script>
+    // Sample array of Albanian cities and areas (expand as needed)
+    const locations = [
+      "Tirana", "Blloku (Tirana)", "Durres", "Vlorë", "Elbasan", "Shkodër", "Fier",
+      "Korçë", "Berat", "Lushnjë", "Pogradec", "Kukës", "Kamëz", "Kavajë", "Lushnjë - Qyteti",
+      "Durrës - Gjiri", "Tirana - Pyramid", "Vlorë - Radhimë", "Berat - Mangalem"
+    ];
+
+    // Initialize Awesomplete on the location input
+    new Awesomplete(document.getElementById("location"), {
+      list: locations,
+      minChars: 1,
+      autoFirst: true,
+      maxItems: 10
+    });
+
+    // Handle Search Form Submission
+    document.getElementById("search-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const location = document.getElementById("location").value;
+      const type = this.elements["type"].value;
+      const purpose = this.elements["purpose"].value;
+      // Redirect to properties page with query parameters
+      window.location.href = `/properties?location=${encodeURIComponent(location)}&type=${encodeURIComponent(type)}&purpose=${encodeURIComponent(purpose)}`;
+    });
+  </script>
 </body>
 </html>
