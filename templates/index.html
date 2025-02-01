@@ -107,6 +107,7 @@
       width: 100%;
       max-width: 800px;
       position: relative;
+      overflow: visible; /* Allow suggestions to extend outside without affecting the bar shape */
     }
     /* Uniform styling for input and select elements */
     .search-bar input,
@@ -163,7 +164,7 @@
       padding: 10px 15px;
       font-size: 1rem;
       color: #333;
-      background-color: #fafafa;
+      background-color: #fff;
       display: flex;
       align-items: center;
       transition: background 0.2s ease;
@@ -171,7 +172,7 @@
     }
     .autoComplete_result li:hover,
     .autoComplete_result li[aria-selected="true"] {
-      background-color: #e6f7ff;
+      background-color: #f1f1f1;
     }
     .autoComplete_result li .result-icon {
       margin-right: 10px;
@@ -223,40 +224,33 @@
       background: #f0f0f0;
       transform: scale(1.03);
     }
-    /* Newsletter Section (New Addition) */
-    .newsletter {
+    /* Property Alerts Section (New Addition) */
+    .property-alerts {
       background: #fff;
       padding: 60px 20px;
       text-align: center;
     }
-    .newsletter h2 {
+    .property-alerts h2 {
       font-size: 2.5rem;
       font-weight: bold;
       margin-bottom: 20px;
       color: #007bff;
     }
-    .newsletter p {
+    .property-alerts p {
       font-size: 1.2rem;
       margin-bottom: 30px;
+      color: #333;
     }
-    .newsletter form input {
-      border-radius: 30px;
-      padding: 10px 20px;
-      border: 1px solid #ddd;
-      font-size: 1rem;
-      width: 300px;
-    }
-    .newsletter form button {
-      border-radius: 30px;
-      padding: 10px 30px;
-      font-size: 1rem;
-      margin-left: 10px;
+    .property-alerts .btn {
       background: linear-gradient(45deg, #007bff, #00d4ff);
       border: none;
+      border-radius: 30px;
+      padding: 12px 30px;
+      font-size: 1.1rem;
       color: #fff;
       transition: background 0.3s ease, transform 0.2s ease;
     }
-    .newsletter form button:hover {
+    .property-alerts .btn:hover {
       background: linear-gradient(45deg, #0056b3, #0090c8);
       transform: scale(1.03);
     }
@@ -380,15 +374,14 @@
     </div>
   </section>
 
-  <!-- Newsletter Section (New Addition) -->
-  <section class="newsletter">
-    <div class="container text-center">
-      <h2>Stay Updated</h2>
-      <p>Subscribe to our newsletter and never miss the latest property listings and market insights!</p>
-      <form class="d-flex justify-content-center mt-4">
-        <input type="email" class="form-control" placeholder="Enter your email" required>
-        <button type="submit" class="btn">Subscribe</button>
-      </form>
+  <!-- Property Alerts Section (New Addition) -->
+  <section class="property-alerts">
+    <div class="container">
+      <h2>Never Miss a Property Listing</h2>
+      <p>
+        Set up your personalized property alerts and receive the latest listings that match your criteria directly in your inbox. Whether you’re buying or renting, get ahead of the market and never miss out on your dream home.
+      </p>
+      <a href="/alerts" class="btn">Set Up Alerts</a>
     </div>
   </section>
 
