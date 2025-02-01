@@ -1,161 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Learn how Real Estate Hub helps property owners list and sell their properties with ease.">
-    <meta name="keywords" content="real estate, property owners, sell properties, list properties">
-    <title>For Owners | Real Estate Hub</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-        .navbar {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-        }
-        .navbar-brand {
-            font-size: 1.8rem;
-            color: #fff;
-            font-weight: bold;
-        }
-        .hero {
-            height: 60vh;
-            background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1737577995/DALL_E_2025-01-22_21.27.23_-_A_modern_interior_real_estate_promotional_image_featuring_an_open-concept_living_room_and_kitchen._The_space_is_designed_with_a_neutral_color_palette_pqe1hl.webp') no-repeat center center/cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #fff;
-            position: relative;
-        }
-        .hero-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
-        .section {
-            padding: 60px 0;
-        }
-        .section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-        .section p {
-            font-size: 1.1rem;
-        }
-        .steps {
-            margin-top: 40px;
-        }
-        .step {
-            margin-bottom: 40px;
-        }
-        .step-icon {
-            font-size: 2rem;
-            color: #007bff;
-            margin-bottom: 15px;
-        }
-        .footer {
-            background: #111;
-            color: #fff;
-            padding: 40px 0;
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn how Real Estate Hub helps property owners list and sell their properties with ease.">
+  <meta name="keywords" content="real estate, property owners, sell properties, list properties">
+  <title>For Owners | Real Estate Hub</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Base Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+    }
+    a {
+      text-decoration: none;
+    }
+    /* Transparent Header (same as homepage) */
+    header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+      padding: 20px 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+    }
+    .navbar {
+      padding: 0 20px;
+    }
+    .navbar-brand {
+      color: #fff !important;
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    .navbar-nav .nav-link {
+      color: #fff !important;
+      font-weight: 500;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #ffd700;
+    }
+    /* Hero Section */
+    .hero {
+      height: 60vh;
+      background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1737577995/DALL_E_2025-01-22_21.27.23_-_A_modern_interior_real_estate_promotional_image_featuring_an_open-concept_living_room_and_kitchen._The_space_is_designed_with_a_neutral_color_palette_pqe1hl.webp') no-repeat center center/cover;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+    .hero-content h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .hero-content p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      text-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    }
+    /* How We Work Section */
+    .steps-section {
+      padding: 60px 0;
+      text-align: center;
+    }
+    .steps-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .steps-section p {
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+      color: #555;
+    }
+    .steps {
+      margin-top: 40px;
+    }
+    .step {
+      margin-bottom: 40px;
+      transition: transform 0.3s ease;
+    }
+    .step:hover {
+      transform: translateY(-5px);
+    }
+    .step-icon {
+      font-size: 2.5rem;
+      color: #007bff;
+      margin-bottom: 15px;
+    }
+    .step h4 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .step p {
+      font-size: 1rem;
+      color: #555;
+    }
+    /* Why Choose Us Section */
+    .why-section {
+      background: #f1f9ff;
+      padding: 60px 0;
+      text-align: center;
+    }
+    .why-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .why-section p {
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+      color: #555;
+    }
+    .why-section .feature {
+      transition: transform 0.3s ease;
+    }
+    .why-section .feature:hover {
+      transform: translateY(-5px);
+    }
+    .why-section .feature i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: #007bff;
+    }
+    .why-section .feature h5 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    /* Get Started Section */
+    .get-started {
+      padding: 60px 0;
+      text-align: center;
+    }
+    .get-started h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .get-started p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      color: #555;
+    }
+    .get-started .btn {
+      font-size: 1.2rem;
+      padding: 12px 30px;
+      border-radius: 30px;
+      background: linear-gradient(45deg, #007bff, #00d4ff);
+      border: none;
+      color: #fff;
+      transition: background 0.3s ease;
+    }
+    .get-started .btn:hover {
+      background: linear-gradient(45deg, #0056b3, #0090c8);
+    }
+    /* Footer (same as homepage) */
+    .footer {
+      background: linear-gradient(135deg, #007bff, #00d4ff);
+      color: #fff;
+      padding: 40px 0;
+      text-align: center;
+    }
+    .footer p {
+      margin: 0 0 10px;
+    }
+    .footer a {
+      color: #fff;
+      margin: 0 10px;
+      transition: color 0.3s ease;
+    }
+    .footer a:hover {
+      color: #ffd700;
+    }
+  </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg">
-    <div class="container">
-        <a class="navbar-brand" href="#">🏡 Real Estate Hub</a>
+  <!-- Header (transparent, same as homepage) -->
+  <header>
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <!-- Added "Home" option in the navbar -->
+        <a class="navbar-brand" href="/">🏡 Real Estate Hub</a>
         <div class="ms-auto">
-            <a class="btn btn-outline-light me-3" href="login">Login</a>
-            <a class="btn btn-outline-light me-3" href="signup">Signup</a>
+          <a class="btn btn-outline-light me-3" href="/">Home</a>
+          <!-- Removed Login button -->
+          <a class="btn btn-outline-light me-3" href="signup">Join Now</a>
         </div>
-    </div>
-</nav>
+      </div>
+    </nav>
+  </header>
 
-<section class="hero">
+  <!-- Hero Section -->
+  <section class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-        <h1>For Property Owners</h1>
-        <p class="lead">List your property and reach thousands of potential buyers or renters effortlessly.</p>
+      <h1>For Property Owners</h1>
+      <p class="lead">List your property and reach thousands of potential buyers or renters effortlessly.</p>
     </div>
-</section>
+  </section>
 
-<section class="section text-center">
+  <!-- How We Work Section -->
+  <section class="steps-section">
+    <div class="container text-center">
+      <h2>How We Work</h2>
+      <p>We provide a seamless platform for you to showcase your property to the right audience. Follow these simple steps:</p>
+      <div class="steps">
+        <div class="row">
+          <div class="col-md-4 step">
+            <div class="step-icon"><i class="fas fa-user-plus"></i></div>
+            <h4>Create an Account</h4>
+            <p>Sign up for a free account and access our intuitive property management dashboard.</p>
+          </div>
+          <div class="col-md-4 step">
+            <div class="step-icon"><i class="fas fa-home"></i></div>
+            <h4>List Your Property</h4>
+            <p>Upload high-quality images, set your price, and provide all the necessary details.</p>
+          </div>
+          <div class="col-md-4 step">
+            <div class="step-icon"><i class="fas fa-chart-line"></i></div>
+            <h4>Get Results</h4>
+            <p>Receive inquiries, schedule viewings, and finalize deals—all in one place.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us Section -->
+  <section class="why-section">
+    <div class="container text-center">
+      <h2>Why Choose Us?</h2>
+      <p>We make property management simple, efficient, and effective for owners.</p>
+      <div class="row mt-5">
+        <div class="col-md-4 feature">
+          <i class="fas fa-globe"></i>
+          <h5>Global Reach</h5>
+          <p>Access a wide network of buyers and renters across the globe.</p>
+        </div>
+        <div class="col-md-4 feature">
+          <i class="fas fa-clock"></i>
+          <h5>Time-Saving Tools</h5>
+          <p>Streamline your property listing and management process with ease.</p>
+        </div>
+        <div class="col-md-4 feature">
+          <i class="fas fa-shield-alt"></i>
+          <h5>Secure Transactions</h5>
+          <p>Enjoy safe, secure transactions and reliable support at all times.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Get Started Section -->
+  <section class="get-started">
+    <div class="container text-center">
+      <h2>Ready to Get Started?</h2>
+      <p>Create an account today and list your property in minutes. Join thousands of satisfied property owners who trust us to showcase their listings.</p>
+      <a href="signup" class="btn btn-primary btn-lg">Join Now</a>
+    </div>
+  </section>
+
+    <!-- Footer -->
+  <footer class="footer">
     <div class="container">
-        <h2>How We Work</h2>
-        <p>At Real Estate Hub, we provide a seamless platform for property owners to showcase their properties to the right audience. Here's how it works:</p>
-        <div class="steps">
-            <div class="row">
-                <div class="col-md-4 step">
-                    <div class="step-icon"><i class="fas fa-user-plus"></i></div>
-                    <h4>Create an Account</h4>
-                    <p>Sign up for a free account and access our intuitive property management dashboard.</p>
-                </div>
-                <div class="col-md-4 step">
-                    <div class="step-icon"><i class="fas fa-home"></i></div>
-                    <h4>List Your Property</h4>
-                    <p>Upload high-quality images, set your price, and provide details to attract buyers or renters.</p>
-                </div>
-                <div class="col-md-4 step">
-                    <div class="step-icon"><i class="fas fa-chart-line"></i></div>
-                    <h4>Get Results</h4>
-                    <p>Receive inquiries, schedule viewings, and finalize deals—all in one place.</p>
-                </div>
-            </div>
-        </div>
+      <p>&copy; 2025 Real Estate Platform. All Rights Reserved.</p>
+      <p>
+        <a href="/about">About Us</a> |
+        <a href="/contact">Contact</a> |
+        <a href="/privacy">Privacy Policy</a> |
+        <a href="/terms">Terms of Service</a>
+      </p>
+      <div>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="ms-3"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="ms-3"><i class="fab fa-instagram"></i></a>
+      </div>
     </div>
-</section>
+  </footer>
 
-<section class="section bg-light">
-    <div class="container text-center">
-        <h2>Why Choose Us?</h2>
-        <p>We make property management simple, efficient, and effective for owners.</p>
-        <div class="row mt-5">
-            <div class="col-md-4">
-                <i class="fas fa-globe fa-3x mb-3 text-primary"></i>
-                <h5>Global Reach</h5>
-                <p>Access a wide network of buyers and renters across the globe.</p>
-            </div>
-            <div class="col-md-4">
-                <i class="fas fa-clock fa-3x mb-3 text-primary"></i>
-                <h5>Time-Saving Tools</h5>
-                <p>Our platform streamlines the property listing and management process.</p>
-            </div>
-            <div class="col-md-4">
-                <i class="fas fa-shield-alt fa-3x mb-3 text-primary"></i>
-                <h5>Secure Transactions</h5>
-                <p>We ensure that your transactions are safe and secure at all times.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section">
-    <div class="container text-center">
-        <h2>Ready to Get Started?</h2>
-        <p>Create an account today and list your property in minutes. Join thousands of satisfied property owners who trust us to showcase their listings.</p>
-        <a href="signup" class="btn btn-primary btn-lg">Get Started</a>
-    </div>
-</section>
-
-<footer class="footer">
-    <p>&copy; 2025 Real Estate Hub. All Rights Reserved.</p>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
