@@ -36,12 +36,12 @@
       padding: 0 20px;
     }
     .navbar-brand {
-      color: #fff !important;
+      color: #fff;
       font-weight: 700;
       font-size: 1.5rem;
     }
     .navbar-nav .nav-link {
-      color: #fff !important;
+      color: #fff;
       font-weight: 500;
       margin-left: 20px;
       transition: color 0.3s ease;
@@ -197,81 +197,62 @@
       background: #f0f0f0;
       transform: scale(1.03);
     }
-    /* Market Trends Section */
-    .market-trends {
+    /* How It Works Section */
+    .how-it-works {
       background: #fff;
       padding: 60px 20px;
       text-align: center;
     }
-    .market-trends h2 {
+    .how-it-works h2 {
       font-size: 2.5rem;
       font-weight: bold;
       margin-bottom: 40px;
       color: #007bff;
     }
-    .market-trends .trend {
-      padding: 20px;
+    .how-it-works .step {
+      margin-bottom: 30px;
     }
-    .market-trends .trend i {
+    .how-it-works .step i {
       font-size: 3rem;
       color: #007bff;
       margin-bottom: 15px;
     }
-    .market-trends .trend h4 {
+    .how-it-works .step h3 {
       font-size: 1.5rem;
       margin-bottom: 10px;
       color: #007bff;
     }
-    .market-trends .trend p {
+    .how-it-works .step p {
       font-size: 1rem;
       color: #555;
     }
-    /* Horizontal Divider */
-    .divider {
-      width: 80%;
-      margin: 40px auto;
-      border-top: 2px solid #ddd;
-    }
-    /* Newsletter Section */
-    .newsletter {
+    /* Property Alerts Section */
+    .property-alerts {
       background: #fff;
       padding: 60px 20px;
       text-align: center;
     }
-    .newsletter h2 {
+    .property-alerts h2 {
       font-size: 2.5rem;
       font-weight: bold;
       margin-bottom: 20px;
       color: #007bff;
     }
-    .newsletter p {
+    .property-alerts p {
       font-size: 1.2rem;
       margin-bottom: 30px;
       color: #333;
     }
-    .newsletter form {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .newsletter input[type="email"] {
-      padding: 10px 20px;
-      border: 1px solid #ddd;
-      border-radius: 30px;
-      font-size: 1rem;
-      width: 300px;
-    }
-    .newsletter button {
+    .property-alerts .btn {
       background: linear-gradient(45deg, #007bff, #00d4ff);
       border: none;
       border-radius: 30px;
-      padding: 10px 30px;
-      font-size: 1rem;
+      padding: 12px 30px;
+      font-size: 1.1rem;
       color: #fff;
       transition: background 0.3s ease, transform 0.2s ease;
     }
-    .newsletter button:hover {
+    .property-alerts .btn:hover {
       background: linear-gradient(45deg, #0056b3, #0090c8);
       transform: scale(1.03);
     }
@@ -395,34 +376,31 @@
     </div>
   </section>
 
-  <!-- Market Trends Section -->
-  <section class="market-trends">
+  <!-- How It Works Section -->
+  <section class="how-it-works">
     <div class="container">
-      <h2 class="text-center">Market Trends</h2>
+      <h2>How It Works</h2>
       <div class="row">
-        <div class="col-md-4 trend text-center">
-          <i class="fas fa-chart-line"></i>
-          <h4>Residential Prices</h4>
-          <p>Residential property prices have increased by 7% over the last year.</p>
+        <div class="col-md-4 step">
+          <i class="fas fa-search"></i>
+          <h3>Search Properties</h3>
+          <p>Easily explore our extensive listings to find the perfect property.</p>
         </div>
-        <div class="col-md-4 trend text-center">
-          <i class="fas fa-home"></i>
-          <h4>Rental Yields</h4>
-          <p>Rental yields in major cities have risen, averaging 5% annually.</p>
+        <div class="col-md-4 step">
+          <i class="fas fa-calculator"></i>
+          <h3>Get a Free Evaluation</h3>
+          <p>Receive an expert evaluation of your property's market value in minutes.</p>
         </div>
-        <div class="col-md-4 trend text-center">
-          <i class="fas fa-industry"></i>
-          <h4>Commercial Growth</h4>
-          <p>Commercial real estate is booming with an 8% increase in demand.</p>
+        <div class="col-md-4 step">
+          <i class="fas fa-bell"></i>
+          <h3>Set Up Alerts</h3>
+          <p>Create personalized alerts to receive new listings that match your criteria directly in your inbox.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Divider Line -->
-  <div class="divider"></div>
-
- <!-- Property Alerts Section -->
+  <!-- Property Alerts Section -->
   <section class="property-alerts">
     <div class="container">
       <h2>Never Miss a Property Listing</h2>
@@ -461,7 +439,7 @@
       const type = this.elements["type"].value;
       const purpose = this.elements["purpose"].value;
       // Redirect to properties page with query parameters
-      window.location.href = /properties?location=${encodeURIComponent(location)}&type=${encodeURIComponent(type)}&purpose=${encodeURIComponent(purpose)};
+      window.location.href = `/properties?location=${encodeURIComponent(location)}&type=${encodeURIComponent(type)}&purpose=${encodeURIComponent(purpose)}`;
     });
   </script>
 </body>
