@@ -106,6 +106,7 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       width: 100%;
       max-width: 800px;
+      position: relative;
     }
     /* Uniform styling for input and select elements */
     .search-bar input,
@@ -144,16 +145,21 @@
       background: linear-gradient(45deg, #0056b3, #0090c8);
       transform: scale(1.03);
     }
-    /* autoComplete.js suggestions styling */
+    /* Enhanced autoComplete.js suggestions styling */
     .autoComplete_result {
-      border-radius: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
       overflow: hidden;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-top: -5px; /* to seamlessly connect to the search bar */
     }
     .autoComplete_result li {
       padding: 10px 15px;
       font-size: 1rem;
-      color: #000;
+      color: #333;
+      background-color: #fff;
       display: flex;
       align-items: center;
       transition: background 0.2s ease;
@@ -161,7 +167,7 @@
     }
     .autoComplete_result li:hover,
     .autoComplete_result li[aria-selected="true"] {
-      background: #f0f0f0;
+      background-color: #e6f7ff;
     }
     .autoComplete_result li .result-icon {
       margin-right: 10px;
@@ -213,6 +219,34 @@
       background: #f0f0f0;
       transform: scale(1.03);
     }
+    /* Testimonials Section (New) */
+    .testimonials {
+      background: #f9f9f9;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .testimonials h2 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #007bff;
+    }
+    .testimonials .card {
+      border: none;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      background: #fff;
+    }
+    .testimonials .card p {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      color: #555;
+    }
+    .testimonials .card .fw-bold {
+      font-size: 1rem;
+      color: #333;
+    }
     /* Footer */
     .footer {
       background: linear-gradient(135deg, #007bff, #00d4ff);
@@ -235,7 +269,7 @@
 </head>
 <body>
 
-  <!-- Header merged with Hero -->
+  <!-- Header merged with Hero (Removed the "Home" option) -->
   <header>
     <nav class="navbar navbar-expand-lg">
       <div class="container">
@@ -245,7 +279,7 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul class="navbar-nav">
-            <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+            <!-- "Home" option removed -->
             <li class="nav-item"><a class="nav-link" href="/properties">Properties</a></li>
             <li class="nav-item"><a class="nav-link" href="/for-owners">For Owners</a></li>
             <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
@@ -334,7 +368,34 @@
     </div>
   </section>
 
-  <!-- Footer (No Home option included) -->
+  <!-- Testimonials Section (New Addition) -->
+  <section class="testimonials">
+    <div class="container">
+      <h2>What Our Clients Say</h2>
+      <div class="row g-4 mt-4">
+        <div class="col-md-4">
+          <div class="card p-3 shadow-sm">
+            <p class="card-text">"This platform helped me find my dream home quickly and easily. The evaluation service was spot-on!"</p>
+            <p class="fw-bold mb-0">— John Doe</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3 shadow-sm">
+            <p class="card-text">"I got a precise evaluation for my property and sold it at a great price. Excellent service!"</p>
+            <p class="fw-bold mb-0">— Jane Smith</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3 shadow-sm">
+            <p class="card-text">"A seamless experience from search to sale. I highly recommend this platform for anyone in the market."</p>
+            <p class="fw-bold mb-0">— Michael Brown</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (No "Home" option included) -->
   <footer class="footer">
     <div class="container">
       <p>&copy; 2025 Real Estate Platform. All Rights Reserved.</p>
@@ -376,8 +437,7 @@
       resultsList: {
         element: (list, data) => {
           list.id = "autoComplete_list";
-          list.style.borderRadius = "20px";
-          list.style.overflow = "hidden";
+          // The suggestions container styling is now handled by CSS
         },
         noResults: true,
         maxResults: 10,
