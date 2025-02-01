@@ -50,7 +50,7 @@
       transition: color 0.3s ease;
     }
     .navbar-nav .nav-link:hover {
-      color: #ffd700; /* Accent color on hover */
+      color: #ffd700;
     }
     /* Hero Section */
     .hero-section {
@@ -64,7 +64,7 @@
     }
     .hero-overlay {
       position: absolute;
-      top: 0; 
+      top: 0;
       left: 0;
       width: 100%;
       height: 100%;
@@ -86,34 +86,81 @@
       font-size: 1.2rem;
       margin-bottom: 30px;
     }
-    /* Search Container with Background (merged with hero) */
+    /* Modern Glassmorphism Search Bar */
     .search-container {
       position: relative;
       margin: 0 auto;
-      max-width: 800px;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-    .search-container::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: inherit;
-      filter: brightness(0.7);
-      z-index: -1;
+      max-width: 900px;
+      /* Allow suggestions to show */
+      overflow: visible;
+      border-radius: 50px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
     .search-bar {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 20px;
-      border-radius: 10px;
+      position: relative;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50px;
+      padding: 15px 30px;
     }
-    .search-bar .form-control,
+    .search-bar .input-group {
+      position: relative;
+    }
+    .search-bar .fa-map-marker-alt {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #007bff;
+    }
+    .search-bar .form-control {
+      padding-left: 40px;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      font-size: 1.1rem;
+    }
+    .search-bar .form-control:focus {
+      box-shadow: none;
+      border: none;
+    }
     .search-bar .form-select {
-      border-radius: 5px;
+      border: none;
+      background: transparent;
+      font-size: 1.1rem;
+    }
+    .search-bar button {
+      border: none;
+      border-radius: 50px;
+      padding: 10px 25px;
+      font-size: 1.1rem;
+    }
+    /* Awesomplete suggestion list override */
+    .awesomplete {
+      z-index: 9999 !important;
+    }
+    .awesomplete li {
+      color: #000;
+      font-size: 1rem;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .awesomplete li:last-child {
+      border-bottom: none;
+    }
+    .awesomplete li:hover,
+    .awesomplete li[aria-selected="true"] {
+      background: #f0f0f0;
+    }
+    /* Optionally add an icon to each suggestion via a pseudo-element */
+    .awesomplete li::before {
+      font-family: "Font Awesome 6 Free";
+      content: "\f041"; /* map-marker-alt icon */
+      font-weight: 900;
+      color: #007bff;
+      display: inline-block;
+      margin-right: 10px;
     }
     /* Featured Listings */
     .featured-listings .card {
@@ -186,7 +233,7 @@
     </nav>
   </header>
 
-  <!-- Hero Section with Enhanced Search -->
+  <!-- Hero Section with Enhanced Modern Search Bar -->
   <section class="hero-section">
     <div class="hero-overlay"></div>
     <div class="hero-content container">
@@ -194,16 +241,17 @@
       <p>Explore top properties and discover the best places to live.</p>
       <div class="search-container">
         <div class="search-bar">
-          <form id="search-form" class="row g-2">
-            <div class="col-md-5">
-              <input
-                id="location"
-                name="location"
-                class="form-control"
-                placeholder="Type a city or area..."
-                required />
-            </div>
-            <div class="col-md-3">
+          <div class="input-group">
+            <i class="fa fa-map-marker-alt"></i>
+            <input
+              id="location"
+              name="location"
+              class="form-control"
+              placeholder="Type a city or area..."
+              required />
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-4">
               <select name="type" class="form-select" required>
                 <option value="" disabled selected>Property Type</option>
                 <option value="apartment">Apartment</option>
@@ -211,7 +259,7 @@
                 <option value="villa">Villa</option>
               </select>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <select name="purpose" class="form-select" required>
                 <option value="" disabled selected>Purpose</option>
                 <option value="buy">Buy</option>
@@ -221,7 +269,7 @@
             <div class="col-md-2">
               <button type="submit" class="btn btn-primary w-100">Search</button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
@@ -308,7 +356,7 @@
       "Durrës - Gjiri", "Tirana - Pyramid", "Vlorë - Radhimë", "Berat - Mangalem"
     ];
 
-    // Initialize Awesomplete on the location input
+    // Initialize Awesomplete on the location input with customized suggestions
     new Awesomplete(document.getElementById("location"), {
       list: locations,
       minChars: 1,
