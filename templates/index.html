@@ -107,7 +107,7 @@
       width: 100%;
       max-width: 800px;
       position: relative;
-      overflow: visible; /* Allow suggestions to extend without changing the bar shape */
+      overflow: visible; /* Allow suggestions to extend outside without changing shape */
     }
     /* Uniform styling for input and select elements */
     .search-bar input,
@@ -146,7 +146,7 @@
       background: linear-gradient(45deg, #0056b3, #0090c8);
       transform: scale(1.03);
     }
-    /* autoComplete.js suggestions styled to mimic form-select options */
+    /* autoComplete.js suggestions styled to match Bootstrap form-select options */
     .autoComplete_result {
       position: absolute;
       top: 100%;
@@ -222,7 +222,7 @@
       background: #f0f0f0;
       transform: scale(1.03);
     }
-    /* Property Alerts Section (New Addition) */
+    /* Property Alerts Section */
     .property-alerts {
       background: #fff;
       padding: 60px 20px;
@@ -372,7 +372,7 @@
     </div>
   </section>
 
-  <!-- Property Alerts Section (New Addition) -->
+  <!-- Property Alerts Section -->
   <section class="property-alerts">
     <div class="container">
       <h2>Never Miss a Property Listing</h2>
@@ -406,29 +406,11 @@
   <!-- autoComplete.js -->
   <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
   <script>
-    // Improved array of Albanian cities and well-known areas for suggestions
+    // Extended array of Albanian cities and areas for suggestions
     const locations = [
-      "Tirana",
-      "Blloku, Tirana",
-      "Zona e Re, Tirana",
-      "Kamëz, Tirana",
-      "Durrës",
-      "Central Durrës",
-      "Vlorë",
-      "Elbasan",
-      "Shkodër",
-      "Fier",
-      "Korçë",
-      "Berat",
-      "Lushnjë",
-      "Pogradec",
-      "Kukës",
-      "Kavajë",
-      "Gjirokastër",
-      "Lezhë",
-      "Sarandë",
-      "Përmet",
-      "Krujë"
+      "Tirana", "Blloku (Tirana)", "Durres", "Vlorë", "Elbasan", "Shkodër", "Fier",
+      "Korçë", "Berat", "Lushnjë", "Pogradec", "Kukës", "Kamëz", "Kavajë",
+      "Gjirokastër", "Lezhë", "Sarandë", "Përmet", "Rrëshen", "Krujë", "Burrel", "Mat", "Peqin", "Devoll", "Mallakastër"
     ];
 
     // Initialize autoComplete.js for location suggestions
