@@ -145,21 +145,25 @@
       background: linear-gradient(45deg, #0056b3, #0090c8);
       transform: scale(1.03);
     }
-    /* Enhanced autoComplete.js suggestions styling */
+    /* autoComplete.js suggestions styling */
     .autoComplete_result {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      z-index: 100;
       background-color: #fff;
       border: 1px solid #ddd;
       border-top: none;
       border-radius: 0 0 10px 10px;
       overflow: hidden;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      margin-top: -5px; /* to seamlessly connect to the search bar */
     }
     .autoComplete_result li {
       padding: 10px 15px;
       font-size: 1rem;
       color: #333;
-      background-color: #fff;
+      background-color: #fafafa;
       display: flex;
       align-items: center;
       transition: background 0.2s ease;
@@ -219,33 +223,42 @@
       background: #f0f0f0;
       transform: scale(1.03);
     }
-    /* Testimonials Section (New) */
-    .testimonials {
-      background: #f9f9f9;
+    /* Newsletter Section (New Addition) */
+    .newsletter {
+      background: #fff;
       padding: 60px 20px;
       text-align: center;
     }
-    .testimonials h2 {
+    .newsletter h2 {
       font-size: 2.5rem;
       font-weight: bold;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       color: #007bff;
     }
-    .testimonials .card {
+    .newsletter p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+    .newsletter form input {
+      border-radius: 30px;
+      padding: 10px 20px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      width: 300px;
+    }
+    .newsletter form button {
+      border-radius: 30px;
+      padding: 10px 30px;
+      font-size: 1rem;
+      margin-left: 10px;
+      background: linear-gradient(45deg, #007bff, #00d4ff);
       border: none;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      background: #fff;
+      color: #fff;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
-    .testimonials .card p {
-      font-size: 1rem;
-      margin-bottom: 10px;
-      color: #555;
-    }
-    .testimonials .card .fw-bold {
-      font-size: 1rem;
-      color: #333;
+    .newsletter form button:hover {
+      background: linear-gradient(45deg, #0056b3, #0090c8);
+      transform: scale(1.03);
     }
     /* Footer */
     .footer {
@@ -269,7 +282,7 @@
 </head>
 <body>
 
-  <!-- Header merged with Hero (Removed the "Home" option) -->
+  <!-- Header (Removed "Home" option) -->
   <header>
     <nav class="navbar navbar-expand-lg">
       <div class="container">
@@ -279,7 +292,6 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul class="navbar-nav">
-            <!-- "Home" option removed -->
             <li class="nav-item"><a class="nav-link" href="/properties">Properties</a></li>
             <li class="nav-item"><a class="nav-link" href="/for-owners">For Owners</a></li>
             <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
@@ -368,30 +380,15 @@
     </div>
   </section>
 
-  <!-- Testimonials Section (New Addition) -->
-  <section class="testimonials">
-    <div class="container">
-      <h2>What Our Clients Say</h2>
-      <div class="row g-4 mt-4">
-        <div class="col-md-4">
-          <div class="card p-3 shadow-sm">
-            <p class="card-text">"This platform helped me find my dream home quickly and easily. The evaluation service was spot-on!"</p>
-            <p class="fw-bold mb-0">— John Doe</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card p-3 shadow-sm">
-            <p class="card-text">"I got a precise evaluation for my property and sold it at a great price. Excellent service!"</p>
-            <p class="fw-bold mb-0">— Jane Smith</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card p-3 shadow-sm">
-            <p class="card-text">"A seamless experience from search to sale. I highly recommend this platform for anyone in the market."</p>
-            <p class="fw-bold mb-0">— Michael Brown</p>
-          </div>
-        </div>
-      </div>
+  <!-- Newsletter Section (New Addition) -->
+  <section class="newsletter">
+    <div class="container text-center">
+      <h2>Stay Updated</h2>
+      <p>Subscribe to our newsletter and never miss the latest property listings and market insights!</p>
+      <form class="d-flex justify-content-center mt-4">
+        <input type="email" class="form-control" placeholder="Enter your email" required>
+        <button type="submit" class="btn">Subscribe</button>
+      </form>
     </div>
   </section>
 
@@ -437,7 +434,6 @@
       resultsList: {
         element: (list, data) => {
           list.id = "autoComplete_list";
-          // The suggestions container styling is now handled by CSS
         },
         noResults: true,
         maxResults: 10,
