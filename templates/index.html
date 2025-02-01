@@ -150,7 +150,7 @@
     .autoComplete_result li {
       padding: 10px 15px;
       font-size: 1rem;
-      color: #000; /* Black text for suggestions */
+      color: #000;
       display: flex;
       align-items: center;
       transition: background 0.2s ease;
@@ -387,15 +387,17 @@
       window.location.href = `/properties?location=${encodeURIComponent(location)}&type=${encodeURIComponent(type)}&purpose=${encodeURIComponent(purpose)}`;
     });
 
-    // Initialize Leaflet Map
-    const map = L.map('map').setView([41.3275, 19.8187], 8); // Coordinates centered on Albania
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-    // Example marker
-    L.marker([41.3275, 19.8187]).addTo(map)
-      .bindPopup('This is Tirana, Albania.')
-      .openPopup();
+    // Initialize Leaflet Map after the DOM is loaded
+    document.addEventListener("DOMContentLoaded", function() {
+      const map = L.map('map').setView([41.3275, 19.8187], 8); // Centered on Albania
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      // Example marker
+      L.marker([41.3275, 19.8187]).addTo(map)
+        .bindPopup('This is Tirana, Albania.')
+        .openPopup();
+    });
   </script>
 </body>
 </html>
