@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Discover your dream home in Albania with our modern real estate platform offering the best properties, interactive map, and advanced search features." />
-  <meta name="keywords" content="real estate, property search, Albania, apartments, houses, villas" />
+  <meta name="description" content="Discover your dream home with our advanced real estate platform." />
+  <meta name="keywords" content="real estate, property search, homes, apartments, villas, Albania" />
   <meta name="author" content="Real Estate Platform" />
   <title>Real Estate Platform | Find Your Dream Home</title>
   <!-- Bootstrap CSS -->
@@ -13,38 +13,36 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
   <!-- autoComplete.js CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.css" />
-  <!-- Leaflet CSS -->
+  <!-- Leaflet CSS for the interactive map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-sA+e2x9H4VO/vx6U6DhiZfKp8a11m/h67+E6pT1Y7vU=" crossorigin=""/>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
-    /* Global Styles */
+    /* General Styles */
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #f4f7f9;
       margin: 0;
       color: #333;
-      overflow-x: hidden;
     }
     a {
       text-decoration: none;
     }
-    /* Header & Navigation */
+    /* Header merged with Hero */
     header {
-      position: fixed;
+      position: absolute;
       top: 0;
+      left: 0;
       width: 100%;
-      z-index: 1000;
-      background: rgba(0, 0, 0, 0.5);
-      transition: background 0.3s ease;
+      z-index: 10;
+      padding: 20px 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
     }
-    header.scrolled {
-      background: rgba(0, 0, 0, 0.8);
+    .navbar {
+      padding: 0 20px;
     }
     .navbar-brand {
       color: #fff !important;
       font-weight: 700;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
     }
     .navbar-nav .nav-link {
       color: #fff !important;
@@ -58,13 +56,14 @@
     /* Hero Section */
     .hero-section {
       position: relative;
-      background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1737578981/DALL_E_2025-01-22_21.44.54_-_A_modern_interior_real_estate_promotional_image_featuring_a_stylish_open-plan_living_room_and_dining_area._The_space_includes_sleek_furniture_neutral_niejux.webp;
-      height: 100vh;
+      /* Replaced with your provided image */
+      background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1737578981/DALL_E_2025-01-22_21.44.54_-_A_modern_interior_real_estate_promotional_image_featuring_a_stylish_open-plan_living_room_and_dining_area._The_space_includes_sleek_furniture_neutral_niejux.webp') no-repeat center center/cover;
+      height: 80vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
       color: #fff;
+      text-align: center;
       padding: 0 20px;
     }
     .hero-overlay {
@@ -73,60 +72,67 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.4);
     }
     .hero-content {
       position: relative;
       z-index: 2;
       max-width: 800px;
-      animation: fadeInUp 1s ease-out;
-    }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+      width: 100%;
     }
     .hero-content h1 {
-      font-size: 3.5rem;
-      font-weight: 700;
+      font-size: 3rem;
+      font-weight: bold;
       margin-bottom: 20px;
-      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     }
     .hero-content p {
-      font-size: 1.25rem;
-      margin-bottom: 40px;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
     }
-    /* Search Bar */
+    /* Enhanced Search Bar */
     .search-bar-container {
       position: relative;
       z-index: 2;
+      margin-top: 30px;
       display: flex;
       justify-content: center;
     }
     .search-bar {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
       border-radius: 50px;
-      padding: 20px 30px;
+      padding: 15px 20px;
       display: flex;
       align-items: center;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       width: 100%;
       max-width: 800px;
     }
-    .search-bar input.form-control,
-    .search-bar select.form-select {
+    /* Uniform styling for input and select elements */
+    .search-bar input,
+    .search-bar select {
       border: none;
       background: transparent;
       font-size: 1.1rem;
-      flex-grow: 1;
       padding: 10px 15px;
+      flex: 1;
+      outline: none;
       color: #333;
     }
-    .search-bar input.form-control:focus,
-    .search-bar select.form-select:focus {
-      box-shadow: none;
-      outline: none;
+    .search-bar input::placeholder,
+    .search-bar select {
+      color: #666;
     }
+    /* Remove default select arrow for a cleaner look */
+    .search-bar select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      position: relative;
+    }
+    /* Optional: add a down-arrow icon via background image if desired */
     .search-bar button {
       background: linear-gradient(45deg, #007bff, #00d4ff);
       border: none;
@@ -136,12 +142,13 @@
       color: #fff;
       transition: background 0.3s ease, transform 0.2s ease;
       margin-left: 10px;
+      flex-shrink: 0;
     }
     .search-bar button:hover {
       background: linear-gradient(45deg, #0056b3, #0090c8);
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
-    /* autoComplete.js suggestions */
+    /* autoComplete.js suggestions styling */
     .autoComplete_result {
       border-radius: 20px;
       overflow: hidden;
@@ -150,7 +157,7 @@
     .autoComplete_result li {
       padding: 10px 15px;
       font-size: 1rem;
-      color: #333;
+      color: #000;
       display: flex;
       align-items: center;
       transition: background 0.2s ease;
@@ -165,119 +172,66 @@
       color: #007bff;
       font-size: 1.2rem;
     }
-    /* Featured Listings */
-    .featured-listings {
-      padding: 80px 0;
-      background: #fff;
-    }
-    .featured-listings h2 {
-      font-size: 2.5rem;
-      margin-bottom: 40px;
-      font-weight: 600;
-      color: #333;
-    }
-    .featured-card {
+    /* Featured Listings Section */
+    .featured-listings .card {
       border: none;
       border-radius: 15px;
       overflow: hidden;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      background: #fff;
     }
-    .featured-card:hover {
+    .featured-listings .card:hover {
       transform: translateY(-10px);
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     }
-    .featured-card img {
-      height: 220px;
+    .featured-listings .card img {
+      height: 200px;
       object-fit: cover;
-      width: 100%;
-    }
-    .featured-card .card-body {
-      padding: 20px;
-    }
-    .featured-card .card-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-      color: #333;
-    }
-    .featured-card .card-text {
-      font-size: 1rem;
-      margin-bottom: 15px;
-      color: #666;
-    }
-    .featured-card .btn-outline-custom {
-      border-color: #007bff;
-      color: #007bff;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-    .featured-card .btn-outline-custom:hover {
-      background: #007bff;
-      color: #fff;
     }
     /* Interactive Map Section */
     .interactive-map {
-      padding: 80px 0;
       background: #e9ecef;
+      padding: 60px 0;
       text-align: center;
-    }
-    .interactive-map h2 {
-      font-size: 2.5rem;
-      margin-bottom: 40px;
-      font-weight: 600;
-      color: #333;
     }
     #map {
       width: 100%;
       height: 400px;
       border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
-    /* Footer */
-    footer.footer {
+    /* Footer (Removed any Home link) */
+    .footer {
       background: linear-gradient(135deg, #007bff, #00d4ff);
       color: #fff;
-      padding: 40px 20px;
+      padding: 40px 0;
       text-align: center;
     }
-    footer.footer p,
-    footer.footer a {
-      color: #fff;
+    .footer p {
+      margin: 0 0 10px;
     }
-    footer.footer a {
+    .footer a {
+      color: #fff;
       margin: 0 10px;
       transition: color 0.3s ease;
     }
-    footer.footer a:hover {
+    .footer a:hover {
       color: #ffd700;
-    }
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-      .hero-content h1 {
-        font-size: 2.8rem;
-      }
-      .hero-content p {
-        font-size: 1.1rem;
-      }
-      .navbar-nav .nav-link {
-        margin-left: 10px;
-      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header & Navigation -->
-  <header id="site-header">
+  <!-- Header merged with Hero -->
+  <header>
     <nav class="navbar navbar-expand-lg">
       <div class="container">
-        <a class="navbar-brand" href="/">🏡 Real Estate</a>
+        <a class="navbar-brand" href="/">🏡 Real Estate Platform</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul class="navbar-nav">
+            <!-- Keeping navigation as-is -->
             <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="/properties">Properties</a></li>
             <li class="nav-item"><a class="nav-link" href="/for-owners">For Owners</a></li>
@@ -294,18 +248,18 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1>Find Your Dream Home in Albania</h1>
-      <p>Discover top properties and live the life you've always imagined.</p>
-      <!-- Enhanced Search Bar -->
+      <p>Explore top properties and discover the best places to live.</p>
+      <!-- Enhanced Centered Search Bar -->
       <div class="search-bar-container">
-        <form id="search-form" class="search-bar" role="search" aria-label="Property Search">
-          <input id="location" name="location" class="form-control" placeholder="Enter city or area" aria-label="Location" required />
-          <select name="type" class="form-select" aria-label="Property Type" required>
+        <form id="search-form" class="search-bar">
+          <input id="location" name="location" class="form-control" placeholder="Enter city or area" required />
+          <select name="type" class="form-select" required>
             <option value="" disabled selected>Type</option>
             <option value="apartment">Apartment</option>
             <option value="house">House</option>
             <option value="villa">Villa</option>
           </select>
-          <select name="purpose" class="form-select" aria-label="Purpose" required>
+          <select name="purpose" class="form-select" required>
             <option value="" disabled selected>Purpose</option>
             <option value="buy">Buy</option>
             <option value="rent">Rent</option>
@@ -316,60 +270,58 @@
     </div>
   </section>
 
-  <!-- Main Content -->
-  <main>
-    <!-- Featured Listings Section -->
-    <section class="featured-listings">
-      <div class="container">
-        <h2 class="text-center">Featured Listings</h2>
-        <div class="row g-4">
-          <!-- Property Card 1 -->
-          <div class="col-md-4">
-            <div class="card featured-card">
-              <img src="https://via.placeholder.com/400x220?text=Property+1" class="card-img-top" alt="Luxury Apartment" />
-              <div class="card-body">
-                <h5 class="card-title">Luxury Apartment</h5>
-                <p class="card-text">$500,000 - 3 Beds, 2 Baths</p>
-                <a href="/property-details" class="btn btn-outline-custom">View Details</a>
-              </div>
+  <!-- Featured Listings Section -->
+  <section class="featured-listings py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Featured Listings</h2>
+      <div class="row g-4">
+        <!-- Property Card 1 -->
+        <div class="col-md-4">
+          <div class="card">
+            <img src="https://via.placeholder.com/400x200?text=Property+1" class="card-img-top" alt="Luxury Apartment" />
+            <div class="card-body">
+              <h5 class="card-title">Luxury Apartment</h5>
+              <p class="card-text">$500,000 - 3 Beds, 2 Baths</p>
+              <a href="/property-details" class="btn btn-outline-light">View Details</a>
             </div>
           </div>
-          <!-- Property Card 2 -->
-          <div class="col-md-4">
-            <div class="card featured-card">
-              <img src="https://via.placeholder.com/400x220?text=Property+2" class="card-img-top" alt="Cozy Family House" />
-              <div class="card-body">
-                <h5 class="card-title">Cozy Family House</h5>
-                <p class="card-text">$350,000 - 4 Beds, 3 Baths</p>
-                <a href="/property-details" class="btn btn-outline-custom">View Details</a>
-              </div>
+        </div>
+        <!-- Property Card 2 -->
+        <div class="col-md-4">
+          <div class="card">
+            <img src="https://via.placeholder.com/400x200?text=Property+2" class="card-img-top" alt="Cozy Family House" />
+            <div class="card-body">
+              <h5 class="card-title">Cozy Family House</h5>
+              <p class="card-text">$350,000 - 4 Beds, 3 Baths</p>
+              <a href="/property-details" class="btn btn-outline-light">View Details</a>
             </div>
           </div>
-          <!-- Property Card 3 -->
-          <div class="col-md-4">
-            <div class="card featured-card">
-              <img src="https://via.placeholder.com/400x220?text=Property+3" class="card-img-top" alt="Modern Villa" />
-              <div class="card-body">
-                <h5 class="card-title">Modern Villa</h5>
-                <p class="card-text">$1,200,000 - 5 Beds, 4 Baths</p>
-                <a href="/property-details" class="btn btn-outline-custom">View Details</a>
-              </div>
+        </div>
+        <!-- Property Card 3 -->
+        <div class="col-md-4">
+          <div class="card">
+            <img src="https://via.placeholder.com/400x200?text=Property+3" class="card-img-top" alt="Modern Villa" />
+            <div class="card-body">
+              <h5 class="card-title">Modern Villa</h5>
+              <p class="card-text">$1,200,000 - 5 Beds, 4 Baths</p>
+              <a href="/property-details" class="btn btn-outline-light">View Details</a>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Interactive Map Section -->
-    <section class="interactive-map">
-      <div class="container">
-        <h2>Explore Properties on the Map</h2>
-        <div id="map"></div>
-      </div>
-    </section>
-  </main>
+  <!-- Interactive Map Section -->
+  <section class="interactive-map py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Explore Properties on the Map</h2>
+      <!-- Leaflet Map will be rendered here -->
+      <div id="map"></div>
+    </div>
+  </section>
 
-  <!-- Footer -->
+  <!-- Footer (No Home option included) -->
   <footer class="footer">
     <div class="container">
       <p>&copy; 2025 Real Estate Platform. All Rights Reserved.</p>
@@ -379,15 +331,14 @@
         <a href="/privacy">Privacy Policy</a> |
         <a href="/terms">Terms of Service</a>
       </p>
-      <div class="social-links">
-        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" aria-label="Twitter" class="ms-3"><i class="fab fa-twitter"></i></a>
-        <a href="#" aria-label="Instagram" class="ms-3"><i class="fab fa-instagram"></i></a>
+      <div>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="ms-3"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="ms-3"><i class="fab fa-instagram"></i></a>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
   <!-- Bootstrap Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- autoComplete.js -->
@@ -395,14 +346,14 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-Dqqg1W2Pk0Vt+Z0xGQdFnroGdbY3Vm+NvWOsq3a+1Rw=" crossorigin=""></script>
   <script>
-    // Enhanced list of Albanian locations
+    // Extended array of Albanian cities and areas for suggestions
     const locations = [
       "Tirana", "Blloku (Tirana)", "Durres", "Vlorë", "Elbasan", "Shkodër", "Fier",
       "Korçë", "Berat", "Lushnjë", "Pogradec", "Kukës", "Kamëz", "Kavajë",
       "Gjirokastër", "Lezhë", "Sarandë", "Përmet", "Rrëshen", "Krujë", "Burrel", "Mat", "Peqin", "Devoll", "Mallakastër"
     ];
 
-    // Initialize autoComplete.js
+    // Initialize autoComplete.js for location suggestions
     const autoCompleteJS = new autoComplete({
       data: {
         src: locations,
@@ -434,35 +385,26 @@
       }
     });
 
-    // Handle search form submission
+    // Handle Search Form Submission
     document.getElementById("search-form").addEventListener("submit", function (e) {
       e.preventDefault();
       const location = document.getElementById("location").value;
       const type = this.elements["type"].value;
       const purpose = this.elements["purpose"].value;
+      // Redirect to properties page with query parameters
       window.location.href = `/properties?location=${encodeURIComponent(location)}&type=${encodeURIComponent(type)}&purpose=${encodeURIComponent(purpose)}`;
     });
 
-    // Initialize Leaflet Map
+    // Initialize Leaflet Map when DOM is ready
     document.addEventListener("DOMContentLoaded", function() {
-      const map = L.map('map').setView([41.3275, 19.8187], 8);
+      const map = L.map('map').setView([41.3275, 19.8187], 8); // Centered on Albania
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
       // Example marker for Tirana
       L.marker([41.3275, 19.8187]).addTo(map)
-        .bindPopup('Tirana, Albania')
+        .bindPopup('This is Tirana, Albania.')
         .openPopup();
-    });
-
-    // Change header style on scroll
-    window.addEventListener('scroll', function() {
-      const header = document.getElementById('site-header');
-      if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
     });
   </script>
 </body>
