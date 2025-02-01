@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A modern, minimal dashboard for managing real estate business.">
-  <meta name="keywords" content="real estate, dashboard, minimal, modern, analytics">
+  <meta name="description" content="An advanced single‑page dashboard for real estate management with stunning inline panels.">
   <title>Modern Dashboard | Real Estate Platform</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,7 +12,7 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* Reset and Base */
+    /* Reset and Base Styles */
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -48,9 +47,10 @@
       border-radius: 6px;
       color: #adb5bd;
       transition: background 0.3s, color 0.3s;
+      cursor: pointer;
     }
     .sidebar a:hover, .sidebar a.active {
-      background-color: #343a40;
+      background-color: rgba(52,58,64,0.8);
       color: #fff;
     }
 
@@ -60,29 +60,34 @@
       padding: 20px 30px 40px;
       transition: margin-left 0.3s;
     }
+    /* Home Panel Header */
     .header {
       text-align: center;
-      margin-bottom: 30px;
-      padding: 20px;
-      background: linear-gradient(90deg, #007bff, #17a2b8);
-      border-radius: 8px;
+      margin-bottom: 40px;
+      padding: 40px;
+      background: linear-gradient(135deg, #007bff, #17a2b8);
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
-    .header h1 { font-size: 2.2rem; margin-bottom: 10px; }
-    .header p { font-size: 1.1rem; margin: 0; }
+    .header h1 { font-size: 2.4rem; margin-bottom: 10px; }
+    .header p { font-size: 1.2rem; margin: 0; }
 
-    /* Cards Grid */
+    /* Cards Grid for Overview */
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
     .card-custom {
-      background-color: #27293d;
-      border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      border-radius: 15px;
       padding: 20px;
       text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
     }
     .card-custom:hover {
       transform: translateY(-5px);
@@ -99,23 +104,40 @@
       color: #ccc;
     }
 
-    /* Panels */
-    .panel {
-      background: #27293d;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    /* Panels for Inline Functions */
+    .panelContent {
+      display: none;
+      animation: fadeIn 0.5s;
     }
-    .panel h2 { font-size: 1.8rem; margin-bottom: 20px; color: #00bcd4; }
-    
-    /* Table Styling */
+    .panel {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(31,38,135,0.37);
+    }
+    .panel h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #00bcd4;
+    }
+    .back-btn {
+      margin-bottom: 20px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Table Styling for Leads */
     table {
       width: 100%;
       border-collapse: collapse;
     }
     thead {
-      background: #1e1e2f;
+      background: rgba(0, 0, 0, 0.3);
     }
     thead th {
       padding: 10px;
@@ -124,13 +146,13 @@
       color: #ccc;
     }
     tbody tr {
-      border-bottom: 1px solid #343a40;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     tbody td {
       padding: 10px;
       font-size: 0.9rem;
     }
-
+    
     /* Footer */
     footer {
       text-align: center;
@@ -138,8 +160,8 @@
       color: #777;
       font-size: 0.9rem;
     }
-
-    /* Dark Mode Toggle */
+    
+    /* Dark Mode Toggle Button */
     .toggle-dark {
       position: fixed;
       bottom: 20px;
@@ -163,102 +185,244 @@
   <!-- Sidebar Navigation -->
   <nav class="sidebar">
     <h2>Dashboard</h2>
-    <a href="#" class="active"><i class="fas fa-tachometer-alt me-2"></i>Home</a>
-    <a href="#"><i class="fas fa-plus me-2"></i>Add Property</a>
-    <a href="#"><i class="fas fa-building me-2"></i>Properties</a>
-    <a href="#"><i class="fas fa-users me-2"></i>Clients</a>
-    <a href="#"><i class="fas fa-chart-line me-2"></i>Reports</a>
-    <a href="#"><i class="fas fa-cogs me-2"></i>Settings</a>
-    <a href="#"><i class="fas fa-headset me-2"></i>Support</a>
+    <a href="#" class="sidebar-link active" data-target="homePanel">
+      <i class="fas fa-tachometer-alt me-2"></i>Home
+    </a>
+    <a href="#" class="sidebar-link" data-target="addPropertyPanel">
+      <i class="fas fa-plus me-2"></i>Add Property
+    </a>
+    <a href="#" class="sidebar-link" data-target="managePropertiesPanel">
+      <i class="fas fa-building me-2"></i>Properties
+    </a>
+    <a href="#" class="sidebar-link" data-target="clientsPanel">
+      <i class="fas fa-users me-2"></i>Clients
+    </a>
+    <a href="#" class="sidebar-link" data-target="accountSettingsPanel">
+      <i class="fas fa-cogs me-2"></i>Account Settings
+    </a>
+    <a href="#" class="sidebar-link" data-target="supportPanel">
+      <i class="fas fa-headset me-2"></i>Support
+    </a>
   </nav>
 
   <!-- Main Content Area -->
   <div class="main-content">
-    <!-- Header -->
-    <div class="header">
-      <h1>Welcome, Agent</h1>
-      <p>Your command center for real estate management</p>
-    </div>
-
-    <!-- Overview Cards -->
-    <div class="cards-grid">
-      <div class="card-custom">
-        <h3>25</h3>
-        <p>Active Listings</p>
+    <!-- Dynamic Panel Container -->
+    <div id="dashboardContent">
+      <!-- Home Panel (default) -->
+      <div id="homePanel" class="panelContent">
+        <div class="header">
+          <h1>Welcome, Agent</h1>
+          <p>Your command center for real estate management</p>
+        </div>
+        <div class="cards-grid">
+          <div class="card-custom">
+            <h3>25</h3>
+            <p>Active Listings</p>
+          </div>
+          <div class="card-custom">
+            <h3>12</h3>
+            <p>New Inquiries</p>
+          </div>
+          <div class="card-custom">
+            <h3>$45K</h3>
+            <p>Monthly Revenue</p>
+          </div>
+          <div class="card-custom">
+            <h3>8</h3>
+            <p>Pending Tasks</p>
+          </div>
+        </div>
+        <div class="panel">
+          <h2>Analytics</h2>
+          <canvas id="analyticsChart" style="width: 100%; height: 300px;"></canvas>
+        </div>
+        <div class="panel">
+          <h2>Leads</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Follow-up</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>John Doe</td>
+                <td>john@example.com</td>
+                <td>New</td>
+                <td>2025-02-10</td>
+              </tr>
+              <tr>
+                <td>Jane Smith</td>
+                <td>jane@example.com</td>
+                <td>Contacted</td>
+                <td>2025-02-12</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel">
+          <h2>Task List</h2>
+          <ul>
+            <li>Follow up with client for "Modern Villa"</li>
+            <li>Review documents for "Lakeview Apartment"</li>
+            <li>Schedule open house for "City Center Condo"</li>
+          </ul>
+        </div>
       </div>
-      <div class="card-custom">
-        <h3>12</h3>
-        <p>New Inquiries</p>
+      
+      <!-- Add Property Panel -->
+      <div id="addPropertyPanel" class="panelContent">
+        <button class="btn btn-secondary back-btn" data-target="homePanel">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <div class="panel">
+          <h2>Add New Property</h2>
+          <form id="addPropertyForm">
+            <div class="mb-3">
+              <label for="propertyTitle" class="form-label">Property Title</label>
+              <input type="text" class="form-control" id="propertyTitle" required>
+            </div>
+            <div class="mb-3">
+              <label for="propertyDescription" class="form-label">Description</label>
+              <textarea class="form-control" id="propertyDescription" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="propertyPrice" class="form-label">Price</label>
+              <input type="number" class="form-control" id="propertyPrice" required>
+            </div>
+            <div class="mb-3">
+              <label for="propertyAddress" class="form-label">Address</label>
+              <input type="text" class="form-control" id="propertyAddress" required>
+            </div>
+            <div class="mb-3">
+              <label for="propertyImage" class="form-label">Image</label>
+              <input type="file" class="form-control" id="propertyImage">
+            </div>
+            <button type="submit" class="btn btn-primary">Save Property</button>
+          </form>
+        </div>
       </div>
-      <div class="card-custom">
-        <h3>$45K</h3>
-        <p>Monthly Revenue</p>
+      
+      <!-- Manage Properties Panel -->
+      <div id="managePropertiesPanel" class="panelContent">
+        <button class="btn btn-secondary back-btn" data-target="homePanel">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <div class="panel">
+          <h2>Manage Properties</h2>
+          <p>Property management functionalities go here.</p>
+        </div>
       </div>
-      <div class="card-custom">
-        <h3>8</h3>
-        <p>Pending Tasks</p>
+      
+      <!-- Clients Panel -->
+      <div id="clientsPanel" class="panelContent">
+        <button class="btn btn-secondary back-btn" data-target="homePanel">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <div class="panel">
+          <h2>Clients</h2>
+          <p>Client management functionalities go here.</p>
+        </div>
+      </div>
+      
+      <!-- Account Settings Panel -->
+      <div id="accountSettingsPanel" class="panelContent">
+        <button class="btn btn-secondary back-btn" data-target="homePanel">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <div class="panel">
+          <h2>Account Settings</h2>
+          <form id="accountSettingsForm">
+            <div class="mb-3">
+              <label for="accountName" class="form-label">Name</label>
+              <input type="text" class="form-control" id="accountName" required>
+            </div>
+            <div class="mb-3">
+              <label for="accountEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="accountEmail" required>
+            </div>
+            <div class="mb-3">
+              <label for="accountPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="accountPassword">
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Support Panel -->
+      <div id="supportPanel" class="panelContent">
+        <button class="btn btn-secondary back-btn" data-target="homePanel">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <div class="panel">
+          <h2>Contact Support</h2>
+          <form id="supportForm">
+            <div class="mb-3">
+              <label for="supportSubject" class="form-label">Subject</label>
+              <input type="text" class="form-control" id="supportSubject" required>
+            </div>
+            <div class="mb-3">
+              <label for="supportMessage" class="form-label">Message</label>
+              <textarea class="form-control" id="supportMessage" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Request</button>
+          </form>
+        </div>
       </div>
     </div>
-
-    <!-- Analytics Panel -->
-    <div class="panel">
-      <h2>Analytics</h2>
-      <canvas id="analyticsChart" style="width: 100%; height: 300px;"></canvas>
-    </div>
-
-    <!-- Leads Panel -->
-    <div class="panel">
-      <h2>Leads</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Contact</th>
-            <th>Status</th>
-            <th>Follow-up</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>John Doe</td>
-            <td>john@example.com</td>
-            <td>New</td>
-            <td>2025-02-10</td>
-          </tr>
-          <tr>
-            <td>Jane Smith</td>
-            <td>jane@example.com</td>
-            <td>Contacted</td>
-            <td>2025-02-12</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Task List Panel -->
-    <div class="panel">
-      <h2>Task List</h2>
-      <ul>
-        <li>Follow up with client for "Modern Villa"</li>
-        <li>Review documents for "Lakeview Apartment"</li>
-        <li>Schedule open house for "City Center Condo"</li>
-      </ul>
-    </div>
-
-    <!-- Footer -->
-    <footer>
-      &copy; 2025 Real Estate Platform. All Rights Reserved.
-    </footer>
   </div>
-
+  
   <!-- Dark Mode Toggle Button -->
   <button class="toggle-dark" id="darkModeToggle">
     <i class="fas fa-moon"></i>
   </button>
-
+  
   <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Initialize Chart.js
+    // Function to hide all panels and show the one with the given id
+    function showPanel(panelId) {
+      document.querySelectorAll('.panelContent').forEach(panel => {
+        panel.style.display = 'none';
+      });
+      document.getElementById(panelId).style.display = 'block';
+      
+      // Update active class on sidebar links
+      document.querySelectorAll('.sidebar a').forEach(link => {
+        if(link.getAttribute('data-target') === panelId) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+    
+    // Attach click event to sidebar links
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = this.getAttribute('data-target');
+        showPanel(target);
+      });
+    });
+    
+    // Attach click event to Back buttons in each panel
+    document.querySelectorAll('.back-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const target = this.getAttribute('data-target');
+        showPanel(target);
+      });
+    });
+    
+    // Initialize home panel by default
+    showPanel('homePanel');
+    
+    // Initialize Chart.js for Analytics Panel
     const ctx = document.getElementById('analyticsChart').getContext('2d');
     new Chart(ctx, {
       type: 'line',
@@ -278,8 +442,8 @@
         plugins: { legend: { display: false } }
       }
     });
-
-    // Dark Mode Toggle
+    
+    // Dark Mode Toggle Functionality
     document.getElementById('darkModeToggle').addEventListener('click', function() {
       document.body.classList.toggle('dark-mode');
       const icon = this.querySelector('i');
@@ -287,6 +451,5 @@
       icon.classList.toggle('fa-sun');
     });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
