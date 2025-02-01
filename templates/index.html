@@ -107,7 +107,7 @@
       width: 100%;
       max-width: 800px;
       position: relative;
-      overflow: visible; /* Allow suggestions to extend outside without changing shape */
+      overflow: visible; /* Allow suggestions to extend without affecting the bar shape */
     }
     /* Uniform styling for input and select elements */
     .search-bar input,
@@ -146,35 +146,35 @@
       background: linear-gradient(45deg, #0056b3, #0090c8);
       transform: scale(1.03);
     }
-    /* autoComplete.js suggestions styled to match Bootstrap form-select options */
+    /* autoComplete.js suggestions styled like a Bootstrap dropdown but with a dark theme */
     .autoComplete_result {
       position: absolute;
-      top: 100%;
+      top: calc(100% + 4px);  /* slightly below the search bar */
       left: 0;
       width: 100%;
       z-index: 100;
-      background-color: #fff;
-      border: 1px solid #ced4da;
+      background-color: #343a40;  /* dark background */
+      border: 1px solid #343a40;
       border-top: none;
       border-radius: 0 0 0.375rem 0.375rem;
       overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     }
     .autoComplete_result li {
       padding: 0.375rem 0.75rem;
       font-size: 1rem;
-      color: #212529;
+      color: #fff;  /* white text */
       display: block;
       cursor: pointer;
       transition: background 0.2s ease;
     }
     .autoComplete_result li:hover,
     .autoComplete_result li[aria-selected="true"] {
-      background-color: #e9ecef;
+      background-color: #495057;  /* slightly lighter dark */
     }
     .autoComplete_result li .result-icon {
       margin-right: 10px;
-      color: #007bff;
+      color: #ffc107;  /* a contrasting color for the icon */
       font-size: 1.2rem;
     }
     /* Featured Listings Section */
