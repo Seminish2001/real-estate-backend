@@ -1,249 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Find your dream home with ease. Explore top properties with our advanced real estate search platform.">
-    <meta name="keywords" content="real estate, homes, apartments, property search, rent, buy">
-    <meta name="author" content="Top Realtors">
-    <title>Find Your Dream Home | Real Estate Hub</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f7f9;
-            color: #333;
-        }
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-            z-index: 1000;
-        }
-        .navbar-brand, .navbar-nav .nav-link {
-            color: #fff !important;
-            font-size: 1.2rem;
-        }
-        .hero {
-            height: 100vh;
-            background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1737577995/DALL_E_2025-01-22_21.27.23_-_A_modern_interior_real_estate_promotional_image_featuring_an_open-concept_living_room_and_kitchen._The_space_is_designed_with_a_neutral_color_palette_pqe1hl.webp') no-repeat center center/cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            color: #fff;
-        }
-        .hero-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
-        .search-bar {
-            background: rgba(255,255,255,0.95);
-            padding: 30px;
-            border-radius: 15px;
-            display: flex;
-            justify-content: space-between;
-            max-width: 1000px;
-            margin: auto;
-        }
-        .section {
-            padding: 60px 0;
-            text-align: center;
-        }
-        .section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-        .section p {
-            font-size: 1.1rem;
-        }
-        .property-listings .property-card {
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-        .property-listings .property-card img {
-            width: 100%;
-            height: auto;
-        }
-        .property-listings .property-card .card-body {
-            padding: 20px;
-        }
-        .interactive-map {
-            background: #f9f9f9;
-        }
-        .interactive-map .map-placeholder {
-            height: 400px;
-            background: url('map-placeholder.jpg') no-repeat center center/cover;
-            border-radius: 15px;
-        }
-        .footer {
-            background: #111;
-            color: #fff;
-            padding: 40px 0;
-            text-align: center;
-        }
-        .footer .footer-links {
-            list-style: none;
-            padding: 0;
-        }
-        .footer .footer-links li {
-            margin-bottom: 10px;
-        }
-        .footer .footer-links a {
-            color: #bbb;
-            text-decoration: none;
-        }
-        .footer .footer-links a:hover {
-            color: #fff;
-        }
-        .footer .social-icons a {
-            color: #bbb;
-            font-size: 24px;
-            margin: 0 15px;
-        }
-        .footer .social-icons a:hover {
-            color: #fff;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Discover your dream home with our advanced real estate platform.">
+  <meta name="keywords" content="real estate, property search, homes, apartments, villas">
+  <meta name="author" content="Real Estate Platform">
+  <title>Real Estate Platform | Find Your Dream Home</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4f7f9;
+      color: #333;
+    }
+    a {
+      text-decoration: none;
+    }
+    /* Navbar */
+    .navbar {
+      background: rgba(0, 0, 0, 0.8);
+    }
+    .navbar-brand, .navbar-nav .nav-link {
+      color: #fff !important;
+      font-weight: 500;
+    }
+    /* Hero Section */
+    .hero-section {
+      position: relative;
+      background: url('https://via.placeholder.com/1920x800?text=Your+Dream+Home') no-repeat center center/cover;
+      height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .hero-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    .hero-content h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .hero-content p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+    /* Search Bar */
+    .search-bar {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    /* Featured Listings */
+    .featured-listings .card {
+      border: none;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+    .featured-listings .card:hover {
+      transform: translateY(-10px);
+    }
+    .featured-listings .card img {
+      height: 200px;
+      object-fit: cover;
+    }
+    /* Testimonials */
+    .testimonials {
+      background: #fff;
+      padding: 60px 20px;
+    }
+    .testimonial-item {
+      text-align: center;
+      padding: 20px;
+    }
+    .testimonial-item p {
+      font-style: italic;
+    }
+    .testimonial-item h5 {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    /* Interactive Map Placeholder */
+    .interactive-map {
+      background: #e9ecef;
+      padding: 60px 0;
+      text-align: center;
+    }
+    .interactive-map .map-placeholder {
+      width: 100%;
+      height: 400px;
+      background: url('https://via.placeholder.com/1200x400?text=Interactive+Map') no-repeat center center/cover;
+      border-radius: 10px;
+      margin: auto;
+    }
+    /* Footer */
+    .footer {
+      background: #111;
+      color: #bbb;
+      padding: 40px 0;
+      text-align: center;
+    }
+    .footer a {
+      color: #bbb;
+      margin: 0 10px;
+    }
+    .footer a:hover {
+      color: #fff;
+    }
+  </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
     <div class="container">
-        <a class="navbar-brand" href="#">🏡 Real Estate Hub</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="login">Login</a></li>
-                <li class="nav-item"><a class="nav-link" href="signup">Signup</a></li>
-                <li class="nav-item"><a class="nav-link" href="for-owners">For Owners</a></li>
-            </ul>
-        </div>
+      <a class="navbar-brand" href="/">🏡 Real Estate Platform</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/properties">Properties</a></li>
+          <li class="nav-item"><a class="nav-link" href="/for-owners">For Owners</a></li>
+          <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
+        </ul>
+      </div>
     </div>
-</nav>
+  </nav>
 
-<section class="hero">
+  <!-- Hero Section with Search -->
+  <section class="hero-section">
     <div class="hero-overlay"></div>
-    <div class="hero-content">
-        <h1>Find Your Perfect Property</h1>
-        <p class="lead">Browse properties from hundreds of providers and save time.</p>
-        <div class="search-bar">
-            <input type="text" class="form-control me-2" placeholder="Enter location...">
-            <select class="form-select me-2">
-                <option>All Types</option>
-                <option>Apartment</option>
-                <option>House</option>
-                <option>Villa</option>
+    <div class="hero-content container">
+      <h1>Find Your Dream Home</h1>
+      <p>Explore top properties with our advanced search platform.</p>
+      <div class="search-bar mx-auto shadow">
+        <form class="row g-2">
+          <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Enter Location" required>
+          </div>
+          <div class="col-md-3">
+            <select class="form-select" required>
+              <option value="" disabled selected>Property Type</option>
+              <option value="apartment">Apartment</option>
+              <option value="house">House</option>
+              <option value="villa">Villa</option>
             </select>
-            <select class="form-select me-2">
-                <option value="buy">Buy</option>
-                <option value="rent">Rent</option>
+          </div>
+          <div class="col-md-3">
+            <select class="form-select" required>
+              <option value="" disabled selected>Purpose</option>
+              <option value="buy">Buy</option>
+              <option value="rent">Rent</option>
             </select>
-            <button class="btn btn-primary">Search</button>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Listings -->
+  <section class="featured-listings py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Featured Listings</h2>
+      <div class="row g-4">
+        <!-- Property Card 1 -->
+        <div class="col-md-4">
+          <div class="card">
+            <img src="https://via.placeholder.com/400x200?text=Property+1" class="card-img-top" alt="Luxury Apartment">
+            <div class="card-body">
+              <h5 class="card-title">Luxury Apartment</h5>
+              <p class="card-text">$500,000 - 3 Beds, 2 Baths</p>
+              <a href="/property-details" class="btn btn-outline-primary">View Details</a>
+            </div>
+          </div>
         </div>
-    </div>
-</section>
-
-<section class="section">
-    <div class="container">
-        <h2>Why Choose Us?</h2>
-        <p>Access a wide range of verified listings, making your property search effortless and reliable.</p>
-    </div>
-</section>
-
-<section class="section property-listings">
-    <div class="container">
-        <h2>Featured Listings</h2>
-        <p>Explore our top property listings tailored to your needs.</p>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="property-card">
-                    <img src="property1.jpg" alt="Property 1">
-                    <div class="card-body">
-                        <h5>Luxury Apartment</h5>
-                        <p>$500,000 - 3 Beds, 2 Baths</p>
-                    </div>
-                </div>
+        <!-- Property Card 2 -->
+        <div class="col-md-4">
+          <div class="card">
+            <img src="https://via.placeholder.com/400x200?text=Property+2" class="card-img-top" alt="Cozy Family House">
+            <div class="card-body">
+              <h5 class="card-title">Cozy Family House</h5>
+              <p class="card-text">$350,000 - 4 Beds, 3 Baths</p>
+              <a href="/property-details" class="btn btn-outline-primary">View Details</a>
             </div>
-            <div class="col-md-4">
-                <div class="property-card">
-                    <img src="property2.jpg" alt="Property 2">
-                    <div class="card-body">
-                        <h5>Cozy Family House</h5>
-                        <p>$350,000 - 4 Beds, 3 Baths</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="property-card">
-                    <img src="property3.jpg" alt="Property 3">
-                    <div class="card-body">
-                        <h5>Modern Villa</h5>
-                        <p>$1,200,000 - 5 Beds, 4 Baths</p>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-    </div>
-</section>
-
-<section class="section interactive-map">
-    <div class="container">
-        <h2>Find Properties on the Map</h2>
-        <div class="map-placeholder"></div>
-    </div>
-</section>
-
-<section class="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <h5>Company</h5>
-                <ul class="footer-links">
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
+        <!-- Property Card 3 -->
+        <div class="col-md-4">
+          <div class="card">
+            <img src="https://via.placeholder.com/400x200?text=Property+3" class="card-img-top" alt="Modern Villa">
+            <div class="card-body">
+              <h5 class="card-title">Modern Villa</h5>
+              <p class="card-text">$1,200,000 - 5 Beds, 4 Baths</p>
+              <a href="/property-details" class="btn btn-outline-primary">View Details</a>
             </div>
-            <div class="col-md-4">
-                <h5>Support</h5>
-                <ul class="footer-links">
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">FAQs</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5>Follow Us</h5>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
+          </div>
         </div>
-        <p>&copy; 2025 Real Estate Hub. All Rights Reserved.</p>
+      </div>
     </div>
-</section>
+  </section>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Testimonials Section -->
+  <section class="testimonials py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">What Our Clients Say</h2>
+      <div class="row">
+        <!-- Testimonial 1 -->
+        <div class="col-md-4">
+          <div class="testimonial-item">
+            <p>"This platform made finding our new home a breeze. Highly recommended!"</p>
+            <h5>- John Doe</h5>
+          </div>
+        </div>
+        <!-- Testimonial 2 -->
+        <div class="col-md-4">
+          <div class="testimonial-item">
+            <p>"An intuitive experience with amazing property options and great support."</p>
+            <h5>- Jane Smith</h5>
+          </div>
+        </div>
+        <!-- Testimonial 3 -->
+        <div class="col-md-4">
+          <div class="testimonial-item">
+            <p>"The best real estate website out there. The search functionality is on point!"</p>
+            <h5>- Mark Johnson</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Interactive Map Section -->
+  <section class="interactive-map py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Explore Properties on the Map</h2>
+      <div class="map-placeholder"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Real Estate Platform. All Rights Reserved.</p>
+      <p>
+        <a href="/about">About Us</a> |
+        <a href="/contact">Contact</a> |
+        <a href="/privacy">Privacy Policy</a> |
+        <a href="/terms">Terms of Service</a>
+      </p>
+      <div>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="ms-3"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="ms-3"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
