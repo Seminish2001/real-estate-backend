@@ -13,6 +13,8 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
   <!-- autoComplete.js CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.css" />
+  <!-- Leaflet CSS for the interactive map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-sA+e2x9H4VO/vx6U6DhiZfKp8a11m/h67+E6pT1Y7vU=" crossorigin=""/>
   <style>
     /* General Styles */
     body {
@@ -185,12 +187,10 @@
       padding: 60px 0;
       text-align: center;
     }
-    .interactive-map .map-placeholder {
+    #map {
       width: 100%;
       height: 400px;
-      background: url('https://via.placeholder.com/1200x400?text=Interactive+Map') no-repeat center center/cover;
       border-radius: 10px;
-      margin: auto;
     }
     /* Footer */
     .footer {
@@ -308,8 +308,8 @@
   <section class="interactive-map py-5">
     <div class="container">
       <h2 class="text-center mb-4">Explore Properties on the Map</h2>
-      <!-- Replace the placeholder with your preferred map API integration -->
-      <div class="map-placeholder"></div>
+      <!-- Replace the placeholder with a Leaflet map -->
+      <div id="map"></div>
     </div>
   </section>
 
@@ -335,6 +335,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- autoComplete.js -->
   <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-Dqqg1W2Pk0Vt+Z0xGQdFnroGdbY3Vm+NvWOsq3a+1Rw=" crossorigin=""></script>
   <script>
     // Extended array of Albanian cities and areas for suggestions
     const locations = [
@@ -343,7 +345,7 @@
       "Gjirokastër", "Lezhë", "Sarandë", "Përmet", "Rrëshen", "Krujë", "Burrel", "Mat", "Peqin", "Devoll", "Mallakastër"
     ];
 
-    // Initialize autoComplete.js with enhanced styling
+    // Initialize autoComplete.js with enhanced suggestions styling
     const autoCompleteJS = new autoComplete({
       data: {
         src: locations,
@@ -384,6 +386,16 @@
       // Redirect to properties page with query parameters
       window.location.href = `/properties?location=${encodeURIComponent(location)}&type=${encodeURIComponent(type)}&purpose=${encodeURIComponent(purpose)}`;
     });
+
+    // Initialize Leaflet Map
+    const map = L.map('map').setView([41.3275, 19.8187], 8); // Coordinates centered on Albania
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+    // Example marker
+    L.marker([41.3275, 19.8187]).addTo(map)
+      .bindPopup('This is Tirana, Albania.')
+      .openPopup();
   </script>
 </body>
 </html>
