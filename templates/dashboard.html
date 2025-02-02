@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Mind-blowing modern real estate dashboard with advanced features for agencies and property owners.">
-  <title>Mind-Blowing Dashboard | Real Estate Platform</title>
+  <meta name="description" content="Ultimate real estate dashboard with advanced features for agencies.">
+  <title>Ultimate Dashboard | Real Estate Platform</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
@@ -63,7 +63,7 @@
       color: #007bff;
     }
     
-    /* Top Header with Notifications and Profile */
+    /* Top Header */
     .top-header {
       position: fixed;
       top: 0;
@@ -113,7 +113,7 @@
       margin-left: 70px;
     }
     
-    /* Panels & Cards (Glassmorphism) */
+    /* Panels & Cards */
     .panelContent { display: none; animation: fadeIn 0.5s; }
     .panel, .card-custom {
       background: rgba(255,255,255,0.6);
@@ -133,7 +133,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
     
-    /* Header (Home Panel) */
+    /* Homepage Header */
     .header-main {
       text-align: center;
       margin-bottom: 40px;
@@ -146,6 +146,25 @@
     .header-main h1 { font-size: 2.4rem; margin-bottom: 10px; }
     .header-main p { font-size: 1.2rem; margin: 0; }
     
+    /* KPI Animated Counters */
+    .counter {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #007bff;
+    }
+    
+    /* Tabbed Reports Section */
+    .reports-tabs .nav-link {
+      font-weight: 500;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: #007bff;
+    }
+    .reports-tabs .nav-link.active {
+      border-color: #007bff;
+      font-weight: bold;
+    }
+    
     /* Tables */
     table { width: 100%; border-collapse: collapse; }
     thead { background: #e9ecef; }
@@ -156,6 +175,7 @@
     /* Forms */
     .form-label { font-weight: 500; }
     .form-control:focus { box-shadow: none; border-color: #007bff; }
+    .form-error { color: #dc3545; font-size: 0.85rem; }
     
     /* Notifications Dropdown */
     .notifications-dropdown {
@@ -212,18 +232,16 @@
       z-index: 1000;
     }
     
-    /* Custom Styles for Search Bars, Agent List & Activity Feed */
-    .search-bar { margin-bottom: 15px; }
-    .agent-list-item {
-      display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #e9ecef;
+    /* Extra UI Enhancements */
+    .export-btn { margin-top: 10px; }
+    
+    /* Agents Panel Header */
+    .agents-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
     }
-    .agent-list-item img {
-      width: 50px; height: 50px; object-fit: cover; border-radius: 50%; margin-right: 15px;
-    }
-    .agent-info { flex-grow: 1; }
-    .remove-agent { color: #dc3545; cursor: pointer; }
-    .activity-feed { max-height: 300px; overflow-y: auto; }
-    .activity-feed li { padding: 8px; border-bottom: 1px solid #eee; }
   </style>
 </head>
 <body>
@@ -262,17 +280,14 @@
       Real Estate Command Center
     </div>
     <div class="header-right">
-      <i class="fas fa-bell" id="notificationsBtn" data-bs-toggle="popover" data-bs-html="true"></i>
+      <i class="fas fa-bell" id="notificationsBtn"></i>
       <i class="fas fa-user-circle" id="profileBtn" data-bs-toggle="modal" data-bs-target="#profileModal"></i>
       <i class="fas fa-bars" id="toggleSidebar"></i>
     </div>
     <!-- Notifications Dropdown -->
     <div class="notifications-dropdown" id="notificationsDropdown">
-      <ul>
-        <li><i class="fas fa-info-circle me-2"></i>New inquiry on "Lakeview Apartment"</li>
-        <li><i class="fas fa-info-circle me-2"></i>Property "City Center Condo" approved</li>
-        <li><i class="fas fa-info-circle me-2"></i>Agent Michael Smith joined</li>
-      </ul>
+      <!-- Dynamic notifications will be inserted here -->
+      <ul><!-- e.g., <li><i class="fas fa-info-circle me-2"></i>Notification text here</li> --></ul>
     </div>
   </div>
   
@@ -281,89 +296,157 @@
     <!-- Home Panel -->
     <div id="homePanel" class="panelContent">
       <div class="header-main">
-        <h1 id="welcomeHeader">Welcome, John Doe</h1>
+        <h1 id="welcomeHeader">Welcome, <!-- Dynamic: User Name --></h1>
         <p>Your command center for real estate management</p>
       </div>
-      <div class="cards-grid row g-3">
+      <!-- KPI Cards with Animated Counters -->
+      <div class="row g-3 mb-4">
         <div class="col-md-3">
           <div class="card-custom p-4">
-            <h3>25</h3>
+            <div class="counter" data-target="0">0</div>
             <p>Active Listings</p>
           </div>
         </div>
         <div class="col-md-3">
           <div class="card-custom p-4">
-            <h3>12</h3>
+            <div class="counter" data-target="0">0</div>
             <p>New Inquiries</p>
           </div>
         </div>
         <div class="col-md-3">
           <div class="card-custom p-4">
-            <h3>$45K</h3>
+            <div class="counter" data-target="0">0</div>
             <p>Monthly Revenue</p>
           </div>
         </div>
         <div class="col-md-3">
           <div class="card-custom p-4">
-            <h3>8</h3>
+            <div class="counter" data-target="0">0</div>
             <p>Pending Tasks</p>
           </div>
         </div>
       </div>
-      <!-- Quick Stats & Analytics -->
-      <div class="row g-3">
-        <div class="col-md-8">
-          <div class="panel">
-            <h2>Analytics</h2>
-            <canvas id="analyticsChart" style="width: 100%; height: 300px;"></canvas>
-            <small class="text-muted">Toggle between revenue, inquiries, and listings views.</small>
+      <!-- Tabbed Performance Reports -->
+      <div class="panel mb-4">
+        <h2>Performance Reports</h2>
+        <ul class="nav nav-tabs reports-tabs" id="reportsTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="sales-tab" data-bs-toggle="tab" data-bs-target="#salesReport" type="button" role="tab">Sales</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="rentals-tab" data-bs-toggle="tab" data-bs-target="#rentalsReport" type="button" role="tab">Rentals</button>
+          </li>
+        </ul>
+        <div class="tab-content mt-3" id="reportsTabContent">
+          <!-- Sales Report -->
+          <div class="tab-pane fade show active" id="salesReport" role="tabpanel">
+            <div class="row">
+              <div class="col-md-8">
+                <canvas id="salesChart" style="height: 300px;"></canvas>
+              </div>
+              <div class="col-md-4">
+                <!-- Dynamic Sales Report Metrics -->
+                <ul class="list-unstyled"><!-- Metrics go here --></ul>
+                <button class="btn btn-outline-primary btn-sm export-btn">Export (CSV)</button>
+              </div>
+            </div>
+          </div>
+          <!-- Rentals Report -->
+          <div class="tab-pane fade" id="rentalsReport" role="tabpanel">
+            <div class="row">
+              <div class="col-md-8">
+                <canvas id="rentalsChart" style="height: 300px;"></canvas>
+              </div>
+              <div class="col-md-4">
+                <!-- Dynamic Rentals Report Metrics -->
+                <ul class="list-unstyled"><!-- Metrics go here --></ul>
+                <button class="btn btn-outline-primary btn-sm export-btn">Export (PDF)</button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="panel">
-            <h2>Quick Stats</h2>
-            <ul class="list-unstyled">
-              <li><strong>Conversion Rate:</strong> 25%</li>
-              <li><strong>Avg. Sale Price:</strong> $550K</li>
-              <li><strong>Active Campaigns:</strong> 3</li>
-            </ul>
+      </div>
+      <!-- Extra Quick Stats -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-3">
+          <div class="card-custom p-4">
+            <h3><!-- Dynamic Rental Yield --></h3>
+            <p>Rental Yield</p>
           </div>
         </div>
+        <div class="col-md-3">
+          <div class="card-custom p-4">
+            <h3><!-- Dynamic Sales Conversion --></h3>
+            <p>Sales Conversion</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card-custom p-4">
+            <h3><!-- Dynamic Properties Sold --></h3>
+            <p>Properties Sold</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card-custom p-4">
+            <h3><!-- Dynamic Occupancy Rate --></h3>
+            <p>Occupancy Rate</p>
+          </div>
+        </div>
+      </div>
+      <!-- Business Insights -->
+      <div class="panel">
+        <h2>Business Insights</h2>
+        <p>Click below for a deep dive into your performance trends and predictive analytics.</p>
+        <button class="btn btn-primary" onclick="alert('Drill-down insights coming soon!')">
+          View Detailed Insights <i class="fas fa-arrow-right ms-2"></i>
+        </button>
       </div>
       <!-- Activity Feed -->
       <div class="panel">
         <h2>Recent Activity</h2>
         <ul class="activity-feed">
-          <li><i class="fas fa-check-circle text-success me-2"></i> Property "Modern Villa" was sold.</li>
-          <li><i class="fas fa-user-plus text-info me-2"></i> New agent Sarah Lee joined.</li>
-          <li><i class="fas fa-exclamation-circle text-warning me-2"></i> Inquiry received for "Lakeview Apartment".</li>
+          <!-- Dynamic activity feed items go here -->
         </ul>
       </div>
     </div>
     
-    <!-- Add Property Panel with Assign Agent -->
+    <!-- Add Property Panel -->
     <div id="addPropertyPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
       <div class="panel">
         <h2>Add New Property</h2>
+        <!-- Property Purpose Toggle -->
+        <div class="mb-3">
+          <label class="form-label">Property Purpose:</label>
+          <div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="propertyPurpose" id="forSale" value="sale" checked>
+              <label class="form-check-label" for="forSale">For Sale</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="propertyPurpose" id="forRent" value="rent">
+              <label class="form-check-label" for="forRent">For Rent</label>
+            </div>
+          </div>
+        </div>
         <form id="addPropertyForm">
           <div class="mb-3">
             <label for="propertyTitle" class="form-label">Property Title</label>
-            <input type="text" class="form-control" id="propertyTitle" placeholder="e.g., Elegant Family Home" required>
+            <input type="text" class="form-control" id="propertyTitle" placeholder="Enter property title" required>
+            <div class="form-error" id="propertyTitleError"></div>
           </div>
           <div class="mb-3">
             <label for="propertyType" class="form-label">Property Type</label>
             <select class="form-select" id="propertyType" required>
               <option value="">Select Type</option>
-              <option value="house">House</option>
-              <option value="apartment">Apartment</option>
-              <option value="villa">Villa</option>
-              <option value="commercial">Commercial</option>
+              <!-- Options populated dynamically -->
             </select>
           </div>
           <div class="mb-3">
             <label for="propertyDescription" class="form-label">Description</label>
-            <textarea class="form-control" id="propertyDescription" rows="3" placeholder="Describe the property..." required></textarea>
+            <textarea class="form-control" id="propertyDescription" rows="3" placeholder="Enter description" required></textarea>
           </div>
           <div class="row g-3">
             <div class="col-md-6">
@@ -393,104 +476,96 @@
             <label for="propertyImage" class="form-label">Property Image</label>
             <input type="file" class="form-control" id="propertyImage">
           </div>
+          <!-- Rental-specific fields (hidden unless "For Rent" is selected) -->
+          <div id="rentFields" style="display: none;">
+            <div class="mb-3">
+              <label for="leaseDuration" class="form-label">Lease Duration (months)</label>
+              <input type="number" class="form-control" id="leaseDuration">
+            </div>
+            <div class="mb-3">
+              <label for="monthlyRent" class="form-label">Monthly Rent ($)</label>
+              <input type="number" class="form-control" id="monthlyRent">
+            </div>
+            <div class="mb-3">
+              <label for="availabilityDate" class="form-label">Availability Date</label>
+              <input type="date" class="form-control" id="availabilityDate">
+            </div>
+          </div>
+          <!-- Smart Agent Assignment -->
           <div class="mb-3">
             <label for="assignAgent" class="form-label">Assign Agent</label>
             <input type="text" class="form-control" id="assignAgent" placeholder="Start typing agent's name">
-            <small class="text-muted">Live search from agents. (Demo only.)</small>
+            <small class="text-muted">Live search (to be integrated).</small>
           </div>
           <button type="submit" class="btn btn-primary">Save Property</button>
         </form>
       </div>
     </div>
     
-    <!-- Manage Properties Panel with Inline Edit Modal Trigger -->
+    <!-- Manage Properties Panel -->
     <div id="managePropertiesPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
       <div class="panel">
         <h2>Manage Properties</h2>
-        <p>Review and edit your listed properties below.</p>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <input type="text" class="form-control search-bar" id="propertySearch" placeholder="Search properties...">
+          <div>
+            <button class="btn btn-outline-secondary btn-sm me-2">Filter</button>
+            <button class="btn btn-outline-secondary btn-sm">Export (CSV)</button>
+          </div>
+        </div>
         <table>
           <thead>
             <tr>
+              <th><input type="checkbox" id="selectAllProperties"></th>
               <th>Title</th>
               <th>Type</th>
               <th>Price</th>
               <th>Agent</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Elegant Family Home</td>
-              <td>House</td>
-              <td>$500,000</td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <img src="https://via.placeholder.com/40" alt="Agent" class="me-2" style="width:40px; height:40px; border-radius:50%;">
-                  <span>Emily Johnson</span>
-                </div>
-              </td>
-              <td>
-                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editPropertyModal">Edit</button>
-                <button class="btn btn-sm btn-danger">Delete</button>
-              </td>
-            </tr>
-            <!-- More rows as needed -->
+            <!-- Dynamic property rows go here -->
           </tbody>
         </table>
+        <div class="mt-3">
+          <button class="btn btn-danger btn-sm">Delete Selected</button>
+          <button class="btn btn-secondary btn-sm">Update Status</button>
+        </div>
       </div>
     </div>
     
     <!-- Agents Panel -->
     <div id="agentsPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
       <div class="panel">
-        <h2>Agents</h2>
+        <div class="agents-header">
+          <h2>Agents</h2>
+          <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addAgentModal">
+            <i class="fas fa-plus"></i> Add New Agent
+          </button>
+        </div>
         <input type="text" class="form-control search-bar" id="agentSearch" placeholder="Search agents by name">
         <div id="agentList">
-          <div class="agent-list-item">
-            <img src="https://via.placeholder.com/50" alt="Agent">
-            <div class="agent-info">
-              <strong>Emily Johnson</strong><br>
-              <small>emily@example.com</small>
-            </div>
-            <i class="fas fa-trash remove-agent" title="Remove Agent"></i>
-          </div>
-          <!-- Additional agent items -->
+          <!-- Dynamic agent items go here -->
         </div>
-        <hr>
-        <h3>Add New Agent</h3>
-        <form id="addAgentForm">
-          <div class="mb-3">
-            <label for="agentPhoto" class="form-label">Agent Photo</label>
-            <input type="file" class="form-control" id="agentPhoto">
-          </div>
-          <div class="row g-3 mb-3">
-            <div class="col">
-              <label for="agentFirstName" class="form-label">First Name</label>
-              <input type="text" class="form-control" id="agentFirstName" required>
-            </div>
-            <div class="col">
-              <label for="agentLastName" class="form-label">Last Name</label>
-              <input type="text" class="form-control" id="agentLastName" required>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label for="agentPhone" class="form-label">Phone Number</label>
-            <input type="tel" class="form-control" id="agentPhone">
-          </div>
-          <div class="mb-3">
-            <label for="agentEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="agentEmail">
-          </div>
-          <button type="submit" class="btn btn-primary">Add Agent</button>
-        </form>
+        <div class="mt-3">
+          <button class="btn btn-secondary btn-sm">Send Bulk Message</button>
+        </div>
       </div>
     </div>
     
     <!-- Agents Report Panel -->
     <div id="agentsReportPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
       <div class="panel">
         <h2>Top Agents Report</h2>
         <table>
@@ -503,18 +578,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Emily Johnson</td>
-              <td>15</td>
-              <td>10</td>
-              <td>4.8</td>
-            </tr>
-            <tr>
-              <td>Michael Smith</td>
-              <td>12</td>
-              <td>9</td>
-              <td>4.6</td>
-            </tr>
+            <!-- Dynamic agents report data goes here -->
           </tbody>
         </table>
       </div>
@@ -522,17 +586,36 @@
     
     <!-- Clients Panel -->
     <div id="clientsPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
       <div class="panel">
         <h2>Clients</h2>
-        <p>Manage your client contacts and communication history.</p>
-        <!-- Client management UI goes here -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <input type="text" class="form-control search-bar" id="clientSearch" placeholder="Search clients...">
+          <button class="btn btn-outline-secondary btn-sm">Add New Client</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Contact</th>
+              <th>Last Contacted</th>
+              <th>Next Appointment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic client rows go here -->
+          </tbody>
+        </table>
       </div>
     </div>
     
     <!-- Account Settings Panel -->
     <div id="accountSettingsPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
       <div class="panel">
         <h2>Account Settings</h2>
         <form id="accountSettingsForm">
@@ -556,6 +639,18 @@
             <label for="profilePicture" class="form-label">Profile Picture</label>
             <input type="file" class="form-control" id="profilePicture">
           </div>
+          <div class="mb-3">
+            <label for="themeColor" class="form-label">Theme Color</label>
+            <input type="color" class="form-control form-control-color" id="themeColor" value="#007bff">
+          </div>
+          <div class="mb-3">
+            <label for="twoFactor" class="form-label">Two-Factor Authentication</label>
+            <select class="form-select" id="twoFactor">
+              <option value="off">Off</option>
+              <option value="sms">SMS</option>
+              <option value="app">Authenticator App</option>
+            </select>
+          </div>
           <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
       </div>
@@ -563,7 +658,9 @@
     
     <!-- Support Panel -->
     <div id="supportPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
       <div class="panel">
         <h2>Contact Support</h2>
         <form id="supportForm">
@@ -582,7 +679,7 @@
     
   </div>
   
-  <!-- Profile Modal (for User Settings, Activity, etc.) -->
+  <!-- Profile Modal -->
   <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -591,25 +688,93 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <!-- Example profile details -->
+          <!-- Dynamic profile details go here -->
           <div class="text-center mb-3">
-            <img src="https://via.placeholder.com/100" class="rounded-circle mb-2" alt="Profile">
-            <h5>John Doe</h5>
-            <p class="text-muted">Admin</p>
+            <img src="" class="rounded-circle mb-2" alt="Profile" id="profilePicDisplay">
+            <h5 id="profileName"><!-- User Name --></h5>
+            <p class="text-muted" id="profileRole"><!-- User Role --></p>
           </div>
-          <p><strong>Recent Login:</strong> 2025-02-02 08:45 AM</p>
-          <p><strong>Business Email:</strong> admin@example.com</p>
-          <!-- Additional profile settings -->
+          <p><strong>Recent Login:</strong> <span id="recentLogin"><!-- Dynamic timestamp --></span></p>
+          <p><strong>Business Email:</strong> <span id="profileEmail"><!-- Dynamic email --></span></p>
+          <p><strong>Login Activity:</strong> <span id="loginActivity"><!-- Dynamic data --></span></p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Edit Profile</button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
         </div>
       </div>
     </div>
   </div>
   
-  <!-- Edit Property Modal (Inline editing example) -->
+  <!-- Edit Profile Modal -->
+  <div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Profile</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editProfileForm">
+            <div class="mb-3">
+              <label for="editName" class="form-label">Name</label>
+              <input type="text" class="form-control" id="editName" required>
+            </div>
+            <div class="mb-3">
+              <label for="editEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="editEmail" required>
+            </div>
+            <div class="mb-3">
+              <label for="editProfilePic" class="form-label">Profile Picture</label>
+              <input type="file" class="form-control" id="editProfilePic">
+            </div>
+            <button type="submit" class="btn btn-primary">Save Profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Add Agent Modal -->
+  <div class="modal fade" id="addAgentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Agent</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addAgentForm">
+            <div class="mb-3">
+              <label for="agentPhoto" class="form-label">Agent Photo</label>
+              <input type="file" class="form-control" id="agentPhoto">
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col">
+                <label for="agentFirstName" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="agentFirstName" required>
+              </div>
+              <div class="col">
+                <label for="agentLastName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="agentLastName" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="agentPhone" class="form-label">Phone Number</label>
+              <input type="tel" class="form-control" id="agentPhone">
+            </div>
+            <div class="mb-3">
+              <label for="agentEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="agentEmail">
+            </div>
+            <button type="submit" class="btn btn-primary">Add Agent</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Edit Property Modal -->
   <div class="modal fade" id="editPropertyModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
@@ -618,14 +783,12 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <!-- Similar form structure as Add Property -->
           <form id="editPropertyForm">
-            <!-- Fields pre-populated via JS in a real scenario -->
             <div class="mb-3">
               <label for="editPropertyTitle" class="form-label">Property Title</label>
               <input type="text" class="form-control" id="editPropertyTitle" required>
             </div>
-            <!-- Other fields... -->
+            <!-- Additional fields should be pre-populated dynamically -->
             <button type="submit" class="btn btn-primary">Save Changes</button>
           </form>
         </div>
@@ -641,8 +804,8 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Set welcome name dynamically
-    const userName = "John Doe";
+    // Set dynamic user name (replace with dynamic data as needed)
+    const userName = "Your User Name";
     document.getElementById('welcomeHeader').innerText = "Welcome, " + userName;
     
     // Panel navigation function
@@ -673,25 +836,60 @@
     // Initialize default panel
     showPanel('homePanel');
     
-    // Chart.js Analytics Chart
-    const ctx = document.getElementById('analyticsChart').getContext('2d');
-    new Chart(ctx, {
+    // Animate counters
+    document.querySelectorAll('.counter').forEach(counter => {
+      const updateCount = () => {
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText;
+        const increment = target / 100;
+        if(count < target) {
+          counter.innerText = Math.ceil(count + increment);
+          setTimeout(updateCount, 20);
+        } else {
+          counter.innerText = target;
+        }
+      };
+      updateCount();
+    });
+    
+    // Initialize Sales Chart
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+    new Chart(salesCtx, {
+      type: 'bar',
+      data: {
+        labels: [], // Dynamic labels
+        datasets: [{
+          label: 'Sales ($)',
+          data: [], // Dynamic data
+          backgroundColor: '#007bff'
+        }]
+      },
+      options: { scales: { y: { beginAtZero: true } } }
+    });
+    
+    // Initialize Rentals Chart
+    const rentalsCtx = document.getElementById('rentalsChart').getContext('2d');
+    new Chart(rentalsCtx, {
       type: 'line',
       data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        labels: [], // Dynamic labels
         datasets: [{
-          label: 'Revenue',
-          data: [5000, 7000, 8000, 6000, 9000, 11000, 13000],
-          borderColor: '#007bff',
-          backgroundColor: 'rgba(0,123,255,0.2)',
+          label: 'Rentals ($)',
+          data: [], // Dynamic data
+          borderColor: '#17a2b8',
+          backgroundColor: 'rgba(23,162,184,0.2)',
           fill: true,
           tension: 0.3
         }]
       },
-      options: {
-        scales: { y: { beginAtZero: true } },
-        plugins: { legend: { display: false } }
-      }
+      options: { scales: { y: { beginAtZero: true } } }
+    });
+    
+    // Toggle display of rental fields based on Property Purpose selection
+    document.querySelectorAll('input[name="propertyPurpose"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        document.getElementById('rentFields').style.display = (this.value === 'rent') ? 'block' : 'none';
+      });
     });
     
     // Dark Mode Toggle
@@ -702,12 +900,12 @@
       icon.classList.toggle('fa-sun');
     });
     
-    // Sidebar Toggle for responsive view
+    // Sidebar Toggle
     document.getElementById('toggleSidebar').addEventListener('click', function() {
       document.getElementById('sidebar').classList.toggle('collapsed');
     });
     
-    // Notifications dropdown toggle
+    // Notifications Dropdown Toggle
     document.getElementById('notificationsBtn').addEventListener('click', function(e) {
       e.stopPropagation();
       document.getElementById('notificationsDropdown').classList.toggle('active');
@@ -716,11 +914,12 @@
       document.getElementById('notificationsDropdown').classList.remove('active');
     });
     
-    // Sample form submissions
+    // Sample form submissions (replace with actual integrations)
     document.getElementById('addAgentForm').addEventListener('submit', function(e) {
       e.preventDefault();
       alert('New agent added!');
       this.reset();
+      bootstrap.Modal.getInstance(document.getElementById('addAgentModal')).hide();
     });
     document.getElementById('addPropertyForm').addEventListener('submit', function(e) {
       e.preventDefault();
@@ -731,8 +930,22 @@
     document.getElementById('editPropertyForm')?.addEventListener('submit', function(e) {
       e.preventDefault();
       alert('Property updated!');
-      // In practice, update data and close modal.
       bootstrap.Modal.getInstance(document.getElementById('editPropertyModal')).hide();
+    });
+    document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Profile updated!');
+      bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+    });
+    document.getElementById('accountSettingsForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Account settings updated!');
+      this.reset();
+    });
+    document.getElementById('supportForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Support request submitted!');
+      this.reset();
     });
   </script>
 </body>
