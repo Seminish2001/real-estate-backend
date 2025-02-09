@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Set up personalized property alerts and never miss your dream home." />
+  <meta name="keywords" content="real estate, alerts, property search, buy, rent, notifications" />
+  <meta name="author" content="Real Estate Platform" />
+  <title>Set Up Property Alerts | Real Estate Platform</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- Font Awesome -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #fff; /* White background */
+      color: #000;     /* Dark text by default */
+      overflow-x: hidden;
+    }
+    a {
+      text-decoration: none;
+    }
+    /* Header (Same as Homepage) */
+    header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+      padding: 20px 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+    }
+    .navbar {
+      padding: 0 20px;
+    }
+    .navbar-brand {
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    .navbar-nav .nav-link {
+      color: #fff;
+      font-weight: 500;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #ffd700;
+    }
+    /* Hero Section */
+    .hero-section {
+      height: 100vh;
+      background: url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80')
+        no-repeat center center/cover;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-section::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    .hero-text {
+      position: relative;
+      text-align: center;
+      animation: fadeInDown 1s ease-out;
+      /* Ensure hero text remains white */
+      color: #fff;
+    }
+    .hero-text h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    }
+    .hero-text p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+    }
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* Form Section */
+    .form-section {
+      padding: 100px 20px 150px;
+      background: transparent;
+      position: relative;
+      z-index: 1;
+      margin-top: -100px; /* Pull form slightly upward */
+    }
+    .form-card {
+      background: rgba(255, 255, 255, 0.8); /* Lighter translucent white */
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 40px;
+      max-width: 800px;
+      margin: auto;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      color: #333; /* Dark text inside the card */
+    }
+    .form-card h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 700;
+      font-size: 2.5rem;
+    }
+    .form-control,
+    .form-select {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #ccc;
+      color: #333;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .form-control::placeholder {
+      color: #999;
+    }
+    .form-select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    .form-control:focus,
+    .form-select:focus {
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, #ff6b6b, #f06595);
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    .criteria-group {
+      position: relative;
+      padding: 20px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .remove-criteria {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #ff6b6b;
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .remove-criteria:hover {
+      background: #e63946;
+    }
+    .btn-add-criteria {
+      background: #4cc9f0;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn-add-criteria:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    @media (max-width: 768px) {
+      .hero-text h1 {
+        font-size: 2.8rem;
+      }
+      .hero-text p {
+        font-size: 1.2rem;
+      }
+    }
+    /* Footer (Same as Homepage) */
+    .footer {
+      background: linear-gradient(135deg, #007bff, #00d4ff);
+      color: #fff;
+      padding: 40px 0;
+      text-align: center;
+    }
+    .footer p {
+      margin: 0 0 10px;
+    }
+    .footer a {
+      color: #fff;
+      margin: 0 10px;
+      transition: color 0.3s ease;
+    }
+    .footer a:hover {
+      color: #ffd700;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header (Same as Homepage) -->
+  <header>
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand" href="/">🏡 Real Estate Platform</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/properties">Properties</a></li>
+            <li class="nav-item"><a class="nav-link" href="/for-owners">For Owners</a></li>
+            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-text">
+      <h1>Set Up Your Property Alerts</h1>
+      <p>Stay ahead of the market and never miss your dream property.</p>
+    </div>
+  </section>
+
+  <!-- Form Section -->
+  <section class="form-section">
+    <div class="form-card">
+      <h2>Create Your Alert</h2>
+      <form id="alerts-form">
+        <!-- Email Input -->
+        <div class="mb-3">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required>
+        </div>
+        <!-- Criteria Groups -->
+        <div id="criteria-container">
+          <div class="criteria-group">
+            <button type="button" class="remove-criteria" title="Remove Criteria">&times;</button>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="purpose-1" class="form-label">Purpose</label>
+                <select id="purpose-1" name="alerts[0][purpose]" class="form-select" required>
+                  <option value="" disabled selected>Select</option>
+                  <option value="buy">Buy</option>
+                  <option value="rent">Rent</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="location-1" class="form-label">Location</label>
+                <input type="text" id="location-1" name="alerts[0][location]" class="form-control" placeholder="City or Area" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="rooms-1" class="form-label">Rooms</label>
+                <input type="number" id="rooms-1" name="alerts[0][rooms]" class="form-control" placeholder="e.g., 3" min="0" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="baths-1" class="form-label">Baths</label>
+                <input type="number" id="baths-1" name="alerts[0][baths]" class="form-control" placeholder="e.g., 2" min="0" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="max-per-day-1" class="form-label">Max Alerts/Day</label>
+                <input type="number" id="max-per-day-1" name="alerts[0][maxPerDay]" class="form-control" placeholder="e.g., 5" min="1" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="min-price-1" class="form-label">Min Price ($)</label>
+                <input type="number" id="min-price-1" name="alerts[0][minPrice]" class="form-control" placeholder="Minimum Price" min="0" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="max-price-1" class="form-label">Max Price ($)</label>
+                <input type="number" id="max-price-1" name="alerts[0][maxPrice]" class="form-control" placeholder="Maximum Price" min="0" required>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Add More Criteria Button -->
+        <div class="mb-4 text-center">
+          <button type="button" id="add-criteria" class="btn-add-criteria">
+            <i class="fas fa-plus"></i> Add Another Criteria
+          </button>
+        </div>
+        <!-- Submit Button -->
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary">Set Up Alerts</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer (Same as Homepage) -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Real Estate Platform. All Rights Reserved.</p>
+      <p>
+        <a href="/about">About Us</a> |
+        <a href="/contact">Contact</a> |
+        <a href="/privacy">Privacy Policy</a> |
+        <a href="/terms">Terms of Service</a>
+      </p>
+      <div>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="ms-3"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="ms-3"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const criteriaContainer = document.getElementById("criteria-container");
+      const addCriteriaBtn = document.getElementById("add-criteria");
+
+      function updateCriteriaIndices() {
+        const criteriaGroups = criteriaContainer.querySelectorAll(".criteria-group");
+        criteriaGroups.forEach((group, index) => {
+          const removeBtn = group.querySelector(".remove-criteria");
+          removeBtn.style.display = criteriaGroups.length === 1 ? "none" : "block";
+          group.querySelectorAll("input, select").forEach((input) => {
+            const field = input.getAttribute("data-field") || input.id.split("-")[0];
+            input.id = field + "-" + (index + 1);
+            input.name = input.name.replace(/alerts\[\d+\]/, "alerts[" + index + "]");
+          });
+        });
+      }
+
+      // Set data-field attributes for easier updates
+      document.querySelectorAll("#criteria-container .criteria-group").forEach(group => {
+        group.querySelectorAll("input, select").forEach(input => {
+          if (!input.hasAttribute("data-field")) {
+            const field = input.id.split("-")[0];
+            input.setAttribute("data-field", field);
+          }
+        });
+      });
+      updateCriteriaIndices();
+
+      addCriteriaBtn.addEventListener("click", function () {
+        const firstGroup = criteriaContainer.querySelector(".criteria-group");
+        const newGroup = firstGroup.cloneNode(true);
+        newGroup.querySelectorAll("input").forEach(input => input.value = "");
+        newGroup.querySelectorAll("select").forEach(select => select.selectedIndex = 0);
+        criteriaContainer.appendChild(newGroup);
+        updateCriteriaIndices();
+      });
+
+      criteriaContainer.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-criteria")) {
+          const groups = criteriaContainer.querySelectorAll(".criteria-group");
+          if (groups.length > 1) {
+            e.target.parentElement.remove();
+            updateCriteriaIndices();
+          }
+        }
+      });
+
+      document.getElementById("alerts-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        alert("Your property alerts have been set up successfully!");
+        this.reset();
+        while (criteriaContainer.children.length > 1) {
+          criteriaContainer.removeChild(criteriaContainer.lastChild);
+        }
+        updateCriteriaIndices();
+      });
+    });
+  </script>
+</body>
+</html>
