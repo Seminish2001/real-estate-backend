@@ -11,17 +11,33 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Custom CSS -->
   <style>
-    /* General Styles */
+    :root {
+      --primary-color: #007bff;
+      --secondary-color: #00d4ff;
+      --accent-color: #ffd700;
+      --background-color: #f4f7f9;
+      --text-color: #333;
+      --white: #fff;
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
     body {
       font-family: 'Poppins', sans-serif;
-      background-color: #f4f7f9;
+      background-color: var(--background-color);
+      color: var(--text-color);
       margin: 0;
-      color: #333;
+      line-height: 1.6;
     }
+
     a {
       text-decoration: none;
+      color: inherit;
     }
+
     /* Header */
     header {
       position: absolute;
@@ -30,25 +46,32 @@
       width: 100%;
       z-index: 10;
       padding: 20px 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
     }
-    .navbar {
-      padding: 0 20px;
-    }
+
     .navbar-brand {
-      color: #fff;
+      color: var(--white);
       font-weight: 700;
       font-size: 1.5rem;
+      display: flex;
+      align-items: center;
     }
+
+    .navbar-brand i {
+      margin-right: 10px;
+    }
+
     .navbar-nav .nav-link {
-      color: #fff;
+      color: var(--white);
       font-weight: 500;
       margin-left: 20px;
       transition: color 0.3s ease;
     }
+
     .navbar-nav .nav-link:hover {
-      color: #ffd700;
+      color: var(--accent-color);
     }
+
     /* Hero Section */
     .hero-section {
       position: relative;
@@ -57,35 +80,41 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
+      color: var(--white);
       text-align: center;
       padding: 0 20px;
     }
+
     .hero-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.4);
+      background: rgba(0, 0, 0, 0.4);
     }
+
     .hero-content {
       position: relative;
       z-index: 2;
       max-width: 800px;
       width: 100%;
+      animation: fadeInUp 1s ease;
     }
+
     .hero-content h1 {
-      font-size: 3rem;
+      font-size: 3.5rem;
       font-weight: bold;
       margin-bottom: 20px;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     }
+
     .hero-content p {
       font-size: 1.2rem;
       margin-bottom: 30px;
-      text-shadow: 0 1px 5px rgba(0,0,0,0.4);
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
     }
+
     /* Search Bar */
     .search-bar-container {
       position: relative;
@@ -94,19 +123,21 @@
       display: flex;
       justify-content: center;
     }
+
     .search-bar {
-      background: rgba(255,255,255,0.95);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
       border-radius: 50px;
       padding: 15px 20px;
       display: flex;
       align-items: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      box-shadow: var(--shadow);
       width: 100%;
       max-width: 800px;
       position: relative;
       overflow: visible;
     }
+
     .search-bar input,
     .search-bar select {
       border: none;
@@ -115,174 +146,214 @@
       padding: 10px 15px;
       flex: 1;
       outline: none;
-      color: #333;
+      color: var(--text-color);
     }
+
     .search-bar input::placeholder,
     .search-bar select {
       color: #666;
     }
+
     .search-bar select {
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
       position: relative;
     }
+
     .search-bar button {
-      background: linear-gradient(45deg, #007bff, #00d4ff);
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
       border: none;
       border-radius: 30px;
       padding: 12px 30px;
       font-size: 1.1rem;
-      color: #fff;
+      color: var(--white);
       transition: background 0.3s ease, transform 0.2s ease;
       margin-left: 10px;
       flex-shrink: 0;
     }
+
     .search-bar button:hover {
       background: linear-gradient(45deg, #0056b3, #0090c8);
       transform: scale(1.03);
     }
+
     /* Featured Listings Section */
     .featured-listings {
       padding: 60px 20px;
     }
+
     .featured-listings h2 {
       text-align: center;
       margin-bottom: 40px;
-      color: #007bff;
+      color: var(--primary-color);
       font-size: 2.5rem;
       font-weight: bold;
     }
+
     .featured-listings .card {
       border: none;
       border-radius: 15px;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
     .featured-listings .card:hover {
       transform: translateY(-10px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     }
+
     .featured-listings .card img {
       height: 200px;
       object-fit: cover;
     }
+
     /* Owner Evaluation Section */
     .owner-evaluation {
-      background: linear-gradient(135deg, #007bff, #00d4ff);
-      color: #fff;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--white);
       padding: 60px 20px;
       text-align: center;
     }
+
     .owner-evaluation h2 {
       font-size: 2.5rem;
       font-weight: bold;
       margin-bottom: 20px;
     }
+
     .owner-evaluation p {
       font-size: 1.2rem;
       margin-bottom: 30px;
     }
+
     .owner-evaluation .btn {
-      background: #fff;
-      color: #007bff;
+      background: var(--white);
+      color: var(--primary-color);
       border: none;
       border-radius: 30px;
       padding: 12px 30px;
       font-size: 1.1rem;
       transition: background 0.3s ease, transform 0.2s ease;
     }
+
     .owner-evaluation .btn:hover {
       background: #f0f0f0;
       transform: scale(1.03);
     }
+
     /* How It Works Section */
     .how-it-works {
-      background: #fff;
+      background: var(--white);
       padding: 60px 20px;
       text-align: center;
     }
+
     .how-it-works h2 {
       font-size: 2.5rem;
       font-weight: bold;
       margin-bottom: 40px;
-      color: #007bff;
+      color: var(--primary-color);
     }
+
     .how-it-works .step {
       margin-bottom: 30px;
     }
+
     .how-it-works .step i {
       font-size: 3rem;
-      color: #007bff;
+      color: var(--primary-color);
       margin-bottom: 15px;
     }
+
     .how-it-works .step h3 {
       font-size: 1.5rem;
       margin-bottom: 10px;
-      color: #007bff;
+      color: var(--primary-color);
     }
+
     .how-it-works .step p {
       font-size: 1rem;
       color: #555;
     }
+
     /* Property Alerts Section */
     .property-alerts {
-      background: #fff;
+      background: var(--white);
       padding: 60px 20px;
       text-align: center;
     }
+
     .property-alerts h2 {
       font-size: 2.5rem;
       font-weight: bold;
       margin-bottom: 20px;
-      color: #007bff;
+      color: var(--primary-color);
     }
+
     .property-alerts p {
       font-size: 1.2rem;
       margin-bottom: 30px;
-      color: #333;
+      color: var(--text-color);
     }
+
     .property-alerts .btn {
-      background: linear-gradient(45deg, #007bff, #00d4ff);
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
       border: none;
       border-radius: 30px;
       padding: 12px 30px;
       font-size: 1.1rem;
-      color: #fff;
+      color: var(--white);
       transition: background 0.3s ease, transform 0.2s ease;
     }
+
     .property-alerts .btn:hover {
       background: linear-gradient(45deg, #0056b3, #0090c8);
       transform: scale(1.03);
     }
+
     /* Footer */
     .footer {
-      background: linear-gradient(135deg, #007bff, #00d4ff);
-      color: #fff;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--white);
       padding: 40px 0;
       text-align: center;
     }
+
     .footer p {
       margin: 0 0 10px;
     }
+
     .footer a {
-      color: #fff;
+      color: var(--white);
       margin: 0 10px;
       transition: color 0.3s ease;
     }
+
     .footer a:hover {
-      color: #ffd700;
+      color: var(--accent-color);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-
-  <!-- Header (No "Home" option) -->
+  <!-- Header -->
   <header>
     <nav class="navbar navbar-expand-lg">
       <div class="container">
-        <a class="navbar-brand" href="/">🏡 Real Estate Platform</a>
+        <a class="navbar-brand" href="/"><i class="fas fa-home"></i> Real Estate Platform</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -304,7 +375,7 @@
     <div class="hero-content">
       <h1>Find Your Dream Home in Albania</h1>
       <p>Explore top properties and discover the best places to live.</p>
-      <!-- Search Bar (Plain location input) -->
+      <!-- Search Bar -->
       <div class="search-bar-container">
         <form id="search-form" class="search-bar">
           <input id="location" name="location" class="form-control" placeholder="Enter city or area" required />
