@@ -12,6 +12,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   
   <style>
     :root {
@@ -21,6 +23,7 @@
       --bg-color: #f4f7f9;
       --text-color: #333;
       --card-bg: #fff;
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
     body {
       font-family: 'Poppins', sans-serif;
@@ -31,7 +34,7 @@
     }
     a { text-decoration: none; color: inherit; }
     
-    /* HEADER merged with hero banner: fixed & transparent */
+    /* HEADER (Fixed & Transparent) */
     header {
       position: fixed;
       top: 0;
@@ -40,9 +43,10 @@
       background: transparent;
       padding: 10px 20px;
       z-index: 1100;
+      transition: background 0.3s ease;
     }
-    .navbar {
-      padding: 0;
+    header.scrolled {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     }
     .navbar-brand {
       font-size: 1.5rem;
@@ -59,50 +63,60 @@
       color: var(--accent-color);
     }
     
-    /* HERO SECTION (Blue banner) */
+    /* HERO SECTION (Blue banner merged with header) */
     .hero-section {
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       min-height: 20vh;
-      padding-top: 80px; /* ensures content isn’t hidden behind the fixed header */
+      padding-top: 80px;
       text-align: center;
       color: #fff;
     }
     .hero-section h1 {
-      font-size: 2rem;
+      font-size: 2.5rem;
       margin: 0;
+      animation: fadeInUp 1s ease;
     }
     .hero-section p {
-      font-size: 1rem;
+      font-size: 1.2rem;
       margin: 0;
+      animation: fadeInUp 1.5s ease;
     }
     
     /* SEARCH FILTER SECTION */
     .search-filter {
       background: var(--card-bg);
-      max-width: 1000px;
+      max-width: 1200px;
       margin: 20px auto;
       padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      animation: fadeIn 1s ease;
     }
     .search-filter input,
     .search-filter select {
       border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 8px;
+      border-radius: 8px;
+      padding: 10px;
       width: 100%;
+      transition: border-color 0.3s ease;
+    }
+    .search-filter input:focus,
+    .search-filter select:focus {
+      border-color: var(--primary-color);
+      outline: none;
     }
     .search-filter button {
       background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
       border: none;
-      border-radius: 4px;
-      padding: 10px;
+      border-radius: 8px;
+      padding: 12px 20px;
       color: #fff;
       font-size: 1rem;
-      transition: background 0.3s;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
     .search-filter button:hover {
       background: linear-gradient(45deg, #0056b3, #0090c8);
+      transform: scale(1.03);
     }
     .toggle-advanced,
     .toggle-map {
@@ -110,6 +124,11 @@
       margin-top: 10px;
       color: var(--primary-color);
       cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    .toggle-advanced:hover,
+    .toggle-map:hover {
+      color: var(--secondary-color);
     }
     .advanced-filters,
     #map-section {
@@ -119,37 +138,36 @@
       border-top: 1px solid #eee;
     }
     
-    /* PROPERTY LISTINGS: Each card has a two-column layout */
+    /* PROPERTY LISTINGS */
     .property-listings {
-      max-width: 1000px;
+      max-width: 1200px;
       margin: 20px auto;
     }
     .property-card {
       background: var(--card-bg);
       border: none;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
       margin-bottom: 20px;
       overflow: hidden;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .property-card:hover {
       transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     }
-    /* Carousel images set to be smaller */
     .property-card .carousel-inner img {
       width: 100%;
-      height: 150px;
+      height: 200px;
       object-fit: cover;
     }
-    /* Layout: Left column for images, right column for info */
     .property-card .card-body {
-      padding: 15px;
+      padding: 20px;
     }
     .property-features {
       display: flex;
       gap: 10px;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       margin: 10px 0;
     }
     .property-features span {
@@ -162,10 +180,10 @@
       border: none;
       padding: 10px;
       width: 100%;
-      border-radius: 4px;
+      border-radius: 8px;
       font-size: 1rem;
       color: #fff;
-      transition: background 0.3s;
+      transition: background 0.3s ease;
     }
     .property-card .btn:hover {
       background: var(--secondary-color);
@@ -175,6 +193,10 @@
     .pagination {
       justify-content: center;
       margin: 20px 0;
+    }
+    .page-item.active .page-link {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
     }
     
     /* FOOTER */
@@ -188,48 +210,49 @@
     .footer a {
       color: #fff;
       margin: 0 10px;
-      transition: color 0.3s;
+      transition: color 0.3s ease;
     }
     .footer a:hover {
       color: var(--accent-color);
     }
     
-    /* Dark Mode Toggle Button */
-    .toggle-dark {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--secondary-color);
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      color: var(--text-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      transition: transform 0.2s;
-      z-index: 1200;
+    /* Dark Mode */
+    body.dark {
+      --bg-color: #1a1a1a;
+      --text-color: #fff;
+      --card-bg: #2d2d2d;
     }
-    .toggle-dark:hover {
-      transform: scale(1.1);
+    .dark .search-filter,
+    .dark .property-card {
+      background: var(--card-bg);
+      color: var(--text-color);
+    }
+    .dark .search-filter input,
+    .dark .search-filter select {
+      background: #333;
+      color: #fff;
+      border-color: #444;
     }
     
-    @media (max-width: 768px) {
-      .search-filter, .property-listings {
-        margin: 10px;
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
       }
-      /* On smaller screens, stack the carousel and info vertically */
-      .property-card .row {
-        flex-direction: column;
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
   </style>
 </head>
 <body>
-  <!-- HEADER (Fixed & Transparent, merged with hero banner) -->
+  <!-- HEADER -->
   <header>
     <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
       <div class="container-fluid">
@@ -251,7 +274,7 @@
     </nav>
   </header>
   
-  <!-- HERO SECTION (Blue banner merged with header) -->
+  <!-- HERO SECTION -->
   <section class="hero-section">
     <div>
       <h1>Properties</h1>
@@ -351,7 +374,7 @@
     <div id="map" style="width: 100%; height: 400px; border-radius: 8px;"></div>
   </section>
   
-  <!-- PROPERTY LISTINGS (Each card: left column shows a manual carousel; right column shows info) -->
+  <!-- PROPERTY LISTINGS -->
   <section class="property-listings container">
     <!-- Property Card 1 -->
     <div class="property-card mb-4">
@@ -360,13 +383,13 @@
           <div id="carouselProperty1" class="carousel slide" data-bs-interval="false">
             <div class="carousel-inner">
               <div class="carousel-item active">
-                <img src="https://via.placeholder.com/600x150?text=Property+1+-+Photo+1" class="d-block w-100" alt="Property 1 Photo 1" style="height:150px; object-fit:cover;">
+                <img src="https://via.placeholder.com/600x150?text=Property+1+-+Photo+1" class="d-block w-100" alt="Property 1 Photo 1" style="height:200px; object-fit:cover;">
               </div>
               <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+1+-+Photo+2" class="d-block w-100" alt="Property 1 Photo 2" style="height:150px; object-fit:cover;">
+                <img src="https://via.placeholder.com/600x150?text=Property+1+-+Photo+2" class="d-block w-100" alt="Property 1 Photo 2" style="height:200px; object-fit:cover;">
               </div>
               <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+1+-+Photo+3" class="d-block w-100" alt="Property 1 Photo 3" style="height:150px; object-fit:cover;">
+                <img src="https://via.placeholder.com/600x150?text=Property+1+-+Photo+3" class="d-block w-100" alt="Property 1 Photo 3" style="height:200px; object-fit:cover;">
               </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselProperty1" data-bs-slide="prev">
@@ -401,13 +424,13 @@
           <div id="carouselProperty2" class="carousel slide" data-bs-interval="false">
             <div class="carousel-inner">
               <div class="carousel-item active">
-                <img src="https://via.placeholder.com/600x150?text=Property+2+-+Photo+1" class="d-block w-100" alt="Property 2 Photo 1" style="height:150px; object-fit:cover;">
+                <img src="https://via.placeholder.com/600x150?text=Property+2+-+Photo+1" class="d-block w-100" alt="Property 2 Photo 1" style="height:200px; object-fit:cover;">
               </div>
               <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+2+-+Photo+2" class="d-block w-100" alt="Property 2 Photo 2" style="height:150px; object-fit:cover;">
+                <img src="https://via.placeholder.com/600x150?text=Property+2+-+Photo+2" class="d-block w-100" alt="Property 2 Photo 2" style="height:200px; object-fit:cover;">
               </div>
               <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+2+-+Photo+3" class="d-block w-100" alt="Property 2 Photo 3" style="height:150px; object-fit:cover;">
+                <img src="https://via.placeholder.com/600x150?text=Property+2+-+Photo+3" class="d-block w-100" alt="Property 2 Photo 3" style="height:200px; object-fit:cover;">
               </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselProperty2" data-bs-slide="prev">
@@ -442,13 +465,13 @@
           <div id="carouselProperty3" class="carousel slide" data-bs-interval="false">
             <div class="carousel-inner">
               <div class="carousel-item active">
-                <img src="https://via.placeholder.com/600x150?text=Property+3+-+Photo+1" class="d-block w-100" alt="Property 3 Photo 1" style="height:150px; object-fit:cover;">
+                <img src="https://via.placeholder.com/600x150?text=Property+3+-+Photo+1" class="d-block w-100" alt="Property 3 Photo 1" style="height:200px; object-fit:cover;">
               </div>
               <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+3+-+Photo+2" class="d-block w-100" alt="Property 3 Photo 2" style="height:150px; object-fit:cover;">
+                <img src="https://via.placeholder.com/600x150?text=Property+3+-+Photo+2" class="d-block w-100" alt="Property 3 Photo 2" style="height:200px; object-fit:cover;">
               </div>
               <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+3+-+Photo+3" class="d-block w-100" alt="Property 3 Photo 3" style="height:150px; object-fit:cover;">
+                <img src="https://via.placeholder.com/600x150?text=Property+3+-+Photo+3" class="d-block w-100" alt="Property 3 Photo 3" style="height:200px; object-fit:cover;">
               </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselProperty3" data-bs-slide="prev">
