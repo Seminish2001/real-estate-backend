@@ -1,802 +1,529 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Ultimate real estate dashboard with advanced features for agencies.">
-  <title>Ultimate Dashboard | Real Estate Platform</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Agency dashboard for managing luxury Albanian properties with Albania Lux Properties." />
+  <meta name="keywords" content="Albania real estate, agency dashboard, property management, luxury homes" />
+  <meta name="author" content="Albania Lux Properties" />
+  <title>Agency Dashboard | Albania Lux Properties</title>
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
   <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
   <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js" integrity="sha384-6jlbW6dkrGiD/nh1v5+UkRURq7uWqVoV/IgPNYpRsdK1oAYs3cWxj/9vgtuW3aQd" crossorigin="anonymous"></script>
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <!-- Custom CSS -->
   <style>
-    /* Base Styles */
+    :root {
+      --primary-color: #1a3c34;
+      --secondary-color: #f4a261;
+      --accent-color: #e9c46a;
+      --background-dark: #0f2522;
+      --background-light: #f9f7f3;
+      --text-dark: #1a1a1a;
+      --text-light: #fff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+
     * { box-sizing: border-box; }
     body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--background-light);
+      color: var(--text-dark);
       margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: #f4f7f9;
-      color: #333;
-      transition: background-color 0.4s, color 0.4s;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
     }
+    body.dark-mode { background: #1e1e2f; color: #f0f0f0; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 700; }
     a { text-decoration: none; color: inherit; }
-    
-    /* Collapsible Sidebar */
+
     .sidebar {
       position: fixed;
       top: 0;
       left: 0;
-      width: 240px;
+      width: 280px;
       height: 100vh;
-      background: #fff;
-      border-right: 1px solid #ddd;
-      padding: 20px 10px;
-      overflow-y: auto;
-      transition: all 0.3s ease;
+      background: var(--background-dark);
+      padding: 30px 20px;
+      transition: width 0.3s ease;
+      z-index: 1000;
     }
-    .sidebar.collapsed {
-      width: 70px;
+    .sidebar.collapsed { width: 80px; }
+    .sidebar.collapsed .sidebar-brand span, .sidebar.collapsed .nav-link span { display: none; }
+    .sidebar-brand {
+      color: var(--text-light);
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 40px;
     }
-    .sidebar.collapsed h2,
-    .sidebar.collapsed a span { display: none; }
-    .sidebar h2 {
-      color: #333;
-      font-size: 1.6rem;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .sidebar a {
+    .sidebar-brand i { color: var(--accent-color); }
+    .nav-link {
       display: flex;
       align-items: center;
       padding: 12px 20px;
-      margin: 5px 0;
-      border-radius: 6px;
-      color: #333;
-      transition: background 0.3s, color 0.3s;
-      cursor: pointer;
+      color: var(--text-light);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      transition: all 0.3s ease;
     }
-    .sidebar a i { width: 20px; }
-    .sidebar a:hover, .sidebar a.active {
-      background-color: #e9ecef;
-      color: #007bff;
+    .nav-link i { width: 20px; margin-right: 15px; }
+    .nav-link:hover, .nav-link.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--accent-color);
     }
-    
-    /* Top Header */
+
     .top-header {
       position: fixed;
       top: 0;
-      left: 240px;
+      left: 280px;
       right: 0;
-      height: 60px;
-      background: #fff;
-      border-bottom: 1px solid #ddd;
+      height: 70px;
+      background: var(--gradient);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
-      transition: left 0.3s;
-      z-index: 100;
+      padding: 0 30px;
+      transition: left 0.3s ease;
+      z-index: 999;
     }
-    .sidebar.collapsed ~ .top-header {
-      left: 70px;
-    }
-    .top-header .header-left {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #007bff;
-    }
-    .top-header .header-right i {
-      font-size: 1.2rem;
-      margin-left: 20px;
+    .sidebar.collapsed ~ .top-header { left: 80px; }
+    .header-title { font-size: 1.5rem; color: var(--text-light); font-weight: 700; }
+    .header-actions i {
+      font-size: 1.4rem;
+      color: var(--text-light);
+      margin-left: 25px;
       cursor: pointer;
-      position: relative;
+      transition: color 0.3s ease;
     }
-    .top-header .header-right .badge {
-      position: absolute;
-      top: -5px;
-      right: 10px;
-      font-size: 0.7rem;
-    }
-    
-    /* Main Content */
-    .main-content {
-      margin-top: 60px;
-      margin-left: 240px;
-      padding: 20px 30px 40px;
-      background: #f4f7f9;
-      min-height: calc(100vh - 60px);
-      transition: margin-left 0.3s;
-    }
-    .sidebar.collapsed ~ .main-content {
-      margin-left: 70px;
-    }
-    
-    /* Panels & Cards */
-    .panelContent { display: none; animation: fadeIn 0.5s; }
-    .panel, .card-custom {
-      background: rgba(255,255,255,0.6);
-      border: 1px solid rgba(255,255,255,0.3);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 30px;
-      margin-bottom: 30px;
-      box-shadow: 0 8px 32px rgba(31,38,135,0.1);
-      transition: transform 0.3s;
-    }
-    .panel h2, .card-custom h3 { color: #007bff; }
-    .card-custom { text-align: center; padding: 20px; cursor: pointer; }
-    .card-custom:hover { transform: translateY(-5px); }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Homepage Header */
-    .header-main {
-      text-align: center;
-      margin-bottom: 40px;
-      padding: 40px;
-      background: linear-gradient(90deg, #007bff, #17a2b8);
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      color: #fff;
-    }
-    .header-main h1 { font-size: 2.4rem; margin-bottom: 10px; }
-    .header-main p { font-size: 1.2rem; margin: 0; }
-    
-    /* KPI Animated Counters */
-    .counter {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #007bff;
-    }
-    
-    /* Tabbed Reports Section */
-    .reports-tabs .nav-link {
-      font-weight: 500;
-      border: none;
-      border-bottom: 2px solid transparent;
-      color: #007bff;
-    }
-    .reports-tabs .nav-link.active {
-      border-color: #007bff;
-      font-weight: bold;
-    }
-    
-    /* Tables */
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: #e9ecef; }
-    thead th { padding: 10px; text-align: left; font-size: 0.95rem; color: #333; }
-    tbody tr { border-bottom: 1px solid #ddd; }
-    tbody td { padding: 10px; font-size: 0.9rem; color: #333; }
-    
-    /* Forms */
-    .form-label { font-weight: 500; }
-    .form-control:focus { box-shadow: none; border-color: #007bff; }
-    .form-error { color: #dc3545; font-size: 0.85rem; }
-    
-    /* Notifications Dropdown */
+    .header-actions i:hover { color: var(--accent-color); }
     .notifications-dropdown {
       position: absolute;
-      top: 50px;
-      right: 0;
-      width: 320px;
+      top: 70px;
+      right: 20px;
+      width: 350px;
       background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-      z-index: 200;
+      border-radius: 15px;
+      box-shadow: var(--shadow);
       display: none;
+      z-index: 1000;
     }
+    body.dark-mode .notifications-dropdown { background: #2a2a3a; }
     .notifications-dropdown.active { display: block; }
-    .notifications-dropdown ul { list-style: none; padding: 0; margin: 0; }
-    .notifications-dropdown li { padding: 10px; border-bottom: 1px solid #eee; }
+    .notifications-dropdown ul { list-style: none; padding: 10px; margin: 0; }
+    .notifications-dropdown li { padding: 15px; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+    body.dark-mode .notifications-dropdown li { border-bottom: 1px solid #444; }
+    .notifications-dropdown li a { color: var(--primary-color); }
+    body.dark-mode .notifications-dropdown li a { color: var(--accent-color); }
     .notifications-dropdown li:last-child { border-bottom: none; }
-    
-    /* Dark Mode Overrides */
-    body.dark-mode {
-      background-color: #1e1e2f;
-      color: #f0f0f0;
+
+    .main-content {
+      margin-left: 280px;
+      margin-top: 70px;
+      padding: 40px;
+      min-height: calc(100vh - 70px);
+      transition: margin-left 0.3s ease;
     }
-    body.dark-mode .sidebar { background: linear-gradient(180deg, #14142b, #1e1e2f); border-right: 1px solid #333; }
-    body.dark-mode .sidebar h2 { color: #fff; }
-    body.dark-mode .sidebar a { color: #adb5bd; }
-    body.dark-mode .sidebar a:hover, body.dark-mode .sidebar a.active { background-color: rgba(52,58,64,0.8); color: #fff; }
-    body.dark-mode .top-header { background: #14142b; border-bottom: 1px solid #333; }
-    body.dark-mode .main-content { background: #1e1e2f; }
-    body.dark-mode .header-main { background: linear-gradient(90deg, #0056b3, #0090c8); }
-    body.dark-mode .panel, body.dark-mode .card-custom { background: rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.3); }
-    body.dark-mode .panel h2, body.dark-mode .card-custom h3 { color: #00bcd4; }
-    body.dark-mode thead { background: #333; }
-    body.dark-mode thead th, body.dark-mode tbody td { color: #ddd; }
+    .sidebar.collapsed ~ .main-content { margin-left: 80px; }
+    .panel-content { display: none; animation: fadeIn 0.5s ease; }
+    .panel {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow);
+    }
+    body.dark-mode .panel { background: rgba(255, 255, 255, 0.1); }
+    .panel h2 {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+    body.dark-mode .panel h2 { color: var(--accent-color); }
+
+    .header-main {
+      background: var(--gradient);
+      color: var(--text-light);
+      padding: 50px;
+      border-radius: 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow);
+    }
+    .header-main h1 { font-size: 2.8rem; margin-bottom: 10px; }
+    .header-main p { font-size: 1.2rem; opacity: 0.9; }
+    .kpi-card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease;
+    }
+    body.dark-mode .kpi-card { background: rgba(255, 255, 255, 0.1); }
+    .kpi-card:hover { transform: translateY(-5px); }
+    .kpi-card .counter {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--secondary-color);
+    }
+    .kpi-card p { margin: 10px 0 0; color: #666; }
+    body.dark-mode .kpi-card p { color: #ccc; }
+    .reports-panel .nav-link {
+      color: var(--primary-color);
+      border-bottom: 2px solid transparent;
+      font-weight: 500;
+    }
+    body.dark-mode .reports-panel .nav-link { color: #f0f0f0; }
+    .reports-panel .nav-link.active {
+      border-bottom: 2px solid var(--secondary-color);
+      color: var(--secondary-color);
+    }
+    .reports-panel canvas { max-height: 350px; }
+
+    .form-control, .form-select {
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      padding: 12px;
+      background: #fff;
+    }
+    body.dark-mode .form-control, body.dark-mode .form-select { background: #2a2a3a; border-color: #444; color: #f0f0f0; }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 8px rgba(244, 162, 97, 0.3);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: var(--primary-color);
+      color: var(--text-light);
+      padding: 15px;
+      font-weight: 500;
+    }
+    tbody tr { border-bottom: 1px solid #eee; }
+    tbody tr:hover { background: #f8f8f8; }
     body.dark-mode tbody tr { border-bottom: 1px solid #444; }
-    
-    /* Toggle Button */
-    .toggle-dark {
+    body.dark-mode tbody tr:hover { background: #2a2a3a; }
+    tbody td { padding: 15px; }
+    .agent-photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+
+    .btn-primary {
+      background: var(--gradient);
+      border: none;
+      border-radius: 25px;
+      padding: 10px 25px;
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #12302b, #e68a4f);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: #666;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 25px;
+      color: var(--text-light);
+    }
+    body.dark-mode .btn-secondary { background: #444; }
+    .btn-secondary:hover { background: #555; }
+    .btn-sm { padding: 5px 15px; }
+
+    .modal-content { background: #fff; }
+    body.dark-mode .modal-content { background: #2a2a3a; color: #f0f0f0; }
+    body.dark-mode .modal-header, body.dark-mode .modal-footer { border-color: #444; }
+    .dark-mode-toggle {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background: #00bcd4;
+      background: var(--secondary-color);
       border: none;
       border-radius: 50%;
       width: 50px;
       height: 50px;
-      color: #1e1e2f;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      color: #fff;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      z-index: 1000;
+      box-shadow: var(--shadow);
     }
-    
-    /* Extra UI Enhancements */
-    .export-btn { margin-top: 10px; }
-    
-    /* Agents Panel Header */
-    .agents-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    /* Dark Mode Overrides for Modals */
-body.dark-mode .modal-content {
-  background-color: #1e1e2f;
-  border: 1px solid #333;
-  color: #f0f0f0;
-}
-
-body.dark-mode .modal-header {
-  border-bottom: 1px solid #333;
-}
-
-body.dark-mode .modal-title {
-  color: #f0f0f0;
-}
-
-body.dark-mode .modal-body {
-  background-color: #1e1e2f;
-  color: #f0f0f0;
-}
-
-body.dark-mode .modal-footer {
-  border-top: 1px solid #333;
-}
   </style>
 </head>
 <body>
-  <!-- Sidebar Navigation -->
-  <nav class="sidebar" id="sidebar">
-    <h2>Dashboard</h2>
-    <!-- Available to all -->
-    <a href="#" class="sidebar-link" data-target="homePanel">
-      <i class="fas fa-tachometer-alt"></i> <span>Home</span>
-    </a>
-    <!-- Admin-only links -->
-    <a href="#" class="sidebar-link" data-target="addPropertyPanel" data-role="admin">
-      <i class="fas fa-plus"></i> <span>Add Property</span>
-    </a>
-    <!-- Available to all but content may vary (admin sees all properties; agents see only assigned) -->
-    <a href="#" class="sidebar-link" data-target="managePropertiesPanel">
-      <i class="fas fa-building"></i> <span>Properties</span>
-    </a>
-    <!-- Messaging & Lead Management: available to both roles -->
-    <a href="#" class="sidebar-link" data-target="messagingPanel">
-      <i class="fas fa-envelope"></i> <span>Messaging</span>
-    </a>
-    <!-- Admin-only links -->
-    <a href="#" class="sidebar-link" data-target="agentsPanel" data-role="admin">
-      <i class="fas fa-user-tie"></i> <span>Agents</span>
-    </a>
-    <a href="#" class="sidebar-link" data-target="agentsReportPanel" data-role="admin">
-      <i class="fas fa-chart-bar"></i> <span>Agents Report</span>
-    </a>
-    <a href="#" class="sidebar-link" data-target="clientsPanel" data-role="admin">
-      <i class="fas fa-users"></i> <span>Clients</span>
-    </a>
-    <!-- Available to all -->
-    <a href="#" class="sidebar-link" data-target="accountSettingsPanel">
-      <i class="fas fa-cogs"></i> <span>Account Settings</span>
-    </a>
-    <a href="#" class="sidebar-link" data-target="supportPanel">
-      <i class="fas fa-headset"></i> <span>Support</span>
-    </a>
-  </nav>
-  
-  <!-- Top Header -->
-  <div class="top-header">
-    <div class="header-left">
-      Real Estate Command Center
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar" data-aos="fade-right">
+    <div class="sidebar-brand">
+      <i class="fas fa-villa"></i> <span>Albania Lux</span>
     </div>
-    <div class="header-right">
+    <a href="#" class="nav-link active" data-target="overviewPanel"><i class="fas fa-tachometer-alt"></i> <span>Overview</span></a>
+    <a href="#" class="nav-link" data-target="addListingPanel"><i class="fas fa-plus"></i> <span>Add Listing</span></a>
+    <a href="#" class="nav-link" data-target="listingsPanel"><i class="fas fa-building"></i> <span>Listings</span></a>
+    <a href="#" class="nav-link" data-target="agentsPanel"><i class="fas fa-user-tie"></i> <span>Agents</span></a>
+    <a href="#" class="nav-link" data-target="clientsPanel"><i class="fas fa-users"></i> <span>Clients</span></a>
+    <a href="#" class="nav-link" data-target="leadsPanel"><i class="fas fa-envelope"></i> <span>Leads</span></a>
+    <a href="#" class="nav-link" data-target="analyticsPanel"><i class="fas fa-chart-line"></i> <span>Analytics</span></a>
+    <a href="#" class="nav-link" data-target="settingsPanel"><i class="fas fa-cogs"></i> <span>Settings</span></a>
+  </nav>
+
+  <!-- Top Header -->
+  <div class="top-header" data-aos="fade-down">
+    <div class="header-title">Agency Command Center</div>
+    <div class="header-actions">
       <i class="fas fa-bell" id="notificationsBtn"></i>
-      <i class="fas fa-user-circle" id="profileBtn" data-bs-toggle="modal" data-bs-target="#profileModal"></i>
+      <i class="fas fa-user-circle" data-bs-toggle="modal" data-bs-target="#profileModal"></i>
       <i class="fas fa-bars" id="toggleSidebar"></i>
     </div>
-    <!-- Notifications Dropdown -->
     <div class="notifications-dropdown" id="notificationsDropdown">
-      <!-- Dynamic notifications will be inserted here -->
-      <ul><!-- e.g., <li><i class="fas fa-info-circle me-2"></i>Notification text here</li> --></ul>
+      <ul>
+        <li><i class="fas fa-info-circle me-2"></i> New lead for Tirana Penthouse - <a href="#" onclick="showPanel('leadsPanel')">View</a></li>
+        <li><i class="fas fa-check-circle me-2"></i> Listing approved: Vlora Villa</li>
+      </ul>
     </div>
   </div>
-  
-  <!-- Main Content Area -->
+
+  <!-- Main Content -->
   <div class="main-content" id="dashboardContent">
-    <!-- Home Panel -->
-    <div id="homePanel" class="panelContent">
+    <!-- Overview Panel -->
+    <div id="overviewPanel" class="panel-content" data-aos="fade-up">
       <div class="header-main">
-        <h1 id="welcomeHeader">Welcome, <!-- Dynamic: User Name --></h1>
-        <p>Your command center for real estate management</p>
+        <h1>Welcome, <span id="agencyName">Elite Realty Albania</span></h1>
+        <p>Your hub for luxury real estate management</p>
       </div>
-      <!-- KPI Cards with Animated Counters -->
-      <div class="row g-3 mb-4">
-        <div class="col-md-3">
-          <div class="card-custom p-4">
-            <div class="counter" data-target="0">0</div>
-            <p>Active Listings</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card-custom p-4">
-            <div class="counter" data-target="0">0</div>
-            <p>New Inquiries</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card-custom p-4">
-            <div class="counter" data-target="0">0</div>
-            <p>Monthly Revenue</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card-custom p-4">
-            <div class="counter" data-target="0">0</div>
-            <p>Pending Tasks</p>
-          </div>
-        </div>
+      <div class="row g-4 mb-4">
+        <div class="col-md-3"><div class="kpi-card"><div class="counter" data-target="25">0</div><p>Total Listings</p></div></div>
+        <div class="col-md-3"><div class="kpi-card"><div class="counter" data-target="15">0</div><p>Active Agents</p></div></div>
+        <div class="col-md-3"><div class="kpi-card"><div class="counter" data-target="10">0</div><p>New Leads</p></div></div>
+        <div class="col-md-3"><div class="kpi-card"><div class="counter" data-target="120000">0</div><p>Revenue (€)</p></div></div>
       </div>
-      <!-- Tabbed Performance Reports -->
-      <div class="panel mb-4">
-        <h2>Performance Reports</h2>
-        <ul class="nav nav-tabs reports-tabs" id="reportsTab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="sales-tab" data-bs-toggle="tab" data-bs-target="#salesReport" type="button" role="tab">Sales</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="rentals-tab" data-bs-toggle="tab" data-bs-target="#rentalsReport" type="button" role="tab">Rentals</button>
-          </li>
+      <div class="panel reports-panel">
+        <h2>Agency Performance</h2>
+        <ul class="nav nav-tabs" id="reportsTab" role="tablist">
+          <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#salesReport">Sales</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#rentalsReport">Rentals</button></li>
         </ul>
-        <div class="tab-content mt-3" id="reportsTabContent">
-          <!-- Sales Report -->
-          <div class="tab-pane fade show active" id="salesReport" role="tabpanel">
-            <div class="row">
-              <div class="col-md-8">
-                <canvas id="salesChart" style="height: 300px;"></canvas>
-              </div>
-              <div class="col-md-4">
-                <!-- Dynamic Sales Report Metrics -->
-                <ul class="list-unstyled"><!-- Metrics go here --></ul>
-                <button class="btn btn-outline-primary btn-sm export-btn">Export (CSV)</button>
-              </div>
-            </div>
-          </div>
-          <!-- Rentals Report -->
-          <div class="tab-pane fade" id="rentalsReport" role="tabpanel">
-            <div class="row">
-              <div class="col-md-8">
-                <canvas id="rentalsChart" style="height: 300px;"></canvas>
-              </div>
-              <div class="col-md-4">
-                <!-- Dynamic Rentals Report Metrics -->
-                <ul class="list-unstyled"><!-- Metrics go here --></ul>
-                <button class="btn btn-outline-primary btn-sm export-btn">Export (PDF)</button>
-              </div>
-            </div>
-          </div>
+        <div class="tab-content mt-4">
+          <div class="tab-pane fade show active" id="salesReport"><canvas id="salesChart"></canvas></div>
+          <div class="tab-pane fade" id="rentalsReport"><canvas id="rentalsChart"></canvas></div>
         </div>
-      </div>
-      <!-- Extra Quick Stats -->
-      <div class="row g-3 mb-4">
-        <div class="col-md-3">
-          <div class="card-custom p-4">
-            <h3><!-- Dynamic Rental Yield --></h3>
-            <p>Rental Yield</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card-custom p-4">
-            <h3><!-- Dynamic Sales Conversion --></h3>
-            <p>Sales Conversion</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card-custom p-4">
-            <h3><!-- Dynamic Properties Sold --></h3>
-            <p>Properties Sold</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card-custom p-4">
-            <h3><!-- Dynamic Occupancy Rate --></h3>
-            <p>Occupancy Rate</p>
-          </div>
-        </div>
-      </div>
-      <!-- Business Insights -->
-      <div class="panel">
-        <h2>Business Insights</h2>
-        <p>Click below for a deep dive into your performance trends and predictive analytics.</p>
-        <button class="btn btn-primary" onclick="alert('Drill-down insights coming soon!')">
-          View Detailed Insights <i class="fas fa-arrow-right ms-2"></i>
-        </button>
-      </div>
-      <!-- Activity Feed -->
-      <div class="panel">
-        <h2>Recent Activity</h2>
-        <ul class="activity-feed">
-          <!-- Dynamic activity feed items go here -->
-        </ul>
       </div>
     </div>
-    
-    <!-- Add Property Panel (Admin Only) -->
-    <div id="addPropertyPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
+
+    <!-- Add Listing Panel -->
+    <div id="addListingPanel" class="panel-content" data-aos="fade-up">
+      <button class="btn btn-secondary back-btn mb-3" data-target="overviewPanel"><i class="fas fa-arrow-left"></i> Back</button>
       <div class="panel">
-        <h2>Add New Property</h2>
-        <!-- Property Purpose Toggle -->
-        <div class="mb-3">
-          <label class="form-label">Property Purpose:</label>
-          <div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="propertyPurpose" id="forSale" value="sale" checked>
-              <label class="form-check-label" for="forSale">For Sale</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="propertyPurpose" id="forRent" value="rent">
-              <label class="form-check-label" for="forRent">For Rent</label>
-            </div>
-          </div>
-        </div>
-        <form id="addPropertyForm">
-          <div class="mb-3">
-            <label for="propertyTitle" class="form-label">Property Title</label>
-            <input type="text" class="form-control" id="propertyTitle" placeholder="Enter property title" required>
-            <div class="form-error" id="propertyTitleError"></div>
-          </div>
-          <div class="mb-3">
-            <label for="propertyType" class="form-label">Property Type</label>
-            <select class="form-select" id="propertyType" required>
-              <option value="">Select Type</option>
-              <!-- Options populated dynamically -->
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="propertyDescription" class="form-label">Description</label>
-            <textarea class="form-control" id="propertyDescription" rows="3" placeholder="Enter description" required></textarea>
-          </div>
+        <h2>Add New Listing</h2>
+        <form id="addListingForm">
           <div class="row g-3">
             <div class="col-md-6">
-              <label for="propertyPrice" class="form-label">Price ($)</label>
-              <input type="number" class="form-control" id="propertyPrice" required>
+              <label class="form-label">Title</label>
+              <input type="text" class="form-control" placeholder="e.g., Luxury Tirana Penthouse" required>
             </div>
             <div class="col-md-6">
-              <label for="propertyArea" class="form-label">Area (sq ft)</label>
-              <input type="number" class="form-control" id="propertyArea" required>
+              <label class="form-label">Type</label>
+              <select class="form-select" required>
+                <option value="">Select Type</option>
+                <option>Apartment</option>
+                <option>Villa</option>
+                <option>House</option>
+                <option>Land</option>
+              </select>
             </div>
-          </div>
-          <div class="row g-3 my-3">
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" rows="4" placeholder="Detailed description of the property..." required></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Price (€)</label>
+              <input type="number" class="form-control" placeholder="e.g., 450000" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Area (m²)</label>
+              <input type="number" class="form-control" placeholder="e.g., 180" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Year Built</label>
+              <input type="number" class="form-control" placeholder="e.g., 2020">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Bedrooms</label>
+              <input type="number" class="form-control" placeholder="e.g., 3" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Bathrooms</label>
+              <input type="number" class="form-control" placeholder="e.g., 2" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Parking Spaces</label>
+              <input type="number" class="form-control" placeholder="e.g., 1">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Address</label>
+              <input type="text" class="form-control" placeholder="e.g., Rruga e Kavajës, Tirana" required>
+            </div>
             <div class="col-md-6">
-              <label for="bedrooms" class="form-label">Bedrooms</label>
-              <input type="number" class="form-control" id="bedrooms" required>
+              <label class="form-label">Purpose</label>
+              <select class="form-select" required>
+                <option value="sale">For Sale</option>
+                <option value="rent">For Rent</option>
+              </select>
             </div>
             <div class="col-md-6">
-              <label for="bathrooms" class="form-label">Bathrooms</label>
-              <input type="number" class="form-control" id="bathrooms" required>
+              <label class="form-label">Assign Agent</label>
+              <select class="form-select" required>
+                <option value="">Select Agent</option>
+                <option>Alice Brown</option>
+                <option>Bob White</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Photos</label>
+              <input type="file" class="form-control" multiple accept="image/*" required>
+              <small class="text-muted">Upload up to 10 photos</small>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Amenities</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="pool"><label class="form-check-label" for="pool">Pool</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="seaview"><label class="form-check-label" for="seaview">Sea View</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="garage"><label class="form-check-label" for="garage">Garage</label>
+              </div>
             </div>
           </div>
-          <div class="mb-3">
-            <label for="propertyAddress" class="form-label">Address</label>
-            <input type="text" class="form-control" id="propertyAddress" placeholder="Enter address" required>
-          </div>
-          <div class="mb-3">
-            <label for="propertyImage" class="form-label">Property Image</label>
-            <input type="file" class="form-control" id="propertyImage">
-          </div>
-          <!-- Rental-specific fields (hidden unless "For Rent" is selected) -->
-          <div id="rentFields" style="display: none;">
-            <div class="mb-3">
-              <label for="leaseDuration" class="form-label">Lease Duration (months)</label>
-              <input type="number" class="form-control" id="leaseDuration">
-            </div>
-            <div class="mb-3">
-              <label for="monthlyRent" class="form-label">Monthly Rent ($)</label>
-              <input type="number" class="form-control" id="monthlyRent">
-            </div>
-            <div class="mb-3">
-              <label for="availabilityDate" class="form-label">Availability Date</label>
-              <input type="date" class="form-control" id="availabilityDate">
-            </div>
-          </div>
-          <!-- Smart Agent Assignment -->
-          <div class="mb-3">
-            <label for="assignAgent" class="form-label">Assign Agent</label>
-            <input type="text" class="form-control" id="assignAgent" placeholder="Start typing agent's name">
-            <small class="text-muted">Live search (to be integrated).</small>
-          </div>
-          <button type="submit" class="btn btn-primary">Save Property</button>
+          <button type="submit" class="btn btn-primary mt-3">Add Listing</button>
         </form>
       </div>
     </div>
-    
-    <!-- Manage Properties Panel (Available to all; content may be filtered for agents) -->
-    <div id="managePropertiesPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
+
+    <!-- Listings Panel -->
+    <div id="listingsPanel" class="panel-content" data-aos="fade-up">
+      <button class="btn btn-secondary back-btn mb-3" data-target="overviewPanel"><i class="fas fa-arrow-left"></i> Back</button>
       <div class="panel">
-        <h2>Manage Properties</h2>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <input type="text" class="form-control search-bar" id="propertySearch" placeholder="Search properties...">
-          <div>
-            <button class="btn btn-outline-secondary btn-sm me-2">Filter</button>
-            <button class="btn btn-outline-secondary btn-sm">Export (CSV)</button>
-          </div>
+        <h2>Manage Listings</h2>
+        <div class="d-flex justify-content-between mb-3">
+          <input type="text" class="form-control w-50" placeholder="Search Listings..." id="listingSearch">
+          <button class="btn btn-primary" onclick="exportToCSV('listingsTable', 'listings')">Export CSV</button>
         </div>
         <table>
           <thead>
-            <tr>
-              <th><input type="checkbox" id="selectAllProperties"></th>
-              <th>Title</th>
-              <th>Type</th>
-              <th>Price</th>
-              <th>Agent</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
+            <tr><th>Title</th><th>Agent</th><th>Price (€)</th><th>Status</th><th>Actions</th></tr>
           </thead>
-          <tbody>
-            <!-- Dynamic property rows go here -->
-          </tbody>
-        </table>
-        <div class="mt-3">
-          <button class="btn btn-danger btn-sm">Delete Selected</button>
-          <button class="btn btn-secondary btn-sm">Update Status</button>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Messaging & Lead Management Panel (Available to both roles) -->
-    <div id="messagingPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
-      <div class="panel">
-        <h2>Messaging & Lead Management</h2>
-        <div class="mb-3">
-          <input type="text" class="form-control search-bar" id="messageSearch" placeholder="Search messages...">
-        </div>
-        <div class="message-list">
-          <!-- Example message items -->
-          <div class="message-item mb-3 p-3 border rounded">
-            <h5>Inquiry from John Doe</h5>
-            <p>Status: New</p>
-            <button class="btn btn-sm btn-outline-primary">Assign to Agent</button>
-          </div>
-          <!-- More messages can be added here -->
-        </div>
-      </div>
-    </div>
-    
-    <!-- Agents Panel (Admin Only) -->
-    <div id="agentsPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
-      <div class="panel">
-        <div class="agents-header">
-          <h2>Agents</h2>
-          <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addAgentModal">
-            <i class="fas fa-plus"></i> Add New Agent
-          </button>
-        </div>
-        <input type="text" class="form-control search-bar" id="agentSearch" placeholder="Search agents by name">
-        <div id="agentList">
-          <!-- Dynamic agent items go here -->
-        </div>
-        <div class="mt-3">
-          <button class="btn btn-secondary btn-sm">Send Bulk Message</button>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Agents Report Panel (Admin Only) -->
-    <div id="agentsReportPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
-      <div class="panel">
-        <h2>Top Agents Report</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Agent</th>
-              <th>Listings</th>
-              <th>Sales</th>
-              <th>Rating</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Dynamic agents report data goes here -->
-          </tbody>
+          <tbody id="listingsTable"></tbody>
         </table>
       </div>
     </div>
-    
-    <!-- Clients Panel (Admin Only) -->
-    <div id="clientsPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
+
+    <!-- Agents Panel -->
+    <div id="agentsPanel" class="panel-content" data-aos="fade-up">
+      <button class="btn btn-secondary back-btn mb-3" data-target="overviewPanel"><i class="fas fa-arrow-left"></i> Back</button>
       <div class="panel">
-        <h2>Clients</h2>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <input type="text" class="form-control search-bar" id="clientSearch" placeholder="Search clients...">
-          <button class="btn btn-outline-secondary btn-sm">Add New Client</button>
+        <h2>Manage Agents</h2>
+        <div class="d-flex justify-content-between mb-3">
+          <input type="text" class="form-control w-50" placeholder="Search Agents..." id="agentSearch">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAgentModal"><i class="fas fa-plus"></i> Add Agent</button>
         </div>
         <table>
           <thead>
-            <tr>
-              <th>Name</th>
-              <th>Contact</th>
-              <th>Last Contacted</th>
-              <th>Next Appointment</th>
-            </tr>
+            <tr><th>Photo</th><th>Name</th><th>Listings</th><th>Sales (€)</th><th>Role</th><th>Status</th><th>Actions</th></tr>
           </thead>
-          <tbody>
-            <!-- Dynamic client rows go here -->
-          </tbody>
+          <tbody id="agentsTable"></tbody>
         </table>
       </div>
     </div>
-    
-    <!-- Account Settings / Agency Profile Panel (Available to both roles) -->
-    <div id="accountSettingsPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
+
+    <!-- Clients Panel -->
+    <div id="clientsPanel" class="panel-content" data-aos="fade-up">
+      <button class="btn btn-secondary back-btn mb-3" data-target="overviewPanel"><i class="fas fa-arrow-left"></i> Back</button>
       <div class="panel">
-        <h2>Account Settings</h2>
-        <form id="accountSettingsForm">
-          <div class="mb-3">
-            <label for="accountName" class="form-label">Name</label>
-            <input type="text" class="form-control" id="accountName" required>
-          </div>
-          <div class="mb-3">
-            <label for="accountEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="accountEmail" required>
-          </div>
-          <div class="mb-3">
-            <label for="accountPassword" class="form-label">New Password</label>
-            <input type="password" class="form-control" id="accountPassword">
-          </div>
-          <div class="mb-3">
-            <label for="companyLogo" class="form-label">Company Logo</label>
-            <input type="file" class="form-control" id="companyLogo">
-          </div>
-          <div class="mb-3">
-            <label for="profilePicture" class="form-label">Profile Picture</label>
-            <input type="file" class="form-control" id="profilePicture">
-          </div>
-          <div class="mb-3">
-            <label for="themeColor" class="form-label">Theme Color</label>
-            <input type="color" class="form-control form-control-color" id="themeColor" value="#007bff">
-          </div>
-          <div class="mb-3">
-            <label for="twoFactor" class="form-label">Two-Factor Authentication</label>
-            <select class="form-select" id="twoFactor">
-              <option value="off">Off</option>
-              <option value="sms">SMS</option>
-              <option value="app">Authenticator App</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary">Save Changes</button>
-        </form>
-        <div class="mt-3">
-          <button class="btn btn-secondary" onclick="alert('Public profile view coming soon!')">
-            View Public Profile
-          </button>
-        </div>
+        <h2>Client Management</h2>
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Contact</th><th>Interest</th><th>Last Contact</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="clientsTable"></tbody>
+        </table>
       </div>
     </div>
-    
-    <!-- Support Panel -->
-    <div id="supportPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn mb-3" data-target="homePanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
+
+    <!-- Leads Panel -->
+    <div id="leadsPanel" class="panel-content" data-aos="fade-up">
+      <button class="btn btn-secondary back-btn mb-3" data-target="overviewPanel"><i class="fas fa-arrow-left"></i> Back</button>
       <div class="panel">
-        <h2>Contact Support</h2>
-        <form id="supportForm">
-          <div class="mb-3">
-            <label for="supportSubject" class="form-label">Subject</label>
-            <input type="text" class="form-control" id="supportSubject" required>
+        <h2>Leads & Inquiries</h2>
+        <table>
+          <thead>
+            <tr><th>Client</th><th>Property</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="leadsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Analytics Panel -->
+    <div id="analyticsPanel" class="panel-content" data-aos="fade-up">
+      <button class="btn btn-secondary back-btn mb-3" data-target="overviewPanel"><i class="fas fa-arrow-left"></i> Back</button>
+      <div class="panel">
+        <h2>Agency Analytics</h2>
+        <div class="row g-4">
+          <div class="col-md-6"><canvas id="agentPerformanceChart"></canvas></div>
+          <div class="col-md-6"><canvas id="revenueBreakdownChart"></canvas></div>
+        </div>
+        <button class="btn btn-primary mt-3" onclick="exportToCSV('analyticsData', 'analytics')">Export CSV</button>
+      </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="settingsPanel" class="panel-content" data-aos="fade-up">
+      <button class="btn btn-secondary back-btn mb-3" data-target="overviewPanel"><i class="fas fa-arrow-left"></i> Back</button>
+      <div class="panel">
+        <h2>Agency Settings</h2>
+        <form id="settingsForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Agency Name</label>
+              <input type="text" class="form-control" value="Elite Realty Albania" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Contact Email</label>
+              <input type="email" class="form-control" value="contact@eliterealty.al" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-control" placeholder="+355 123 456 789">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Website</label>
+              <input type="url" class="form-control" placeholder="https://eliterealty.al">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Agency Logo</label>
+              <input type="file" class="form-control" id="agencyLogo" accept="image/*" required>
+              <img id="logoPreview" src="" alt="Logo Preview" style="max-width: 150px; margin-top: 10px; display: none;">
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="supportMessage" class="form-label">Message</label>
-            <textarea class="form-control" id="supportMessage" rows="3" required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit Request</button>
+          <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
         </form>
       </div>
     </div>
-    
   </div>
-  
-  <!-- Profile Modal -->
-  <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">User Profile & Settings</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Dynamic profile details go here -->
-          <div class="text-center mb-3">
-            <img src="" class="rounded-circle mb-2" alt="Profile" id="profilePicDisplay">
-            <h5 id="profileName"><!-- User Name --></h5>
-            <p class="text-muted" id="profileRole"><!-- User Role --></p>
-          </div>
-          <p><strong>Recent Login:</strong> <span id="recentLogin"><!-- Dynamic timestamp --></span></p>
-          <p><strong>Business Email:</strong> <span id="profileEmail"><!-- Dynamic email --></span></p>
-          <p><strong>Login Activity:</strong> <span id="loginActivity"><!-- Dynamic data --></span></p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Edit Profile Modal -->
-  <div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Edit Profile</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <form id="editProfileForm">
-            <div class="mb-3">
-              <label for="editName" class="form-label">Name</label>
-              <input type="text" class="form-control" id="editName" required>
-            </div>
-            <div class="mb-3">
-              <label for="editEmail" class="form-label">Email</label>
-              <input type="email" class="form-control" id="editEmail" required>
-            </div>
-            <div class="mb-3">
-              <label for="editProfilePic" class="form-label">Profile Picture</label>
-              <input type="file" class="form-control" id="editProfilePic">
-            </div>
-            <button type="submit" class="btn btn-primary">Save Profile</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Add Agent Modal (Admin Only) -->
+
+  <!-- Add Agent Modal -->
   <div class="modal fade" id="addAgentModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Add New Agent</h5>
@@ -804,27 +531,15 @@ body.dark-mode .modal-footer {
         </div>
         <div class="modal-body">
           <form id="addAgentForm">
+            <div class="mb-3"><input type="file" class="form-control" placeholder="Agent Photo" accept="image/*" required></div>
+            <div class="mb-3"><input type="text" class="form-control" placeholder="Full Name" required></div>
+            <div class="mb-3"><input type="email" class="form-control" placeholder="Email" required></div>
             <div class="mb-3">
-              <label for="agentPhoto" class="form-label">Agent Photo</label>
-              <input type="file" class="form-control" id="agentPhoto">
-            </div>
-            <div class="row g-3 mb-3">
-              <div class="col">
-                <label for="agentFirstName" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="agentFirstName" required>
-              </div>
-              <div class="col">
-                <label for="agentLastName" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="agentLastName" required>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="agentPhone" class="form-label">Phone Number</label>
-              <input type="tel" class="form-control" id="agentPhone">
-            </div>
-            <div class="mb-3">
-              <label for="agentEmail" class="form-label">Email</label>
-              <input type="email" class="form-control" id="agentEmail">
+              <select class="form-select" required>
+                <option value="">Role</option>
+                <option>Manager</option>
+                <option>Agent</option>
+              </select>
             </div>
             <button type="submit" class="btn btn-primary">Add Agent</button>
           </form>
@@ -832,190 +547,215 @@ body.dark-mode .modal-footer {
       </div>
     </div>
   </div>
-  
-  <!-- Edit Property Modal -->
-  <div class="modal fade" id="editPropertyModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+  <!-- Profile Modal -->
+  <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Edit Property</h5>
+          <h5 class="modal-title">Agency Profile</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <form id="editPropertyForm">
-            <div class="mb-3">
-              <label for="editPropertyTitle" class="form-label">Property Title</label>
-              <input type="text" class="form-control" id="editPropertyTitle" required>
-            </div>
-            <!-- Additional fields should be pre-populated dynamically -->
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-          </form>
+          <p><strong>Agency:</strong> <span id="profileAgency">Elite Realty Albania</span></p>
+          <p><strong>Email:</strong> <span id="profileEmail">contact@eliterealty.al</span></p>
+          <p><strong>Agents:</strong> <span id="profileAgentCount">15</span></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
   </div>
-  
-  <!-- Dark Mode Toggle Button -->
-  <button class="toggle-dark" id="darkModeToggle">
-    <i class="fas fa-moon"></i>
-  </button>
-  
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Dark Mode Toggle -->
+  <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    // Set dynamic user name (replace with dynamic data as needed)
-    const userName = "Your User Name";
-    document.getElementById('welcomeHeader').innerText = "Welcome, " + userName;
-    
-    // Set user role ("admin" or "agent")
-    const userRole = "admin"; // Change to "agent" to test agent view
-    
-    // Hide sidebar links (and optionally panels) marked as admin-only if the user is an agent
-    if (userRole === "agent") {
-      document.querySelectorAll('[data-role="admin"]').forEach(link => {
-        link.style.display = "none";
-      });
-    }
-    
-    // Panel navigation function
+    // Initialize AOS
+    try { AOS.init({ duration: 800, once: true }); } catch (e) { console.log('AOS failed:', e); }
+
+    // Agency data
+    const agency = { name: "Elite Realty Albania", email: "contact@eliterealty.al", agentCount: 15 };
+    document.getElementById('agencyName').textContent = agency.name;
+    document.getElementById('profileAgency').textContent = agency.name;
+    document.getElementById('profileEmail').textContent = agency.email;
+    document.getElementById('profileAgentCount').textContent = agency.agentCount;
+
+    // Sample data
+    const listings = [
+      { id: 1, title: "Tirana Penthouse", agent: "Alice Brown", price: 450000, status: "Active" },
+      { id: 2, title: "Vlora Villa", agent: "Bob White", price: 780000, status: "Pending" }
+    ];
+    const agents = [
+      { id: 1, name: "Alice Brown", photo: "https://via.placeholder.com/40", listings: 8, sales: 320000, role: "Manager", status: "Active" },
+      { id: 2, name: "Bob White", photo: "https://via.placeholder.com/40", listings: 5, sales: 180000, role: "Agent", status: "Active" }
+    ];
+    const clients = [
+      { id: 1, name: "Mark Johnson", contact: "mark@example.com", interest: "Tirana Penthouse", lastContact: "2025-02-28" },
+      { id: 2, name: "Sara Lee", contact: "sara@example.com", interest: "Vlora Villa", lastContact: "2025-03-01" }
+    ];
+    const leads = [
+      { id: 1, client: "Jane Smith", property: "Tirana Penthouse", date: "2025-03-01", status: "New" },
+      { id: 2, client: "Tom Clark", property: "Vlora Villa", date: "2025-02-28", status: "Assigned" }
+    ];
+
+    // Panel navigation
     function showPanel(panelId) {
-      document.querySelectorAll('.panelContent').forEach(panel => {
-        panel.style.display = 'none';
-      });
+      document.querySelectorAll('.panel-content').forEach(panel => panel.style.display = 'none');
       document.getElementById(panelId).style.display = 'block';
-      
-      document.querySelectorAll('.sidebar-link').forEach(link => {
+      document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.toggle('active', link.getAttribute('data-target') === panelId);
       });
     }
-    
-    // Sidebar link events
-    document.querySelectorAll('.sidebar-link').forEach(link => {
-      link.addEventListener('click', function(e) {
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
         e.preventDefault();
-        showPanel(this.getAttribute('data-target'));
+        showPanel(link.getAttribute('data-target'));
       });
     });
-    
-    // Back button events
     document.querySelectorAll('.back-btn').forEach(btn => {
-      btn.addEventListener('click', () => showPanel('homePanel'));
+      btn.addEventListener('click', () => showPanel('overviewPanel'));
     });
-    
-    // Initialize default panel
-    showPanel('homePanel');
-    
+    showPanel('overviewPanel');
+
     // Animate counters
     document.querySelectorAll('.counter').forEach(counter => {
-      const updateCount = () => {
-        const target = +counter.getAttribute('data-target');
-        const count = +counter.innerText;
-        const increment = target / 100;
-        if(count < target) {
-          counter.innerText = Math.ceil(count + increment);
-          setTimeout(updateCount, 20);
+      const target = +counter.getAttribute('data-target');
+      let count = 0;
+      const increment = target / 50;
+      const update = () => {
+        if (count < target) {
+          count += increment;
+          counter.textContent = Math.ceil(count).toLocaleString();
+          requestAnimationFrame(update);
         } else {
-          counter.innerText = target;
+          counter.textContent = target.toLocaleString();
         }
       };
-      updateCount();
+      update();
     });
-    
-    // Initialize Sales Chart
-    const salesCtx = document.getElementById('salesChart').getContext('2d');
-    new Chart(salesCtx, {
-      type: 'bar',
-      data: {
-        labels: [], // Dynamic labels
-        datasets: [{
-          label: 'Sales ($)',
-          data: [], // Dynamic data
-          backgroundColor: '#007bff'
-        }]
-      },
-      options: { scales: { y: { beginAtZero: true } } }
-    });
-    
-    // Initialize Rentals Chart
-    const rentalsCtx = document.getElementById('rentalsChart').getContext('2d');
-    new Chart(rentalsCtx, {
-      type: 'line',
-      data: {
-        labels: [], // Dynamic labels
-        datasets: [{
-          label: 'Rentals ($)',
-          data: [], // Dynamic data
-          borderColor: '#17a2b8',
-          backgroundColor: 'rgba(23,162,184,0.2)',
-          fill: true,
-          tension: 0.3
-        }]
-      },
-      options: { scales: { y: { beginAtZero: true } } }
-    });
-    
-    // Toggle display of rental fields based on Property Purpose selection
-    document.querySelectorAll('input[name="propertyPurpose"]').forEach(radio => {
-      radio.addEventListener('change', function() {
-        document.getElementById('rentFields').style.display = (this.value === 'rent') ? 'block' : 'none';
+
+    // Charts
+    try {
+      new Chart(document.getElementById('salesChart'), {
+        type: 'bar',
+        data: { labels: ['Jan', 'Feb', 'Mar'], datasets: [{ label: 'Sales (€)', data: [50000, 75000, 90000], backgroundColor: '#f4a261' }] },
+        options: { scales: { y: { beginAtZero: true } } }
       });
-    });
-    
-    // Dark Mode Toggle
-    document.getElementById('darkModeToggle').addEventListener('click', function() {
-      document.body.classList.toggle('dark-mode');
-      const icon = this.querySelector('i');
-      icon.classList.toggle('fa-moon');
-      icon.classList.toggle('fa-sun');
-    });
-    
-    // Sidebar Toggle
-    document.getElementById('toggleSidebar').addEventListener('click', function() {
+      new Chart(document.getElementById('rentalsChart'), {
+        type: 'line',
+        data: { labels: ['Jan', 'Feb', 'Mar'], datasets: [{ label: 'Rentals (€)', data: [20000, 25000, 22000], borderColor: '#e9c46a', fill: true }] },
+        options: { scales: { y: { beginAtZero: true } } }
+      });
+      new Chart(document.getElementById('agentPerformanceChart'), {
+        type: 'bar',
+        data: { labels: agents.map(a => a.name), datasets: [{ label: 'Sales (€)', data: agents.map(a => a.sales), backgroundColor: '#f4a261' }] },
+        options: { scales: { y: { beginAtZero: true } }, plugins: { title: { display: true, text: 'Agent Performance' } } }
+      });
+      new Chart(document.getElementById('revenueBreakdownChart'), {
+        type: 'pie',
+        data: {
+          labels: ['Alice Brown', 'Bob White'],
+          datasets: [{ data: [320000, 180000], backgroundColor: ['#f4a261', '#e9c46a'] }]
+        },
+        options: { plugins: { title: { display: true, text: 'Revenue by Agent' } } }
+      });
+    } catch (e) { console.log('Chart.js failed:', e); }
+
+    // Populate tables
+    function populateTable(tableId, data, fields, extras = {}) {
+      const tbody = document.getElementById(tableId);
+      if (tbody) {
+        tbody.innerHTML = data.map(item => `
+          <tr>
+            ${extras.photo ? `<td><img src="${item.photo}" class="agent-photo"></td>` : ''}
+            ${fields.map(field => `<td>${item[field]}</td>`).join('')}
+            <td><button class="btn btn-sm btn-primary">View</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+    populateTable('listingsTable', listings, ['title', 'agent', 'price', 'status']);
+    populateTable('agentsTable', agents, ['name', 'listings', 'sales', 'role', 'status'], { photo: true });
+    populateTable('clientsTable', clients, ['name', 'contact', 'interest', 'lastContact']);
+    populateTable('leadsTable', leads, ['client', 'property', 'date', 'status']);
+
+    // Sidebar toggle
+    document.getElementById('toggleSidebar').addEventListener('click', () => {
       document.getElementById('sidebar').classList.toggle('collapsed');
     });
-    
-    // Notifications Dropdown Toggle
-    document.getElementById('notificationsBtn').addEventListener('click', function(e) {
+
+    // Notifications toggle
+    document.getElementById('notificationsBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       document.getElementById('notificationsDropdown').classList.toggle('active');
     });
-    document.addEventListener('click', function() {
+    document.addEventListener('click', () => {
       document.getElementById('notificationsDropdown').classList.remove('active');
     });
-    
-    // Sample form submissions (replace with actual integrations)
-    document.getElementById('addAgentForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('New agent added!');
-      this.reset();
-      bootstrap.Modal.getInstance(document.getElementById('addAgentModal')).hide();
+
+    // Form submissions
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert(`${form.id.replace('Form', '')} submitted successfully!`);
+        if (form.id === 'addAgentForm') {
+          bootstrap.Modal.getInstance(document.getElementById('addAgentModal')).hide();
+        } else if (form.id !== 'settingsForm') {
+          showPanel('overviewPanel');
+        }
+        form.reset();
+      });
     });
-    document.getElementById('addPropertyForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Property added!');
-      this.reset();
-      showPanel('managePropertiesPanel');
+
+    // Search filters
+    document.getElementById('listingSearch')?.addEventListener('input', (e) => {
+      const filtered = listings.filter(l => l.title.toLowerCase().includes(e.target.value.toLowerCase()));
+      populateTable('listingsTable', filtered, ['title', 'agent', 'price', 'status']);
     });
-    document.getElementById('editPropertyForm')?.addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Property updated!');
-      bootstrap.Modal.getInstance(document.getElementById('editPropertyModal')).hide();
+    document.getElementById('agentSearch')?.addEventListener('input', (e) => {
+      const filtered = agents.filter(a => a.name.toLowerCase().includes(e.target.value.toLowerCase()));
+      populateTable('agentsTable', filtered, ['name', 'listings', 'sales', 'role', 'status'], { photo: true });
     });
-    document.getElementById('editProfileForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Profile updated!');
-      bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+
+    // Logo preview
+    document.getElementById('agencyLogo')?.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => document.getElementById('logoPreview').src = reader.result;
+        reader.readAsDataURL(file);
+        document.getElementById('logoPreview').style.display = 'block';
+      }
     });
-    document.getElementById('accountSettingsForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Account settings updated!');
-      this.reset();
+
+    // Dark mode toggle
+    document.getElementById('darkModeToggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const icon = document.querySelector('#darkModeToggle i');
+      icon.classList.toggle('fa-moon');
+      icon.classList.toggle('fa-sun');
     });
-    document.getElementById('supportForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Support request submitted!');
-      this.reset();
-    });
+
+    // CSV Export
+    function exportToCSV(tableId, filename) {
+      const rows = document.querySelectorAll(`#${tableId} tr`);
+      let csv = [];
+      rows.forEach(row => {
+        const cols = Array.from(row.querySelectorAll('th, td')).map(col => `"${col.textContent.trim()}"`);
+        csv.push(cols.join(','));
+      });
+      const csvContent = 'data:text/csv;charset=utf-8,' + csv.join('\n');
+      const link = document.createElement('a');
+      link.setAttribute('href', encodeURI(csvContent));
+      link.setAttribute('download', `${filename}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   </script>
 </body>
 </html>
