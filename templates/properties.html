@@ -3,269 +3,301 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Properties | Real Estate Platform</title>
-  <meta name="description" content="Explore our premium property listings and find your dream home." />
-  <meta name="keywords" content="real estate, properties, listings, homes for sale, rentals" />
-  <meta name="author" content="Real Estate Platform" />
-  
+  <meta name="description" content="Explore luxury properties for sale and rent across Albania." />
+  <meta name="keywords" content="Albania real estate, luxury homes, villas, apartments, properties" />
+  <meta name="author" content="Albania Lux Properties" />
+  <title>Properties | Albania Lux Properties</title>
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
+  <!-- Leaflet CSS -->
+  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <!-- Custom CSS -->
   <style>
     :root {
-      --primary-color: #007bff;
-      --secondary-color: #00d4ff;
-      --accent-color: #ffd700;
-      --bg-color: #f4f7f9;
-      --text-color: #333;
-      --card-bg: #fff;
-      --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      --primary-color: #1a3c34; /* Deep teal */
+      --secondary-color: #f4a261; /* Warm coral */
+      --accent-color: #e9c46a; /* Soft gold */
+      --background-dark: #0f2522;
+      --background-light: #f9f7f3;
+      --text-dark: #1a1a1a;
+      --text-light: #fff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      transition: all 0.3s ease;
+      font-family: 'Roboto', sans-serif;
+      background: var(--background-light);
+      color: var(--text-dark);
+      line-height: 1.7;
+      overflow-x: hidden;
     }
-    a { text-decoration: none; color: inherit; }
-    
-    /* HEADER (Fixed & Transparent) */
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+    }
+    a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
+
+    /* Header */
     header {
       position: fixed;
       top: 0;
-      left: 0;
       width: 100%;
-      background: transparent;
-      padding: 10px 20px;
-      z-index: 1100;
+      z-index: 1000;
+      padding: 20px 0;
+      background: rgba(10, 37, 34, 0.9);
+      backdrop-filter: blur(10px);
       transition: background 0.3s ease;
     }
     header.scrolled {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      background: var(--background-dark);
+      box-shadow: var(--shadow);
     }
     .navbar-brand {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #fff;
+      color: var(--text-light);
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
     }
-    .navbar-nav .nav-link {
-      color: #fff;
-      margin-left: 20px;
-      font-size: 0.95rem;
-      transition: color 0.3s ease;
-    }
-    .navbar-nav .nav-link:hover {
+    .navbar-brand i {
+      margin-right: 12px;
       color: var(--accent-color);
     }
-    
-    /* HERO SECTION (Blue banner merged with header) */
+    .navbar-nav .nav-link {
+      color: var(--text-light);
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-left: 25px;
+      position: relative;
+    }
+    .navbar-nav .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      bottom: -5px;
+      left: 0;
+      transition: width 0.3s ease;
+    }
+    .navbar-nav .nav-link:hover::after,
+    .navbar-nav .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
     .hero-section {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      min-height: 20vh;
-      padding-top: 80px;
+      background: var(--gradient);
+      padding: 100px 20px 60px;
       text-align: center;
-      color: #fff;
+      color: var(--text-light);
     }
     .hero-section h1 {
-      font-size: 2.5rem;
-      margin: 0;
-      animation: fadeInUp 1s ease;
+      font-size: 3.5rem;
+      margin-bottom: 15px;
     }
     .hero-section p {
-      font-size: 1.2rem;
-      margin: 0;
-      animation: fadeInUp 1.5s ease;
+      font-size: 1.3rem;
+      font-weight: 300;
+      opacity: 0.9;
     }
-    
-    /* SEARCH FILTER SECTION */
-    .search-filter {
-      background: var(--card-bg);
+
+    /* Filters */
+    .filters-section {
+      padding: 40px 0;
+      background: #fff;
+    }
+    .filters-container {
       max-width: 1200px;
-      margin: 20px auto;
-      padding: 20px;
-      border-radius: 12px;
+      margin: 0 auto;
+      background: var(--background-light);
+      padding: 30px;
+      border-radius: 20px;
       box-shadow: var(--shadow);
-      animation: fadeIn 1s ease;
     }
-    .search-filter input,
-    .search-filter select {
+    .filters-container form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+    }
+    .filters-container input,
+    .filters-container select {
       border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 10px;
-      width: 100%;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      flex: 1;
+      min-width: 150px;
+      background: #fff;
       transition: border-color 0.3s ease;
     }
-    .search-filter input:focus,
-    .search-filter select:focus {
-      border-color: var(--primary-color);
+    .filters-container input:focus,
+    .filters-container select:focus {
+      border-color: var(--secondary-color);
       outline: none;
     }
-    .search-filter button {
-      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    .filters-container select {
+      appearance: none;
+      background: url('data:image/svg+xml;base64,...') no-repeat right 15px center;
+    }
+    .filters-container button {
+      background: var(--gradient);
       border: none;
-      border-radius: 8px;
-      padding: 12px 20px;
-      color: #fff;
-      font-size: 1rem;
-      transition: background 0.3s ease, transform 0.2s ease;
+      border-radius: 25px;
+      padding: 12px 40px;
+      color: var(--text-light);
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
     }
-    .search-filter button:hover {
-      background: linear-gradient(45deg, #0056b3, #0090c8);
-      transform: scale(1.03);
+    .filters-container button:hover {
+      background: linear-gradient(135deg, #12302b, #e68a4f);
+      transform: translateY(-2px);
     }
-    .toggle-advanced,
-    .toggle-map {
+    .toggle-link {
       text-align: center;
-      margin-top: 10px;
+      margin-top: 20px;
       color: var(--primary-color);
       cursor: pointer;
-      transition: color 0.3s ease;
+      font-weight: 500;
     }
-    .toggle-advanced:hover,
-    .toggle-map:hover {
-      color: var(--secondary-color);
-    }
-    .advanced-filters,
-    #map-section {
+    .toggle-link:hover { color: var(--secondary-color); }
+    .advanced-filters {
       display: none;
       margin-top: 20px;
       padding-top: 20px;
       border-top: 1px solid #eee;
+      flex-wrap: wrap;
+      gap: 20px;
     }
-    
-    /* PROPERTY LISTINGS */
-    .property-listings {
+
+    /* Listings */
+    .listings-section {
+      padding: 60px 0;
       max-width: 1200px;
-      margin: 20px auto;
+      margin: 0 auto;
     }
     .property-card {
-      background: var(--card-bg);
-      border: none;
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-      margin-bottom: 20px;
+      background: #fff;
+      border-radius: 20px;
       overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: var(--shadow);
+      transition: all 0.4s ease;
+      margin-bottom: 30px;
     }
     .property-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
     }
-    .property-card .carousel-inner img {
+    .property-card img {
+      height: 250px;
       width: 100%;
-      height: 200px;
       object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .property-card:hover img {
+      transform: scale(1.05);
     }
     .property-card .card-body {
       padding: 20px;
     }
+    .property-card h5 {
+      font-size: 1.6rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    .property-card p.price {
+      font-size: 1.3rem;
+      color: var(--secondary-color);
+      font-weight: 700;
+    }
     .property-features {
       display: flex;
-      gap: 10px;
-      font-size: 0.9rem;
+      gap: 15px;
+      font-size: 0.95rem;
+      color: #666;
       margin: 10px 0;
     }
-    .property-features span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
+    .property-features span i {
+      margin-right: 5px;
+      color: var(--accent-color);
     }
     .property-card .btn {
-      background: var(--primary-color);
+      background: var(--secondary-color);
+      color: var(--text-light);
       border: none;
-      padding: 10px;
+      border-radius: 20px;
+      padding: 10px 25px;
       width: 100%;
-      border-radius: 8px;
-      font-size: 1rem;
-      color: #fff;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
     }
     .property-card .btn:hover {
-      background: var(--secondary-color);
+      background: #e68a4f;
     }
-    
+
+    /* Map */
+    #map-section {
+      display: none;
+      padding: 40px 0;
+    }
+    #map {
+      height: 500px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
     /* Pagination */
     .pagination {
       justify-content: center;
-      margin: 20px 0;
+      margin-top: 40px;
+    }
+    .page-link {
+      border-radius: 10px;
+      color: var(--primary-color);
+      margin: 0 5px;
     }
     .page-item.active .page-link {
       background: var(--primary-color);
       border-color: var(--primary-color);
+      color: var(--text-light);
     }
-    
-    /* FOOTER */
+
+    /* Footer */
     .footer {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: #fff;
+      background: var(--background-dark);
+      color: var(--text-light);
+      padding: 60px 0 20px;
       text-align: center;
-      padding: 20px;
-      margin-top: 40px;
     }
-    .footer a {
-      color: #fff;
-      margin: 0 10px;
-      transition: color 0.3s ease;
-    }
-    .footer a:hover {
-      color: var(--accent-color);
-    }
-    
-    /* Dark Mode */
-    body.dark {
-      --bg-color: #1a1a1a;
-      --text-color: #fff;
-      --card-bg: #2d2d2d;
-    }
-    .dark .search-filter,
-    .dark .property-card {
-      background: var(--card-bg);
-      color: var(--text-color);
-    }
-    .dark .search-filter input,
-    .dark .search-filter select {
-      background: #333;
-      color: #fff;
-      border-color: #444;
-    }
-    
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .footer a:hover { color: var(--accent-color); }
+    .social-icons a {
+      font-size: 1.5rem;
+      margin: 0 15px;
     }
   </style>
 </head>
 <body>
-  <!-- HEADER -->
+  <!-- Header -->
   <header>
-    <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">🏡 Real Estate</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                data-bs-target="#navbarNav" aria-controls="navbarNav" 
-                aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand" href="/"><i class="fas fa-villa"></i> Albania Lux Properties</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul class="navbar-nav">
-            <li class="nav-item"><a class="nav-link" href="/properties">Properties</a></li>
-            <li class="nav-item"><a class="nav-link" href="/for-owners">For Owners</a></li>
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/properties">Properties</a></li>
+            <li class="nav-item"><a class="nav-link" href="/owners">For Owners</a></li>
             <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
             <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
           </ul>
@@ -273,333 +305,185 @@
       </div>
     </nav>
   </header>
-  
-  <!-- HERO SECTION -->
-  <section class="hero-section">
-    <div>
-      <h1>Properties</h1>
-      <p>Discover your dream home</p>
-    </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section" data-aos="fade-up">
+    <h1>Explore Albanian Properties</h1>
+    <p>Find your perfect home or investment in the heart of the Mediterranean.</p>
   </section>
-  
-  <!-- SEARCH FILTER SECTION -->
-  <section class="search-filter container">
-    <form id="search-form" class="row g-3" aria-label="Property search filters">
-      <div class="col-md-3">
-        <input type="text" id="location" name="location" class="form-control" placeholder="City or Area" required>
-      </div>
-      <div class="col-md-3">
-        <select name="type" class="form-select" multiple>
+
+  <!-- Filters -->
+  <section class="filters-section" data-aos="fade-up" data-aos-delay="200">
+    <div class="filters-container container">
+      <form id="search-form">
+        <input type="text" id="location" name="location" placeholder="City or Region (e.g., Tirana)" required />
+        <select name="type" required>
+          <option value="" disabled selected>Property Type</option>
           <option value="apartment">Apartment</option>
           <option value="house">House</option>
           <option value="villa">Villa</option>
+          <option value="land">Land</option>
         </select>
-      </div>
-      <div class="col-md-2">
-        <select name="purpose" class="form-select" required>
-          <option value="" disabled selected>Purpose</option>
+        <select name="purpose" required>
+          <option value="" disabled selected>Buy or Rent</option>
           <option value="buy">Buy</option>
           <option value="rent">Rent</option>
         </select>
-      </div>
-      <div class="col-md-2">
-        <select name="sort" class="form-select">
+        <select name="sort">
           <option value="" disabled selected>Sort By</option>
           <option value="priceAsc">Price: Low to High</option>
           <option value="priceDesc">Price: High to Low</option>
-          <option value="newest">Newest Listings</option>
+          <option value="newest">Newest</option>
         </select>
+        <button type="submit">Filter Properties</button>
+      </form>
+      <div class="toggle-link" id="toggle-advanced">Advanced Filters <i class="fas fa-chevron-down"></i></div>
+      <div class="advanced-filters row">
+        <div class="col-md-2"><input type="number" name="priceMin" placeholder="Min Price (€)" /></div>
+        <div class="col-md-2"><input type="number" name="priceMax" placeholder="Max Price (€)" /></div>
+        <div class="col-md-2"><select name="bedrooms"><option value="">Beds</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option></select></div>
+        <div class="col-md-2"><select name="bathrooms"><option value="">Baths</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option></select></div>
+        <div class="col-md-2"><input type="number" name="area" placeholder="Area (m²)" /></div>
       </div>
-      <div class="col-md-2 d-flex align-items-center">
-        <button type="submit" class="btn btn-primary w-100">Search</button>
-      </div>
-      
-      <!-- Toggle Advanced Filters -->
-      <div class="col-12">
-        <div class="toggle-advanced">Show Advanced Filters <i class="fas fa-chevron-down"></i></div>
-      </div>
-      <div class="col-12 advanced-filters">
-        <div class="row g-3">
-          <div class="col-md-2">
-            <label for="priceMin">Min Price ($)</label>
-            <input type="number" id="priceMin" class="form-control" placeholder="e.g., 100000">
-          </div>
-          <div class="col-md-2">
-            <label for="priceMax">Max Price ($)</label>
-            <input type="number" id="priceMax" class="form-control" placeholder="e.g., 500000">
-          </div>
-          <div class="col-md-3">
-            <label for="priceRange">Price Range</label>
-            <input type="range" id="priceRange" class="form-range" min="50000" max="2000000" step="50000">
-          </div>
-          <div class="col-md-2">
-            <label for="bedrooms">Bedrooms</label>
-            <select id="bedrooms" class="form-select">
-              <option selected>Any</option>
-              <option value="1">1+</option>
-              <option value="2">2+</option>
-              <option value="3">3+</option>
-              <option value="4">4+</option>
-            </select>
-          </div>
-          <div class="col-md-2">
-            <label for="bathrooms">Bathrooms</label>
-            <select id="bathrooms" class="form-select">
-              <option selected>Any</option>
-              <option value="1">1+</option>
-              <option value="2">2+</option>
-              <option value="3">3+</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label for="area">Area (m²)</label>
-            <input type="number" id="area" class="form-control" placeholder="e.g., 100">
-          </div>
-          <div class="col-md-2">
-            <label for="yearBuilt">Year Built</label>
-            <input type="number" id="yearBuilt" class="form-control" placeholder="e.g., 2000">
-          </div>
-        </div>
-      </div>
-      
-      <!-- Toggle Map View -->
-      <div class="col-12">
-        <div class="toggle-map">View on Map <i class="fas fa-map-marked-alt"></i></div>
-      </div>
-    </form>
+      <div class="toggle-link" id="toggle-map">View on Map <i class="fas fa-map-marked-alt"></i></div>
+    </div>
   </section>
-  
-  <!-- MAP SECTION -->
-  <section id="map-section" class="container" style="display: none;">
-    <div id="map" style="width: 100%; height: 400px; border-radius: 8px;"></div>
-  </section>
-  
-  <!-- PROPERTY LISTINGS -->
-  <section class="property-listings container">
-    <!-- Property Card 1 -->
-    <div class="property-card mb-4">
-      <div class="row g-0">
-        <div class="col-md-4">
-          <div id="carouselProperty1" class="carousel slide" data-bs-interval="false">
-            <div class="carousel-inner">
-              <div class="carousel-item active">
-                <img src="https://via.placeholder.com/600x150?text=Property+1+-+Photo+1" class="d-block w-100" alt="Property 1 Photo 1" style="height:200px; object-fit:cover;">
-              </div>
-              <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+1+-+Photo+2" class="d-block w-100" alt="Property 1 Photo 2" style="height:200px; object-fit:cover;">
-              </div>
-              <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+1+-+Photo+3" class="d-block w-100" alt="Property 1 Photo 3" style="height:200px; object-fit:cover;">
-              </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselProperty1" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselProperty1" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          </div>
-        </div>
-        <div class="col-md-8 d-flex align-items-center">
-          <div class="card-body">
-            <h5>Luxury Villa</h5>
-            <p>$1,500,000 • Los Angeles, CA</p>
-            <div class="property-features">
-              <span><i class="fas fa-bed"></i> 4 Beds</span>
-              <span><i class="fas fa-bath"></i> 3 Baths</span>
-              <span><i class="fas fa-ruler-combined"></i> 3500 sqft</span>
-            </div>
-            <a href="#" class="btn">View Details</a>
-          </div>
-        </div>
-      </div>
+
+  <!-- Listings -->
+  <section class="listings-section container" data-aos="fade-up" data-aos-delay="400">
+    <div id="property-listings">
+      <!-- Properties dynamically populated via JS -->
     </div>
-    
-    <!-- Property Card 2 -->
-    <div class="property-card mb-4">
-      <div class="row g-0">
-        <div class="col-md-4">
-          <div id="carouselProperty2" class="carousel slide" data-bs-interval="false">
-            <div class="carousel-inner">
-              <div class="carousel-item active">
-                <img src="https://via.placeholder.com/600x150?text=Property+2+-+Photo+1" class="d-block w-100" alt="Property 2 Photo 1" style="height:200px; object-fit:cover;">
-              </div>
-              <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+2+-+Photo+2" class="d-block w-100" alt="Property 2 Photo 2" style="height:200px; object-fit:cover;">
-              </div>
-              <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+2+-+Photo+3" class="d-block w-100" alt="Property 2 Photo 3" style="height:200px; object-fit:cover;">
-              </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselProperty2" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselProperty2" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          </div>
-        </div>
-        <div class="col-md-8 d-flex align-items-center">
-          <div class="card-body">
-            <h5>Modern Apartment</h5>
-            <p>$750,000 • New York, NY</p>
-            <div class="property-features">
-              <span><i class="fas fa-bed"></i> 2 Beds</span>
-              <span><i class="fas fa-bath"></i> 2 Baths</span>
-              <span><i class="fas fa-ruler-combined"></i> 1200 sqft</span>
-            </div>
-            <a href="#" class="btn">View Details</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Property Card 3 -->
-    <div class="property-card mb-4">
-      <div class="row g-0">
-        <div class="col-md-4">
-          <div id="carouselProperty3" class="carousel slide" data-bs-interval="false">
-            <div class="carousel-inner">
-              <div class="carousel-item active">
-                <img src="https://via.placeholder.com/600x150?text=Property+3+-+Photo+1" class="d-block w-100" alt="Property 3 Photo 1" style="height:200px; object-fit:cover;">
-              </div>
-              <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+3+-+Photo+2" class="d-block w-100" alt="Property 3 Photo 2" style="height:200px; object-fit:cover;">
-              </div>
-              <div class="carousel-item">
-                <img src="https://via.placeholder.com/600x150?text=Property+3+-+Photo+3" class="d-block w-100" alt="Property 3 Photo 3" style="height:200px; object-fit:cover;">
-              </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselProperty3" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselProperty3" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          </div>
-        </div>
-        <div class="col-md-8 d-flex align-items-center">
-          <div class="card-body">
-            <h5>Cozy Family House</h5>
-            <p>$500,000 • Austin, TX</p>
-            <div class="property-features">
-              <span><i class="fas fa-bed"></i> 3 Beds</span>
-              <span><i class="fas fa-bath"></i> 2 Baths</span>
-              <span><i class="fas fa-ruler-combined"></i> 1800 sqft</span>
-            </div>
-            <a href="#" class="btn">View Details</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Pagination -->
-    <nav aria-label="Page navigation">
+    <nav aria-label="Pagination">
       <ul class="pagination">
-        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
         <li class="page-item active"><a class="page-link" href="#">1</a></li>
         <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
         <li class="page-item"><a class="page-link" href="#">Next</a></li>
       </ul>
     </nav>
   </section>
-  
-  <!-- FOOTER -->
+
+  <!-- Map -->
+  <section id="map-section" class="container" data-aos="fade-up" data-aos-delay="600">
+    <div id="map"></div>
+  </section>
+
+  <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2025 Real Estate Platform. All Rights Reserved.</p>
-      <p>
-        <a href="/about">About Us</a> | 
-        <a href="/contact">Contact</a> | 
-        <a href="/privacy">Privacy Policy</a> | 
-        <a href="/terms">Terms of Service</a>
-      </p>
-      <div>
+      <p>© 2025 Albania Lux Properties. All Rights Reserved.</p>
+      <p><a href="/about">About</a> | <a href="/contact">Contact</a> | <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></p>
+      <div class="social-icons">
         <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="ms-3"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="ms-3"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
       </div>
     </div>
   </footer>
-  
-  <!-- DARK MODE TOGGLE BUTTON -->
-  <button class="toggle-dark" id="toggle-dark" aria-label="Toggle dark mode">
-    <i class="fas fa-moon"></i>
-  </button>
-  
-  <!-- Bootstrap Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" async></script>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    // Handle search form submission (simulate real-time filtering)
-    document.getElementById("search-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const params = new URLSearchParams(new FormData(this)).toString();
-      window.history.pushState({}, '', `/properties?${params}`);
-      console.log("Filters applied:", params);
+    // Sample property data
+    const properties = [
+      { id: 1, title: "Tirana Skyline Penthouse", price: 450000, location: "Tirana", type: "apartment", bedrooms: 3, bathrooms: 2, area: 180, img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", purpose: "buy", lat: 41.3275, lng: 19.8187 },
+      { id: 2, title: "Vlora Coastal Villa", price: 780000, location: "Vlora", type: "villa", bedrooms: 4, bathrooms: 3, area: 320, img: "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", purpose: "buy", lat: 40.4667, lng: 19.4897 },
+      { id: 3, title: "Saranda Seafront Apartment", price: 220000, location: "Saranda", type: "apartment", bedrooms: 2, bathrooms: 1, area: 95, img: "https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", purpose: "rent", lat: 39.875, lng: 20.005 }
+    ];
+
+    // Initialize AOS
+    AOS.init({ duration: 1000, once: true });
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      document.querySelector('header').classList.toggle('scrolled', window.scrollY > 50);
     });
-    
-    // Toggle Advanced Filters
-    document.querySelector('.toggle-advanced').addEventListener('click', function() {
-      const adv = document.querySelector('.advanced-filters');
-      if (adv.style.display === "none" || adv.style.display === "") {
-        adv.style.display = "block";
-        this.innerHTML = 'Hide Advanced Filters <i class="fas fa-chevron-up"></i>';
-      } else {
-        adv.style.display = "none";
-        this.innerHTML = 'Show Advanced Filters <i class="fas fa-chevron-down"></i>';
-      }
-    });
-    
-    // Toggle Map View
-    document.querySelector('.toggle-map').addEventListener('click', function() {
-      const mapSection = document.getElementById('map-section');
-      if (mapSection.style.display === "none" || mapSection.style.display === "") {
-        mapSection.style.display = "block";
-        this.innerHTML = 'Hide Map <i class="fas fa-map-marked-alt"></i>';
-        if (!window.mapInitialized) {
-          initMap();
-          window.mapInitialized = true;
-        }
-      } else {
-        mapSection.style.display = "none";
-        this.innerHTML = 'View on Map <i class="fas fa-map-marked-alt"></i>';
-      }
-    });
-    
-    // Toggle Dark Mode
-    document.getElementById("toggle-dark").addEventListener("click", function() {
-      document.body.classList.toggle("dark");
-      const icon = this.querySelector("i");
-      if (document.body.classList.contains("dark")) {
-        icon.classList.remove("fa-moon");
-        icon.classList.add("fa-sun");
-      } else {
-        icon.classList.remove("fa-sun");
-        icon.classList.add("fa-moon");
-      }
-    });
-    
-    // Google Maps Initialization (replace YOUR_GOOGLE_MAPS_API_KEY with your actual key)
-    function initMap() {
-      const script = document.createElement('script');
-      script.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=loadMap";
-      script.async = true;
-      document.head.appendChild(script);
-    }
-    function loadMap() {
-      const center = { lat: 39.8283, lng: -98.5795 };
-      const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 4,
-        center: center,
+
+    // Render listings
+    function renderListings(filtered = properties) {
+      const listings = document.getElementById('property-listings');
+      listings.innerHTML = '';
+      filtered.forEach(p => {
+        listings.innerHTML += `
+          <div class="property-card">
+            <img src="${p.img}" alt="${p.title}">
+            <div class="card-body">
+              <h5>${p.title}</h5>
+              <p class="price">€${p.price.toLocaleString()}</p>
+              <p>${p.location}</p>
+              <div class="property-features">
+                <span><i class="fas fa-bed"></i> ${p.bedrooms}</span>
+                <span><i class="fas fa-bath"></i> ${p.bathrooms}</span>
+                <span><i class="fas fa-ruler-combined"></i> ${p.area} m²</span>
+              </div>
+              <a href="/property/${p.id}" class="btn">View Details</a>
+            </div>
+          </div>
+        `;
       });
     }
+
+    // Filter properties
+    document.getElementById('search-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const filters = Object.fromEntries(formData);
+      const filtered = properties.filter(p => (
+        (!filters.location || p.location.toLowerCase().includes(filters.location.toLowerCase())) &&
+        (!filters.type || p.type === filters.type) &&
+        (!filters.purpose || p.purpose === filters.purpose) &&
+        (!filters.priceMin || p.price >= Number(filters.priceMin)) &&
+        (!filters.priceMax || p.price <= Number(filters.priceMax)) &&
+        (!filters.bedrooms || p.bedrooms >= Number(filters.bedrooms)) &&
+        (!filters.bathrooms || p.bathrooms >= Number(filters.bathrooms)) &&
+        (!filters.area || p.area >= Number(filters.area))
+      ));
+      renderListings(filtered);
+      updateMap(filtered);
+    });
+
+    // Toggle advanced filters
+    document.getElementById('toggle-advanced').addEventListener('click', () => {
+      const adv = document.querySelector('.advanced-filters');
+      adv.style.display = adv.style.display === 'flex' ? 'none' : 'flex';
+      document.getElementById('toggle-advanced').innerHTML = adv.style.display === 'flex' ? 
+        'Hide Filters <i class="fas fa-chevron-up"></i>' : 
+        'Advanced Filters <i class="fas fa-chevron-down"></i>';
+    });
+
+    // Map toggle and initialization
+    let map;
+    document.getElementById('toggle-map').addEventListener('click', () => {
+      const mapSection = document.getElementById('map-section');
+      mapSection.style.display = mapSection.style.display === 'block' ? 'none' : 'block';
+      document.getElementById('toggle-map').innerHTML = mapSection.style.display === 'block' ? 
+        'Hide Map <i class="fas fa-map-marked-alt"></i>' : 
+        'View on Map <i class="fas fa-map-marked-alt"></i>';
+      if (!map) {
+        map = L.map('map').setView([41.1533, 20.1683], 7);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        updateMap(properties);
+      }
+    });
+
+    function updateMap(props) {
+      if (map) {
+        map.eachLayer(layer => layer instanceof L.Marker && map.removeLayer(layer));
+        props.forEach(p => {
+          L.marker([p.lat, p.lng])
+            .addTo(map)
+            .bindPopup(`<b>${p.title}</b><br>€${p.price.toLocaleString()}`);
+        });
+      }
+    }
+
+    // Initial render
+    renderListings();
   </script>
 </body>
 </html>
