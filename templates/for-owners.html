@@ -1,308 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Learn how Real Estate Hub helps property owners list and sell their properties with ease.">
-  <meta name="keywords" content="real estate, property owners, sell properties, list properties">
-  <title>For Owners | Real Estate Hub</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="List and sell your Albanian property with ease using Albania Lux Properties." />
+  <meta name="keywords" content="Albania real estate, property owners, sell property, rent property, luxury listings" />
+  <meta name="author" content="Albania Lux Properties" />
+  <title>For Owners | Albania Lux Properties</title>
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <!-- Custom CSS -->
   <style>
-    /* Base Styles */
+    :root {
+      --primary-color: #1a3c34; /* Deep teal */
+      --secondary-color: #f4a261; /* Warm coral */
+      --accent-color: #e9c46a; /* Soft gold */
+      --background-dark: #0f2522;
+      --background-light: #f9f7f3;
+      --text-dark: #1a1a1a;
+      --text-light: #fff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f9f9f9;
-      color: #333;
-      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: var(--background-light);
+      color: var(--text-dark);
+      line-height: 1.7;
+      overflow-x: hidden;
     }
-    a {
-      text-decoration: none;
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
     }
-    /* Transparent Header (same as homepage) */
+    a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
+
+    /* Header */
     header {
-      position: absolute;
+      position: fixed;
       top: 0;
-      left: 0;
       width: 100%;
-      z-index: 10;
+      z-index: 1000;
       padding: 20px 0;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+      background: rgba(10, 37, 34, 0.9);
+      backdrop-filter: blur(10px);
+      transition: background 0.3s ease;
     }
-    .navbar {
-      padding: 0 20px;
+    header.scrolled {
+      background: var(--background-dark);
+      box-shadow: var(--shadow);
     }
     .navbar-brand {
-      color: #fff !important;
-      font-weight: 700;
-      font-size: 1.5rem;
+      color: var(--text-light);
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+    }
+    .navbar-brand i {
+      margin-right: 12px;
+      color: var(--accent-color);
     }
     .navbar-nav .nav-link {
-      color: #fff !important;
-      font-weight: 500;
-      margin-left: 20px;
-      transition: color 0.3s ease;
-    }
-    .navbar-nav .nav-link:hover {
-      color: #ffd700;
-    }
-    /* Hero Section */
-    .hero {
-      height: 60vh;
-      background: url('https://res.cloudinary.com/dxearodvf/image/upload/v1737577995/DALL_E_2025-01-22_21.27.23_-_A_modern_interior_real_estate_promotional_image_featuring_an_open-concept_living_room_and_kitchen._The_space_is_designed_with_a_neutral_color_palette_pqe1hl.webp') no-repeat center center/cover;
+      color: var(--text-light);
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-left: 25px;
       position: relative;
+    }
+    .navbar-nav .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      bottom: -5px;
+      left: 0;
+      transition: width 0.3s ease;
+    }
+    .navbar-nav .nav-link:hover::after,
+    .navbar-nav .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      position: relative;
+      height: 80vh;
+      background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: var(--text-light);
       text-align: center;
-      color: #fff;
     }
-    .hero::before {
-      content: "";
+    .hero-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
+      background: linear-gradient(to bottom, rgba(10, 37, 34, 0.6), rgba(0, 0, 0, 0.8));
     }
     .hero-content {
       position: relative;
       z-index: 2;
+      max-width: 900px;
+      padding: 0 20px;
     }
     .hero-content h1 {
-      font-size: 3rem;
-      font-weight: bold;
-      margin-bottom: 15px;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      font-size: 4rem;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
     .hero-content p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-      text-shadow: 0 1px 5px rgba(0,0,0,0.4);
+      font-size: 1.4rem;
+      font-weight: 300;
+      margin-bottom: 40px;
+      opacity: 0.9;
     }
-    /* How We Work Section */
+    .hero-content .btn {
+      background: var(--gradient);
+      color: var(--text-light);
+      padding: 14px 40px;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+    }
+    .hero-content .btn:hover {
+      background: linear-gradient(135deg, #12302b, #e68a4f);
+      transform: scale(1.05);
+    }
+
+    /* Steps Section */
     .steps-section {
-      padding: 60px 0;
+      padding: 80px 0;
+      background: var(--background-light);
       text-align: center;
     }
-    .steps-section h2 {
-      font-size: 2.5rem;
+    .section-title {
+      font-size: 3rem;
+      color: var(--primary-color);
       margin-bottom: 20px;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      width: 80px;
+      height: 3px;
+      background: var(--secondary-color);
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
     }
     .steps-section p {
-      font-size: 1.1rem;
-      margin-bottom: 40px;
-      color: #555;
-    }
-    .steps {
-      margin-top: 40px;
+      font-size: 1.3rem;
+      color: #666;
+      max-width: 800px;
+      margin: 0 auto 60px;
     }
     .step {
-      margin-bottom: 40px;
-      transition: transform 0.3s ease;
+      padding: 20px;
+      transition: transform 0.4s ease;
     }
     .step:hover {
-      transform: translateY(-5px);
+      transform: translateY(-10px);
     }
-    .step-icon {
-      font-size: 2.5rem;
-      color: #007bff;
+    .step i {
+      font-size: 3rem;
+      color: var(--secondary-color);
+      margin-bottom: 20px;
+    }
+    .step h3 {
+      font-size: 1.8rem;
+      color: var(--primary-color);
       margin-bottom: 15px;
-    }
-    .step h4 {
-      font-size: 1.4rem;
-      font-weight: 600;
-      margin-bottom: 10px;
     }
     .step p {
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: #555;
     }
-    /* Why Choose Us Section */
-    .why-section {
-      background: #f1f9ff;
-      padding: 60px 0;
+
+    /* Benefits Section */
+    .benefits-section {
+      padding: 80px 0;
+      background: var(--gradient);
+      color: var(--text-light);
       text-align: center;
     }
-    .why-section h2 {
-      font-size: 2.5rem;
+    .benefits-section .section-title {
+      color: var(--text-light);
+    }
+    .benefits-section .section-title::after {
+      background: var(--accent-color);
+    }
+    .benefits-section p {
+      font-size: 1.3rem;
+      max-width: 800px;
+      margin: 0 auto 60px;
+      opacity: 0.9;
+    }
+    .benefit {
+      padding: 20px;
+      transition: transform 0.4s ease;
+    }
+    .benefit:hover {
+      transform: translateY(-10px);
+    }
+    .benefit i {
+      font-size: 3.5rem;
+      color: var(--accent-color);
       margin-bottom: 20px;
     }
-    .why-section p {
-      font-size: 1.1rem;
-      margin-bottom: 40px;
-      color: #555;
-    }
-    .why-section .feature {
-      transition: transform 0.3s ease;
-    }
-    .why-section .feature:hover {
-      transform: translateY(-5px);
-    }
-    .why-section .feature i {
-      font-size: 3rem;
+    .benefit h3 {
+      font-size: 1.6rem;
       margin-bottom: 15px;
-      color: #007bff;
     }
-    .why-section .feature h5 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 10px;
+    .benefit p {
+      font-size: 1.1rem;
+      opacity: 0.9;
     }
-    /* Get Started Section */
-    .get-started {
-      padding: 60px 0;
+
+    /* CTA Section */
+    .cta-section {
+      padding: 80px 0;
       text-align: center;
+      background: var(--background-light);
     }
-    .get-started h2 {
-      font-size: 2.5rem;
+    .cta-section h2 {
+      font-size: 3rem;
+      color: var(--primary-color);
       margin-bottom: 20px;
     }
-    .get-started p {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-      color: #555;
+    .cta-section p {
+      font-size: 1.3rem;
+      color: #666;
+      max-width: 700px;
+      margin: 0 auto 40px;
     }
-    .get-started .btn {
+    .cta-section .btn {
+      background: var(--secondary-color);
+      color: var(--text-light);
+      padding: 14px 40px;
       font-size: 1.2rem;
-      padding: 12px 30px;
       border-radius: 30px;
-      background: linear-gradient(45deg, #007bff, #00d4ff);
-      border: none;
-      color: #fff;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
     }
-    .get-started .btn:hover {
-      background: linear-gradient(45deg, #0056b3, #0090c8);
+    .cta-section .btn:hover {
+      background: #e68a4f;
+      transform: scale(1.05);
     }
-    /* Footer (same as homepage) */
+
+    /* Footer */
     .footer {
-      background: linear-gradient(135deg, #007bff, #00d4ff);
-      color: #fff;
-      padding: 40px 0;
+      background: var(--background-dark);
+      color: var(--text-light);
+      padding: 60px 0 20px;
       text-align: center;
     }
-    .footer p {
-      margin: 0 0 10px;
-    }
-    .footer a {
-      color: #fff;
-      margin: 0 10px;
-      transition: color 0.3s ease;
-    }
-    .footer a:hover {
-      color: #ffd700;
+    .footer a:hover { color: var(--accent-color); }
+    .social-icons a {
+      font-size: 1.5rem;
+      margin: 0 15px;
     }
   </style>
 </head>
 <body>
-
-  <!-- Header (transparent, same as homepage) -->
+  <!-- Header -->
   <header>
     <nav class="navbar navbar-expand-lg">
       <div class="container">
-        <!-- Added "Home" option in the navbar -->
-        <a class="navbar-brand" href="/">🏡 Real Estate Hub</a>
-        <div class="ms-auto">
-          <a class="btn btn-outline-light me-3" href="/">Home</a>
-          <!-- Removed Login button -->
-          <a class="btn btn-outline-light me-3" href="signup">Join Now</a>
+        <a class="navbar-brand" href="/"><i class="fas fa-villa"></i> Albania Lux Properties</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/properties">Properties</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/owners">For Owners</a></li>
+            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
+          </ul>
         </div>
       </div>
     </nav>
   </header>
 
   <!-- Hero Section -->
-  <section class="hero">
+  <section class="hero-section" data-aos="fade-up">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <h1>For Property Owners</h1>
-      <p class="lead">List your property and reach thousands of potential buyers or renters effortlessly.</p>
+      <h1>List Your Albanian Property</h1>
+      <p>Reach discerning buyers and renters with our premium platform tailored for Albania’s luxury market.</p>
+      <a href="/signup" class="btn">Get Started Now</a>
     </div>
   </section>
 
-  <!-- How We Work Section -->
-  <section class="steps-section">
-    <div class="container text-center">
-      <h2>How We Work</h2>
-      <p>We provide a seamless platform for you to showcase your property to the right audience. Follow these simple steps:</p>
-      <div class="steps">
-        <div class="row">
-          <div class="col-md-4 step">
-            <div class="step-icon"><i class="fas fa-user-plus"></i></div>
-            <h4>Create an Account</h4>
-            <p>Sign up for a free account and access our intuitive property management dashboard.</p>
-          </div>
-          <div class="col-md-4 step">
-            <div class="step-icon"><i class="fas fa-home"></i></div>
-            <h4>List Your Property</h4>
-            <p>Upload high-quality images, set your price, and provide all the necessary details.</p>
-          </div>
-          <div class="col-md-4 step">
-            <div class="step-icon"><i class="fas fa-chart-line"></i></div>
-            <h4>Get Results</h4>
-            <p>Receive inquiries, schedule viewings, and finalize deals—all in one place.</p>
-          </div>
+  <!-- Steps Section -->
+  <section class="steps-section" data-aos="fade-up" data-aos-delay="200">
+    <div class="container">
+      <h2 class="section-title">How It Works</h2>
+      <p>Showcase your property effortlessly with our streamlined process.</p>
+      <div class="row">
+        <div class="col-md-4 step">
+          <i class="fas fa-user-plus"></i>
+          <h3>Create Your Profile</h3>
+          <p>Sign up in minutes and unlock powerful tools to manage your listings.</p>
+        </div>
+        <div class="col-md-4 step">
+          <i class="fas fa-camera"></i>
+          <h3>Add Your Property</h3>
+          <p>Upload stunning photos and details to highlight your home or land.</p>
+        </div>
+        <div class="col-md-4 step">
+          <i class="fas fa-handshake"></i>
+          <h3>Connect & Sell</h3>
+          <p>Engage with buyers or renters and close deals seamlessly.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Why Choose Us Section -->
-  <section class="why-section">
-    <div class="container text-center">
-      <h2>Why Choose Us?</h2>
-      <p>We make property management simple, efficient, and effective for owners.</p>
-      <div class="row mt-5">
-        <div class="col-md-4 feature">
+  <!-- Benefits Section -->
+  <section class="benefits-section" data-aos="fade-up" data-aos-delay="400">
+    <div class="container">
+      <h2 class="section-title">Why List With Us?</h2>
+      <p>Elevate your property’s visibility with Albania’s premier real estate platform.</p>
+      <div class="row">
+        <div class="col-md-4 benefit">
           <i class="fas fa-globe"></i>
-          <h5>Global Reach</h5>
-          <p>Access a wide network of buyers and renters across the globe.</p>
+          <h3>Global Exposure</h3>
+          <p>Tap into an international audience of luxury buyers and investors.</p>
         </div>
-        <div class="col-md-4 feature">
-          <i class="fas fa-clock"></i>
-          <h5>Time-Saving Tools</h5>
-          <p>Streamline your property listing and management process with ease.</p>
+        <div class="col-md-4 benefit">
+          <i class="fas fa-tachometer-alt"></i>
+          <h3>Fast Results</h3>
+          <p>List today, connect tomorrow—our platform accelerates the process.</p>
         </div>
-        <div class="col-md-4 feature">
+        <div class="col-md-4 benefit">
           <i class="fas fa-shield-alt"></i>
-          <h5>Secure Transactions</h5>
-          <p>Enjoy safe, secure transactions and reliable support at all times.</p>
+          <h3>Trusted Platform</h3>
+          <p>Secure listings and verified inquiries ensure peace of mind.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Get Started Section -->
-  <section class="get-started">
-    <div class="container text-center">
-      <h2>Ready to Get Started?</h2>
-      <p>Create an account today and list your property in minutes. Join thousands of satisfied property owners who trust us to showcase their listings.</p>
-      <a href="signup" class="btn btn-primary btn-lg">Join Now</a>
+  <!-- CTA Section -->
+  <section class="cta-section" data-aos="fade-up" data-aos-delay="600">
+    <div class="container">
+      <h2>List Your Property Today</h2>
+      <p>Join a network of satisfied owners and showcase your Albanian property to the world.</p>
+      <a href="/signup" class="btn">Start Listing Now</a>
     </div>
   </section>
 
-    <!-- Footer -->
+  <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2025 Real Estate Platform. All Rights Reserved.</p>
-      <p>
-        <a href="/about">About Us</a> |
-        <a href="/contact">Contact</a> |
-        <a href="/privacy">Privacy Policy</a> |
-        <a href="/terms">Terms of Service</a>
-      </p>
-      <div>
+      <p>© 2025 Albania Lux Properties. All Rights Reserved.</p>
+      <p><a href="/about">About</a> | <a href="/contact">Contact</a> | <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></p>
+      <div class="social-icons">
         <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="ms-3"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="ms-3"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
       </div>
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize AOS
+    AOS.init({ duration: 1000, once: true });
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      document.querySelector('header').classList.toggle('scrolled', window.scrollY > 50);
+    });
+  </script>
 </body>
 </html>
