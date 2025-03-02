@@ -3,47 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Explore luxury properties for sale and rent across Albania." />
-  <meta name="keywords" content="Albania real estate, luxury homes, villas, apartments, properties" />
-  <meta name="author" content="Albania Lux Properties" />
-  <title>Properties | Albania Lux Properties</title>
+  <meta name="description" content="Browse properties for sale and rent in Albania with advanced filters and map view." />
+  <meta name="keywords" content="real estate, Albania, properties, homes, buy, rent, listings" />
+  <meta name="author" content="Albania Properties" />
+  <title>Properties | Albania Properties</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
-  <!-- Leaflet CSS -->
-  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
-  <!-- AOS Animation -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <!-- AOS Animation Library -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <!-- Leaflet for Map -->
+  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
   <!-- Custom CSS -->
   <style>
     :root {
-      --primary-color: #1a3c34; /* Deep teal */
-      --secondary-color: #f4a261; /* Warm coral */
-      --accent-color: #e9c46a; /* Soft gold */
-      --background-dark: #0f2522;
-      --background-light: #f9f7f3;
-      --text-dark: #1a1a1a;
+      --primary-color: #1a73e8; /* Vibrant, modern blue */
+      --secondary-color: #2d3748; /* Deep slate for elegance */
+      --accent-color: #00c4b4; /* Bright teal for energy */
+      --background-light: #f9fafb; /* Crisp, airy white */
+      --background-dark: #1f2a44; /* Rich midnight blue */
+      --text-dark: #1f2a44;
       --text-light: #fff;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 6px 25px rgba(0, 0, 0, 0.12);
+      --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: var(--background-light);
       color: var(--text-dark);
-      line-height: 1.7;
+      line-height: 1.6;
       overflow-x: hidden;
     }
+
     h1, h2, h3 {
-      font-family: 'Playfair Display', serif;
       font-weight: 700;
     }
-    a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+    }
 
     /* Header */
     header {
@@ -51,222 +62,306 @@
       top: 0;
       width: 100%;
       z-index: 1000;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(12px);
       padding: 20px 0;
-      background: rgba(10, 37, 34, 0.9);
-      backdrop-filter: blur(10px);
-      transition: background 0.3s ease;
+      box-shadow: var(--shadow-sm);
+      transition: padding 0.3s ease, background 0.3s ease;
     }
+
     header.scrolled {
-      background: var(--background-dark);
-      box-shadow: var(--shadow);
+      padding: 10px 0;
+      background: rgba(255, 255, 255, 1);
     }
+
     .navbar-brand {
-      color: var(--text-light);
       font-size: 1.8rem;
+      color: var(--text-dark);
       display: flex;
       align-items: center;
+      font-weight: 600;
     }
+
     .navbar-brand i {
       margin-right: 12px;
-      color: var(--accent-color);
+      color: var(--primary-color);
+      font-size: 1.4rem;
     }
+
     .navbar-nav .nav-link {
-      color: var(--text-light);
+      color: var(--text-dark);
       font-size: 1.1rem;
       font-weight: 400;
-      margin-left: 25px;
+      margin-left: 30px;
       position: relative;
+      padding-bottom: 6px;
     }
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+      color: var(--primary-color);
+    }
+
     .navbar-nav .nav-link::after {
       content: '';
       position: absolute;
       width: 0;
       height: 2px;
-      background: var(--accent-color);
-      bottom: -5px;
-      left: 0;
+      background: var(--primary-color);
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
       transition: width 0.3s ease;
     }
+
     .navbar-nav .nav-link:hover::after,
     .navbar-nav .nav-link.active::after {
-      width: 100%;
+      width: 80%;
     }
 
-    /* Hero Section */
-    .hero-section {
-      background: var(--gradient);
-      padding: 100px 20px 60px;
-      text-align: center;
-      color: var(--text-light);
-    }
-    .hero-section h1 {
-      font-size: 3.5rem;
-      margin-bottom: 15px;
-    }
-    .hero-section p {
-      font-size: 1.3rem;
-      font-weight: 300;
-      opacity: 0.9;
+    /* Main Content */
+    .properties-page {
+      padding: 120px 0 80px;
     }
 
-    /* Filters */
-    .filters-section {
-      padding: 40px 0;
+    .search-summary {
+      font-size: 1.5rem;
+      color: var(--text-dark);
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+
+    .search-summary span {
+      color: var(--primary-color);
+    }
+
+    /* Sidebar Filters */
+    .filters-sidebar {
+      position: sticky;
+      top: 120px;
       background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      height: fit-content;
     }
-    .filters-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: var(--background-light);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: var(--shadow);
+
+    .filters-sidebar h3 {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
     }
-    .filters-container form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      align-items: center;
+
+    .filter-group {
+      margin-bottom: 25px;
     }
-    .filters-container input,
-    .filters-container select {
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 12px 20px;
+
+    .filter-group label {
       font-size: 1rem;
-      flex: 1;
-      min-width: 150px;
-      background: #fff;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
       transition: border-color 0.3s ease;
     }
-    .filters-container input:focus,
-    .filters-container select:focus {
-      border-color: var(--secondary-color);
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      border-color: var(--primary-color);
       outline: none;
     }
-    .filters-container select {
-      appearance: none;
-      background: url('data:image/svg+xml;base64,...') no-repeat right 15px center;
-    }
-    .filters-container button {
-      background: var(--gradient);
-      border: none;
-      border-radius: 25px;
-      padding: 12px 40px;
-      color: var(--text-light);
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      transition: all 0.3s ease;
-    }
-    .filters-container button:hover {
-      background: linear-gradient(135deg, #12302b, #e68a4f);
-      transform: translateY(-2px);
-    }
-    .toggle-link {
-      text-align: center;
-      margin-top: 20px;
-      color: var(--primary-color);
-      cursor: pointer;
-      font-weight: 500;
-    }
-    .toggle-link:hover { color: var(--secondary-color); }
-    .advanced-filters {
-      display: none;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
-      flex-wrap: wrap;
-      gap: 20px;
+
+    .filter-group input[type="range"] {
+      padding: 0;
     }
 
-    /* Listings */
-    .listings-section {
-      padding: 60px 0;
-      max-width: 1200px;
-      margin: 0 auto;
+    .filter-group .range-values {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #718096;
+      margin-top: 5px;
     }
-    .property-card {
+
+    .btn-apply {
+      background: var(--primary-color);
+      color: var(--text-light);
+      padding: 12px 0;
+      width: 100%;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-apply:hover {
+      background: #1557b0;
+      transform: scale(1.02);
+    }
+
+    /* Listings Area */
+    .listings-area {
+      padding-left: 20px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
       background: #fff;
-      border-radius: 20px;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .toolbar select {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      background: #f1f5f9;
+      font-size: 1rem;
+    }
+
+    .toolbar .toggle-view button {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #718096;
+      padding: 5px 15px;
+      transition: var(--transition);
+    }
+
+    .toolbar .toggle-view button.active,
+    .toolbar .toggle-view button:hover {
+      color: var(--primary-color);
+    }
+
+    .property-card {
+      border: none;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: all 0.4s ease;
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      position: relative;
       margin-bottom: 30px;
     }
+
     .property-card:hover {
       transform: translateY(-10px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--shadow-md);
     }
+
     .property-card img {
-      height: 250px;
-      width: 100%;
+      height: 220px;
       object-fit: cover;
-      transition: transform 0.5s ease;
+      transition: transform 0.6s ease;
     }
+
     .property-card:hover img {
-      transform: scale(1.05);
+      transform: scale(1.08);
     }
+
     .property-card .card-body {
       padding: 20px;
     }
-    .property-card h5 {
-      font-size: 1.6rem;
-      color: var(--primary-color);
-      margin-bottom: 10px;
-    }
-    .property-card p.price {
-      font-size: 1.3rem;
-      color: var(--secondary-color);
-      font-weight: 700;
-    }
-    .property-features {
-      display: flex;
-      gap: 15px;
-      font-size: 0.95rem;
-      color: #666;
-      margin: 10px 0;
-    }
-    .property-features span i {
-      margin-right: 5px;
-      color: var(--accent-color);
-    }
-    .property-card .btn {
-      background: var(--secondary-color);
-      color: var(--text-light);
-      border: none;
+
+    .property-card .badge {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 0.9rem;
+      padding: 8px 15px;
       border-radius: 20px;
-      padding: 10px 25px;
-      width: 100%;
-      transition: all 0.3s ease;
-    }
-    .property-card .btn:hover {
-      background: #e68a4f;
     }
 
-    /* Map */
-    #map-section {
-      display: none;
-      padding: 40px 0;
+    .property-card h5 {
+      font-size: 1.5rem;
+      color: var(--text-dark);
+      margin-bottom: 8px;
     }
-    #map {
-      height: 500px;
-      border-radius: 20px;
-      box-shadow: var(--shadow);
+
+    .property-card .price {
+      font-size: 1.3rem;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .property-card .details {
+      font-size: 0.95rem;
+      color: #718096;
+      margin-bottom: 15px;
+    }
+
+    .property-card .btn {
+      background: var(--primary-color);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 25px;
+      color: var(--text-light);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .property-card .btn:hover {
+      background: #1557b0;
+      transform: scale(1.05);
+    }
+
+    .property-card .fa-heart {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.3rem;
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .property-card .fa-heart:hover,
+    .property-card .fa-heart.active {
+      color: #ff4757;
+    }
+
+    /* Map View */
+    #map-view {
+      height: 600px;
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      display: none;
+    }
+
+    #map-view.active {
+      display: block;
     }
 
     /* Pagination */
     .pagination {
+      display: flex;
       justify-content: center;
       margin-top: 40px;
     }
-    .page-link {
-      border-radius: 10px;
-      color: var(--primary-color);
+
+    .pagination a {
+      padding: 10px 20px;
       margin: 0 5px;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text-dark);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
     }
-    .page-item.active .page-link {
+
+    .pagination a.active,
+    .pagination a:hover {
       background: var(--primary-color);
-      border-color: var(--primary-color);
       color: var(--text-light);
     }
 
@@ -274,13 +369,38 @@
     .footer {
       background: var(--background-dark);
       color: var(--text-light);
-      padding: 60px 0 20px;
-      text-align: center;
+      padding: 80px 0 30px;
+      font-size: 1rem;
     }
-    .footer a:hover { color: var(--accent-color); }
+
+    .footer a {
+      color: #a0aec0;
+      margin: 0 20px;
+      transition: var(--transition);
+    }
+
+    .footer a:hover {
+      color: var(--primary-color);
+    }
+
     .social-icons a {
       font-size: 1.5rem;
       margin: 0 15px;
+      color: #a0aec0;
+    }
+
+    .social-icons a:hover {
+      color: var(--accent-color);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    [data-aos="fade-up"] {
+      animation: fadeInUp 0.8s ease-out forwards;
     }
   </style>
 </head>
@@ -289,201 +409,279 @@
   <header>
     <nav class="navbar navbar-expand-lg">
       <div class="container">
-        <a class="navbar-brand" href="/"><i class="fas fa-villa"></i> Albania Lux Properties</a>
+        <a class="navbar-brand" href="/"><i class="fas fa-home"></i> Albania Properties</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul class="navbar-nav">
-            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-            <li class="nav-item"><a class="nav-link active" href="/properties">Properties</a></li>
-            <li class="nav-item"><a class="nav-link" href="/owners">For Owners</a></li>
-            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-            <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
+            <li class="nav-item"><a class="nav-link" href="#buy">Buy</a></li>
+            <li class="nav-item"><a class="nav-link" href="#rent">Rent</a></li>
+            <li class="nav-item"><a class="nav-link" href="/sell">Sell</a></li>
+            <li class="nav-item"><a class="nav-link" href="/market">Market Insights</a></li>
+            <li class="nav-item"><a class="nav-link" href="/login"><i class="fas fa-user"></i> Sign In</a></li>
+            <li class="nav-item"><a class="nav-link" href="/favorites"><i class="fas fa-heart"></i></a></li>
           </ul>
         </div>
       </div>
     </nav>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero-section" data-aos="fade-up">
-    <h1>Explore Albanian Properties</h1>
-    <p>Find your perfect home or investment in the heart of the Mediterranean.</p>
-  </section>
+  <!-- Properties Page Content -->
+  <section class="properties-page">
+    <div class="container">
+      <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-md-3">
+          <div class="filters-sidebar" data-aos="fade-up">
+            <h3>Refine Your Search</h3>
+            <div class="filter-group">
+              <label>Location</label>
+              <input type="text" id="location-filter" name="location" placeholder="Enter city or region" />
+            </div>
+            <div class="filter-group">
+              <label>Purpose</label>
+              <select name="purpose">
+                <option value="">All</option>
+                <option value="buy">Buy</option>
+                <option value="rent">Rent</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Property Type</label>
+              <select name="type">
+                <option value="">All Types</option>
+                <option value="apartment">Apartment</option>
+                <option value="house">House</option>
+                <option value="villa">Villa</option>
+                <option value="land">Land</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Price Range</label>
+              <input type="range" min="0" max="1000000" value="500000" step="10000" />
+              <div class="range-values">
+                <span>€0</span>
+                <span>€1M</span>
+              </div>
+            </div>
+            <div class="filter-group">
+              <label>Bedrooms</label>
+              <select name="beds">
+                <option value="">Any</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Bathrooms</label>
+              <select name="baths">
+                <option value="">Any</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+              </select>
+            </div>
+            <button class="btn-apply">Apply Filters</button>
+          </div>
+        </div>
 
-  <!-- Filters -->
-  <section class="filters-section" data-aos="fade-up" data-aos-delay="200">
-    <div class="filters-container container">
-      <form id="search-form">
-        <input type="text" id="location" name="location" placeholder="City or Region (e.g., Tirana)" required />
-        <select name="type" required>
-          <option value="" disabled selected>Property Type</option>
-          <option value="apartment">Apartment</option>
-          <option value="house">House</option>
-          <option value="villa">Villa</option>
-          <option value="land">Land</option>
-        </select>
-        <select name="purpose" required>
-          <option value="" disabled selected>Buy or Rent</option>
-          <option value="buy">Buy</option>
-          <option value="rent">Rent</option>
-        </select>
-        <select name="sort">
-          <option value="" disabled selected>Sort By</option>
-          <option value="priceAsc">Price: Low to High</option>
-          <option value="priceDesc">Price: High to Low</option>
-          <option value="newest">Newest</option>
-        </select>
-        <button type="submit">Filter Properties</button>
-      </form>
-      <div class="toggle-link" id="toggle-advanced">Advanced Filters <i class="fas fa-chevron-down"></i></div>
-      <div class="advanced-filters row">
-        <div class="col-md-2"><input type="number" name="priceMin" placeholder="Min Price (€)" /></div>
-        <div class="col-md-2"><input type="number" name="priceMax" placeholder="Max Price (€)" /></div>
-        <div class="col-md-2"><select name="bedrooms"><option value="">Beds</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option></select></div>
-        <div class="col-md-2"><select name="bathrooms"><option value="">Baths</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option></select></div>
-        <div class="col-md-2"><input type="number" name="area" placeholder="Area (m²)" /></div>
+        <!-- Listings Area -->
+        <div class="col-md-9 listings-area">
+          <div class="search-summary" data-aos="fade-up">
+            Showing <span>245 properties</span> in <span>Tirana</span>
+          </div>
+
+          <div class="toolbar" data-aos="fade-up" data-aos-delay="200">
+            <select name="sort">
+              <option>Sort by: Relevance</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Newest</option>
+            </select>
+            <div class="toggle-view">
+              <button id="grid-view-btn" class="active"><i class="fas fa-th"></i></button>
+              <button id="map-view-btn"><i class="fas fa-map"></i></button>
+            </div>
+          </div>
+
+          <!-- Grid View -->
+          <div id="grid-view" class="row g-4 active" data-aos="fade-up" data-aos-delay="300">
+            <div class="col-md-4">
+              <div class="property-card">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Tirana Penthouse" />
+                <div class="card-body">
+                  <span class="badge bg-success">New</span>
+                  <h5>Tirana Skyline Penthouse</h5>
+                  <p class="price">€450,000</p>
+                  <p class="details">3 Beds • 2 Baths • 1500 sqft</p>
+                  <a href="/property/tirana-penthouse" class="btn">View Details</a>
+                  <i class="fas fa-heart"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="property-card">
+                <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vlora Villa" />
+                <div class="card-body">
+                  <h5>Vlora Coastal Villa</h5>
+                  <p class="price">€780,000</p>
+                  <p class="details">4 Beds • 3 Baths • 2200 sqft</p>
+                  <a href="/property/vlora-villa" class="btn">View Details</a>
+                  <i class="fas fa-heart"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="property-card">
+                <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Saranda Apartment" />
+                <div class="card-body">
+                  <span class="badge bg-info">Open House</span>
+                  <h5>Saranda Seafront Apartment</h5>
+                  <p class="price">€220,000</p>
+                  <p class="details">2 Beds • 1 Bath • 900 sqft</p>
+                  <a href="/property/saranda-apartment" class="btn">View Details</a>
+                  <i class="fas fa-heart"></i>
+                </div>
+              </div>
+            </div>
+            <!-- Additional listings can be dynamically loaded -->
+          </div>
+
+          <!-- Map View -->
+          <div id="map-view"></div>
+
+          <!-- Pagination -->
+          <div class="pagination" data-aos="fade-up" data-aos-delay="400">
+            <a href="#">1</a>
+            <a href="#" class="active">2</a>
+            <a href="#">3</a>
+            <a href="#">Next</a>
+          </div>
+        </div>
       </div>
-      <div class="toggle-link" id="toggle-map">View on Map <i class="fas fa-map-marked-alt"></i></div>
     </div>
-  </section>
-
-  <!-- Listings -->
-  <section class="listings-section container" data-aos="fade-up" data-aos-delay="400">
-    <div id="property-listings">
-      <!-- Properties dynamically populated via JS -->
-    </div>
-    <nav aria-label="Pagination">
-      <ul class="pagination">
-        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-      </ul>
-    </nav>
-  </section>
-
-  <!-- Map -->
-  <section id="map-section" class="container" data-aos="fade-up" data-aos-delay="600">
-    <div id="map"></div>
   </section>
 
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>© 2025 Albania Lux Properties. All Rights Reserved.</p>
-      <p><a href="/about">About</a> | <a href="/contact">Contact</a> | <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></p>
-      <div class="social-icons">
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      <div class="row">
+        <div class="col-md-4">
+          <p>© 2025 Albania Properties. All Rights Reserved.</p>
+        </div>
+        <div class="col-md-4 text-center">
+          <p>
+            <a href="/about">About</a> |
+            <a href="/contact">Contact</a> |
+            <a href="/mortgage">Mortgage Tools</a> |
+            <a href="/sell">Sell Your Home</a> |
+            <a href="/market">Market Trends</a>
+          </p>
+        </div>
+        <div class="col-md-4 text-end">
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
       </div>
     </div>
   </footer>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Typeahead.js for Autocomplete -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
   <script>
-    // Sample property data
-    const properties = [
-      { id: 1, title: "Tirana Skyline Penthouse", price: 450000, location: "Tirana", type: "apartment", bedrooms: 3, bathrooms: 2, area: 180, img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", purpose: "buy", lat: 41.3275, lng: 19.8187 },
-      { id: 2, title: "Vlora Coastal Villa", price: 780000, location: "Vlora", type: "villa", bedrooms: 4, bathrooms: 3, area: 320, img: "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", purpose: "buy", lat: 40.4667, lng: 19.4897 },
-      { id: 3, title: "Saranda Seafront Apartment", price: 220000, location: "Saranda", type: "apartment", bedrooms: 2, bathrooms: 1, area: 95, img: "https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", purpose: "rent", lat: 39.875, lng: 20.005 }
-    ];
-
-    // Initialize AOS
+    // Initialize AOS animations
     AOS.init({ duration: 1000, once: true });
 
-    // Header scroll effect
+    // Sticky header
     window.addEventListener('scroll', () => {
-      document.querySelector('header').classList.toggle('scrolled', window.scrollY > 50);
+      const header = document.querySelector('header');
+      header.classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    // Render listings
-    function renderListings(filtered = properties) {
-      const listings = document.getElementById('property-listings');
-      listings.innerHTML = '';
-      filtered.forEach(p => {
-        listings.innerHTML += `
-          <div class="property-card">
-            <img src="${p.img}" alt="${p.title}">
-            <div class="card-body">
-              <h5>${p.title}</h5>
-              <p class="price">€${p.price.toLocaleString()}</p>
-              <p>${p.location}</p>
-              <div class="property-features">
-                <span><i class="fas fa-bed"></i> ${p.bedrooms}</span>
-                <span><i class="fas fa-bath"></i> ${p.bathrooms}</span>
-                <span><i class="fas fa-ruler-combined"></i> ${p.area} m²</span>
-              </div>
-              <a href="/property/${p.id}" class="btn">View Details</a>
-            </div>
-          </div>
-        `;
+    // Toggle between grid and map view
+    const gridView = document.getElementById('grid-view');
+    const mapView = document.getElementById('map-view');
+    const gridBtn = document.getElementById('grid-view-btn');
+    const mapBtn = document.getElementById('map-view-btn');
+
+    gridBtn.addEventListener('click', () => {
+      gridView.classList.add('active');
+      mapView.classList.remove('active');
+      gridBtn.classList.add('active');
+      mapBtn.classList.remove('active');
+    });
+
+    mapBtn.addEventListener('click', () => {
+      gridView.classList.remove('active');
+      mapView.classList.add('active');
+      gridBtn.classList.remove('active');
+      mapBtn.classList.add('active');
+      initMap();
+    });
+
+    // Favorite toggle
+    document.querySelectorAll('.fa-heart').forEach(heart => {
+      heart.addEventListener('click', () => {
+        heart.classList.toggle('active');
       });
-    }
-
-    // Filter properties
-    document.getElementById('search-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const filters = Object.fromEntries(formData);
-      const filtered = properties.filter(p => (
-        (!filters.location || p.location.toLowerCase().includes(filters.location.toLowerCase())) &&
-        (!filters.type || p.type === filters.type) &&
-        (!filters.purpose || p.purpose === filters.purpose) &&
-        (!filters.priceMin || p.price >= Number(filters.priceMin)) &&
-        (!filters.priceMax || p.price <= Number(filters.priceMax)) &&
-        (!filters.bedrooms || p.bedrooms >= Number(filters.bedrooms)) &&
-        (!filters.bathrooms || p.bathrooms >= Number(filters.bathrooms)) &&
-        (!filters.area || p.area >= Number(filters.area))
-      ));
-      renderListings(filtered);
-      updateMap(filtered);
     });
 
-    // Toggle advanced filters
-    document.getElementById('toggle-advanced').addEventListener('click', () => {
-      const adv = document.querySelector('.advanced-filters');
-      adv.style.display = adv.style.display === 'flex' ? 'none' : 'flex';
-      document.getElementById('toggle-advanced').innerHTML = adv.style.display === 'flex' ? 
-        'Hide Filters <i class="fas fa-chevron-up"></i>' : 
-        'Advanced Filters <i class="fas fa-chevron-down"></i>';
-    });
-
-    // Map toggle and initialization
-    let map;
-    document.getElementById('toggle-map').addEventListener('click', () => {
-      const mapSection = document.getElementById('map-section');
-      mapSection.style.display = mapSection.style.display === 'block' ? 'none' : 'block';
-      document.getElementById('toggle-map').innerHTML = mapSection.style.display === 'block' ? 
-        'Hide Map <i class="fas fa-map-marked-alt"></i>' : 
-        'View on Map <i class="fas fa-map-marked-alt"></i>';
-      if (!map) {
-        map = L.map('map').setView([41.1533, 20.1683], 7);
+    // Initialize Leaflet Map (lazy-loaded)
+    let mapInitialized = false;
+    function initMap() {
+      if (!mapInitialized) {
+        const map = L.map('map-view').setView([41.3275, 19.8187], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors'
+          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
-        updateMap(properties);
-      }
-    });
-
-    function updateMap(props) {
-      if (map) {
-        map.eachLayer(layer => layer instanceof L.Marker && map.removeLayer(layer));
-        props.forEach(p => {
-          L.marker([p.lat, p.lng])
-            .addTo(map)
-            .bindPopup(`<b>${p.title}</b><br>€${p.price.toLocaleString()}`);
-        });
+        const markers = L.markerClusterGroup();
+        markers.addLayer(L.marker([41.3275, 19.8187]).bindPopup('Tirana Penthouse - €450,000'));
+        markers.addLayer(L.marker([41.3175, 19.8087]).bindPopup('Tirana Villa - €650,000'));
+        markers.addLayer(L.marker([41.3375, 19.8287]).bindPopup('Tirana Apartment - €300,000'));
+        map.addLayer(markers);
+        mapInitialized = true;
       }
     }
 
-    // Initial render
-    renderListings();
+    // Autocomplete for location filter
+    const locations = ['Tirana', 'Vlorë', 'Durrës', 'Sarandë', 'Shkodër', 'Fier', 'Korçë'];
+    const substringMatcher = (strs) => {
+      return (q, cb) => {
+        const matches = strs.filter(str => new RegExp(q, 'i').test(str));
+        cb(matches);
+      };
+    };
+    $('#location-filter').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 1
+    }, {
+      name: 'locations',
+      source: substringMatcher(locations)
+    });
+
+    // Apply filters (placeholder for backend integration)
+    document.querySelector('.btn-apply').addEventListener('click', () => {
+      const location = document.getElementById('location-filter').value;
+      const purpose = document.querySelector('select[name="purpose"]').value;
+      const type = document.querySelector('select[name="type"]').value;
+      const price = document.querySelector('input[type="range"]').value;
+      const beds = document.querySelector('select[name="beds"]').value;
+      const baths = document.querySelector('select[name="baths"]').value;
+      const query = `/properties?location=${encodeURIComponent(location)}&purpose=${purpose}&type=${type}&price=${price}&beds=${beds}&baths=${baths}`;
+      console.log(`Redirecting to: ${query}`);
+      // window.location.href = query; // Uncomment with real backend
+    });
   </script>
 </body>
 </html>
