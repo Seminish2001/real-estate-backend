@@ -42,12 +42,25 @@ def api_properties():
     beds = request.args.get('beds')
     baths = request.args.get('baths')
 
-    # Placeholder data (replace with Property model query if added)
-    properties = [
-        {"id": 1, "title": "Tirana Skyline Penthouse", "price": 450000, "beds": 3, "baths": 2, "size": 1500, "purpose": "buy", "location": "Tirana", "type": "apartment"},
-        {"id": 2, "title": "Vlora Coastal Villa", "price": 780000, "beds": 4, "baths": 3, "size": 2200, "purpose": "buy", "location": "Vlorë", "type": "villa"},
-        {"id": 3, "title": "Saranda Seafront Apartment", "price": 220000, "beds": 2, "baths": 1, "size": 900, "purpose": "rent", "location": "Sarandë", "type": "apartment"}
-    ]
+    query = Property.query
+    if purpose:
+        query = query.filter_by(purpose=purpose.lower())
+    if location:
+        query = query.filter(Property.location.ilike(f"%{location}%"))
+    if type:
+        query = query.filter_by(type=type.lower())
+    if price:
+        query = query.filter(Property.price <= int(price))
+    if beds:
+        query = query.filter(Property.bedrooms >= int(beds))
+    if baths:
+        query = query.filter(Property.bathrooms >= int(baths))
+
+    properties = query.all()
+    return jsonify({
+        "properties": [{"id": p.id, "title": p.title, "price": p.price, "beds": p.bedrooms, "baths": p.bathrooms, "size": p.size, "purpose": p.purpose, "location": p.location, "type": p.type} for p in properties],
+        "count": len(properties)
+    })
 
     filtered = properties
     if purpose:
