@@ -196,8 +196,8 @@
           errorMessage.style.display = 'block';
         }
       } catch (error) {
-        console.error('Error:', error);
-        errorMessage.textContent = 'An error occurred. Please try again.';
+        console.error('Login Error:', error.message, error.stack); // Detailed logging
+        errorMessage.textContent = 'An error occurred: ' + (error.message || 'Unknown error');
         errorMessage.style.display = 'block';
       }
     });
