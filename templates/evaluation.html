@@ -406,54 +406,87 @@
   </section>
 
   <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    AOS.init({ duration: 1000, once: true });
+<script>
+  AOS.init({ duration: 1000, once: true });
 
-    let contactData = {};
+  let contactData = {};
 
-    document.getElementById('evaluation-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData.entries());
-      console.log('Evaluation Data:', data); // Replace with backend API call later
-      document.querySelector('.evaluation-section').style.display = 'none';
-      document.querySelector('.results-section').style.display = 'block';
-      document.getElementById('evaluation-result').textContent = `Based on recent data, properties like yours in ${data.location} have an estimated value of €${Math.floor(Math.random() * 500000) + 100000} - €${Math.floor(Math.random() * 500000) + 300000}.`;
-    });
+  document.getElementById('evaluation-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
 
-    document.getElementById('show-agencies').addEventListener('click', () => {
-      document.querySelector('.results-section').style.display = 'none';
-      document.querySelector('.agency-section').style.display = 'block';
-      const location = document.getElementById('location').value.toLowerCase();
-      document.querySelectorAll('.agency-card').forEach(card => {
-        const cardCity = card.getAttribute('data-city').toLowerCase();
-        card.style.display = location.includes(cardCity) ? 'flex' : 'none';
+    try {
+      const response = await fetch('/evaluation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
       });
-    });
 
-    document.querySelectorAll('.btn-request').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const agency = btn.getAttribute('data-agency');
-        document.getElementById('agency-name').textContent = agency;
-        if (contactData.name) {
-          document.getElementById('contact-name').value = contactData.name;
-          document.getElementById('contact-phone').value = contactData.phone || '';
-          document.getElementById('contact-email').value = contactData.email || '';
-          document.getElementById('contact-date').value = contactData.date || '';
-        }
-        new bootstrap.Modal(document.getElementById('contactModal')).show();
+      if (response.ok) {
+        const result = await response.json();
+        document.querySelector('.evaluation-section').style.display = 'none';
+        document.querySelector('.results-section').style.display = 'block';
+        document.getElementById('evaluation-result').textContent = result.message;
+      } else {
+        const errorData = await response.json();
+        console.error('Error:', errorData.message);
+      }
+    } catch (error) {
+      console.error('Evaluation Error:', error);
+    }
+  });
+
+  document.getElementById('show-agencies').addEventListener('click', () => {
+    document.querySelector('.results-section').style.display = 'none';
+    document.querySelector('.agency-section').style.display = 'block';
+    const location = document.getElementById('location').value.toLowerCase();
+    document.querySelectorAll('.agency-card').forEach(card => {
+      const cardCity = card.getAttribute('data-city').toLowerCase();
+      card.style.display = location.includes(cardCity) ? 'flex' : 'none';
+    });
+  });
+
+  document.querySelectorAll('.btn-request').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const agency = btn.getAttribute('data-agency');
+      document.getElementById('agency-name').textContent = agency;
+      if (contactData.name) {
+        document.getElementById('contact-name').value = contactData.name;
+        document.getElementById('contact-phone').value = contactData.phone || '';
+        document.getElementById('contact-email').value = contactData.email || '';
+        document.getElementById('contact-date').value = contactData.date || '';
+      }
+      new bootstrap.Modal(document.getElementById('contactModal')).show();
+    });
+  });
+
+  document.getElementById('contact-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    contactData = Object.fromEntries(formData.entries());
+    const requestData = {
+      agency: document.getElementById('agency-name').textContent,
+      ...contactData
+    };
+
+    try {
+      const response = await fetch('/request-offer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
       });
-    });
 
-    document.getElementById('contact-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      contactData = Object.fromEntries(formData.entries());
-      console.log('Contact Request:', { agency: document.getElementById('agency-name').textContent, ...contactData }); // Replace with backend API call
-      bootstrap.Modal.getInstance(document.getElementById('contactModal')).hide();
-    });
-  </script>
+      if (response.ok) {
+        bootstrap.Modal.getInstance(document.getElementById('contactModal')).hide();
+      } else {
+        const errorData = await response.json();
+        console.error('Error:', errorData.message);
+      }
+    } catch (error) {
+      console.error('Request Error:', error);
+    }
+  });
+</script>
 </body>
 </html>
