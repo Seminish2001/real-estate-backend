@@ -8,13 +8,16 @@ auth_routes = Blueprint("auth_routes", __name__)
 def register():
     try:
         data = request.json
+        if not all(key in data for key in ["name", "email", "password", "user_type"]):
+            return jsonify({"message": "Missing required fields"}), 400
+
         if User.query.filter_by(email=data["email"]).first():
             return jsonify({"message": "Email already registered!"}), 409
 
         new_user = User(
             name=data["name"],
             email=data["email"],
-            user_type=data["user_type"]  # "Private Owner", "Real Estate Agency", or "Buyer/Renter"
+            user_type=data["user_type"]  # "Private Owner", "Real Estate Agency", "Buyer/Renter"
         )
         new_user.set_password(data["password"])
         db.session.add(new_user)
@@ -29,19 +32,26 @@ def register():
 
         # Redirect to the appropriate dashboard based on user_type
         if new_user.user_type == "Real Estate Agency":
-            return redirect(url_for("routes.serve_dashboard_agency"))
+            response.headers['Location'] = url_for("routes.serve_dashboard_agency")
         elif new_user.user_type == "Private Owner":
-            return redirect(url_for("routes.serve_dashboard_private"))
+            response.headers['Location'] = url_for("routes.serve_dashboard_private")
         elif new_user.user_type == "Buyer/Renter":
-            return redirect(url_for("routes.serve_dashboard_buyer_renter"))
+            response.headers['Location'] = url_for("routes.serve_dashboard_buyer_renter")
+        else:
+            return jsonify({"message": "Invalid user type"}), 400
+
         return response, 201
     except Exception as e:
+        db.session.rollback()  # Rollback on error
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
 @auth_routes.route("/login", methods=["POST"])
 def login():
     try:
         data = request.json
+        if not all(key in data for key in ["email", "password"]):
+            return jsonify({"message": "Missing email or password"}), 400
+
         user = User.query.filter_by(email=data["email"]).first()
         if user and user.check_password(data["password"]):
             access_token = create_access_token(identity=user.id)
@@ -53,11 +63,14 @@ def login():
 
             # Redirect to the appropriate dashboard based on user_type
             if user.user_type == "Real Estate Agency":
-                return redirect(url_for("routes.serve_dashboard_agency"))
+                response.headers['Location'] = url_for("routes.serve_dashboard_agency")
             elif user.user_type == "Private Owner":
-                return redirect(url_for("routes.serve_dashboard_private"))
+                response.headers['Location'] = url_for("routes.serve_dashboard_private")
             elif user.user_type == "Buyer/Renter":
-                return redirect(url_for("routes.serve_dashboard_buyer_renter"))
+                response.headers['Location'] = url_for("routes.serve_dashboard_buyer_renter")
+            else:
+                return jsonify({"message": "Invalid user type"}), 400
+
             return response, 200
         return jsonify({"message": "Invalid credentials!"}), 401
     except Exception as e:
@@ -67,4 +80,5 @@ def login():
 def logout():
     response = jsonify({"message": "Successfully logged out!"})
     unset_jwt_cookies(response)
-    return redirect(url_for("views.login"))
+    response.headers['Location'] = url_for("views.login")
+    return response, 200
