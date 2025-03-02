@@ -4,12 +4,13 @@ from app.models import db, User, EvaluationRequest, AlertPreference
 
 routes = Blueprint("routes", __name__)
 
+# Dashboard Routes
 @routes.route("/dashboard/agency")
 @jwt_required()
 def serve_dashboard_agency():
     current_user_id = get_jwt_identity()
     user = User.query.get(current_user_id)
-    if user and user.user_type == "Real Estate Agency":
+    if user and user.user_type == "Agency":
         return render_template("dashboard.html", user=user)
     return jsonify({"message": "Unauthorized or user not found"}), 403
 
@@ -18,7 +19,7 @@ def serve_dashboard_agency():
 def serve_dashboard_private():
     current_user_id = get_jwt_identity()
     user = User.query.get(current_user_id)
-    if user and user.user_type == "Private Owner":
+    if user and user.user_type == "Landlord":
         return render_template("dashboard-private.html", user=user)
     return jsonify({"message": "Unauthorized or user not found"}), 403
 
@@ -31,9 +32,38 @@ def serve_dashboard_buyer_renter():
         return render_template("dashboard-buyer-renter.html", user=user)
     return jsonify({"message": "Unauthorized or user not found"}), 403
 
+# Properties Route with Filtering
 @routes.route("/properties")
-def serve_properties():
-    return render_template("properties.html")
+def properties():
+    purpose = request.args.get('purpose')
+    location = request.args.get('location')
+    type = request.args.get('type')
+    price = request.args.get('price')
+    beds = request.args.get('beds')
+    baths = request.args.get('baths')
+
+    # Placeholder for property data (add your Property model here if exists)
+    properties = [
+        {"id": 1, "title": "Tirana Skyline Penthouse", "price": 450000, "beds": 3, "baths": 2, "size": 1500, "purpose": "buy", "location": "Tirana", "type": "apartment"},
+        {"id": 2, "title": "Vlora Coastal Villa", "price": 780000, "beds": 4, "baths": 3, "size": 2200, "purpose": "buy", "location": "Vlorë", "type": "villa"},
+        {"id": 3, "title": "Saranda Seafront Apartment", "price": 220000, "beds": 2, "baths": 1, "size": 900, "purpose": "rent", "location": "Sarandë", "type": "apartment"}
+    ]
+
+    filtered = properties
+    if purpose:
+        filtered = [p for p in filtered if p['purpose'] == purpose.lower()]
+    if location:
+        filtered = [p for p in filtered if location.lower() in p['location'].lower()]
+    if type:
+        filtered = [p for p in filtered if p['type'] == type.lower()]
+    if price:
+        filtered = [p for p in filtered if p['price'] <= int(price)]
+    if beds:
+        filtered = [p for p in filtered if p['beds'] >= int(beds)]
+    if baths:
+        filtered = [p for p in filtered if p['baths'] >= int(baths)]
+
+    return jsonify({"properties": filtered, "count": len(filtered)})
 
 @routes.route("/alerts")
 def serve_alerts():
@@ -59,11 +89,8 @@ def process_evaluation():
         if not all(field in data for field in required_fields):
             return jsonify({"message": "Missing required fields"}), 400
 
-        # Optional user_id if logged in
         user_id = get_jwt_identity() if 'Authorization' in request.headers else None
-
-        # Simple estimation logic (replace with real calculation later)
-        base_value = int(data['area']) * 2000  # €2000 per m² as placeholder
+        base_value = int(data['area']) * 2000  # Placeholder
         estimated_value = f"€{base_value - 50000} - €{base_value + 50000}"
 
         evaluation = EvaluationRequest(
@@ -92,9 +119,7 @@ def save_alerts():
         if not all(field in data for field in required_fields):
             return jsonify({"message": "Missing required fields"}), 400
 
-        # Optional user_id if logged in
         user_id = get_jwt_identity() if 'Authorization' in request.headers else None
-
         alert = AlertPreference(
             user_id=user_id,
             email=data['email'],
@@ -122,8 +147,7 @@ def request_offer():
         if not all(field in data for field in required_fields):
             return jsonify({"message": "Missing required fields"}), 400
 
-        user_id = get_jwt_identity()  # Optional, null if not logged in
-        # Here you could save the request to a new table or send an email/notification to the agency
+        user_id = get_jwt_identity()
         print(f"Offer Request: User {user_id or 'Anonymous'}, Agency: {data['agency']}, Name: {data['name']}, Date: {data['date']}, Phone: {data.get('phone', '')}, Email: {data.get('email', '')}")
         return jsonify({"message": "Offer request sent successfully"}), 200
     except Exception as e:
