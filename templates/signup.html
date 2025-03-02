@@ -144,6 +144,13 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    #error-message {
+      color: #dc3545;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      display: none;
+    }
+
     @media (max-width: 576px) {
       .signup-container { padding: 30px; margin: 20px; }
       .signup-container h1 { font-size: 2rem; }
@@ -177,6 +184,7 @@
       </div>
       <div class="spinner" id="spinner"></div>
       <button type="submit" class="btn-signup">Sign Up</button>
+      <div id="error-message"></div>
     </form>
     <div class="links">
       <p>Already have an account? <a href="/login">Login Here</a></p>
@@ -194,7 +202,9 @@
     document.getElementById('signup-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const spinner = document.getElementById('spinner');
+      const errorMessage = document.getElementById('error-message');
       spinner.style.display = 'block';
+      errorMessage.style.display = 'none'; // Reset error message
 
       const formData = {
         name: document.getElementById('full-name').value,
@@ -214,20 +224,18 @@
         spinner.style.display = 'none';
 
         if (response.redirected) {
-          // Follow the redirect to the appropriate dashboard
+          // Success: Follow the redirect to the dashboard
           window.location.href = response.url;
         } else {
           const data = await response.json();
-          if (response.ok) {
-            alert('Sign up successful! Redirecting to login...');
-            window.location.href = '/login';
-          } else {
-            alert('Signup failed: ' + data.message);
-          }
+          // Display error inline
+          errorMessage.textContent = data.message || 'An error occurred during signup.';
+          errorMessage.style.display = 'block';
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred during signup.');
+        errorMessage.textContent = 'An error occurred. Please try again.';
+        errorMessage.style.display = 'block';
         spinner.style.display = 'none';
       }
     });
