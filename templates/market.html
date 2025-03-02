@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Explore the latest real estate market insights for Albania—trends, prices, and opportunities." />
+  <meta name="keywords" content="market insights, real estate, Albania, trends, prices, investment" />
+  <meta name="author" content="Albania Properties" />
+  <title>Market Insights | Albania Properties</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <!-- AOS Animation Library -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <!-- Custom CSS -->
+  <style>
+    :root {
+      --primary-color: #1a73e8; /* Vibrant, modern blue */
+      --secondary-color: #2d3748; /* Deep slate for elegance */
+      --accent-color: #00c4b4; /* Bright teal for energy */
+      --background-light: #f9fafb; /* Crisp, airy white */
+      --background-dark: #1f2a44; /* Rich midnight blue */
+      --text-dark: #1f2a44;
+      --text-light: #fff;
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 6px 25px rgba(0, 0, 0, 0.12);
+      --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--background-light);
+      color: var(--text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 {
+      font-weight: 700;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(12px);
+      padding: 20px 0;
+      box-shadow: var(--shadow-sm);
+      transition: padding 0.3s ease, background 0.3s ease;
+    }
+
+    header.scrolled {
+      padding: 10px 0;
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .navbar-brand {
+      font-size: 1.8rem;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .navbar-brand i {
+      margin-right: 12px;
+      color: var(--primary-color);
+      font-size: 1.4rem;
+    }
+
+    .navbar-nav .nav-link {
+      color: var(--text-dark);
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-left: 30px;
+      position: relative;
+      padding-bottom: 6px;
+    }
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+      color: var(--primary-color);
+    }
+
+    .navbar-nav .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: var(--primary-color);
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: width 0.3s ease;
+    }
+
+    .navbar-nav .nav-link:hover::after,
+    .navbar-nav .nav-link.active::after {
+      width: 80%;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      position: relative;
+      height: 80vh;
+      background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1000px;
+      padding: 0 20px;
+    }
+
+    .hero-content h1 {
+      font-size: 4.5rem;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .hero-content p {
+      font-size: 1.4rem;
+      font-weight: 300;
+      margin-bottom: 40px;
+    }
+
+    .btn-hero {
+      background: var(--primary-color);
+      color: var(--text-light);
+      padding: 15px 40px;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-hero:hover {
+      background: #1557b0;
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(26, 115, 232, 0.3);
+    }
+
+    /* Insights Sections */
+    .insights-section {
+      padding: 100px 0;
+      background: var(--background-light);
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 3rem;
+      color: var(--text-dark);
+      margin-bottom: 60px;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      width: 80px;
+      height: 4px;
+      background: var(--accent-color);
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .insight-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      padding: 30px;
+      transition: var(--transition);
+    }
+
+    .insight-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .insight-card i {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+
+    .insight-card h3 {
+      font-size: 1.8rem;
+      color: var(--text-dark);
+      margin-bottom: 15px;
+    }
+
+    .insight-card p {
+      font-size: 1.1rem;
+      color: #718096;
+    }
+
+    .chart-placeholder {
+      height: 300px;
+      background: #f1f5f9;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #718096;
+      margin-top: 30px;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 80px 0;
+      background: var(--background-dark);
+      color: var(--text-light);
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+    }
+
+    .cta-section p {
+      font-size: 1.3rem;
+      max-width: 800px;
+      margin: 0 auto 40px;
+      color: #a0aec0;
+    }
+
+    .btn-cta {
+      background: var(--accent-color);
+      color: var(--text-light);
+      padding: 15px 40px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+
+    .btn-cta:hover {
+      background: #00a89d;
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0, 196, 180, 0.3);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--background-dark);
+      color: var(--text-light);
+      padding: 80px 0 30px;
+      font-size: 1rem;
+    }
+
+    .footer a {
+      color: #a0aec0;
+      margin: 0 20px;
+      transition: var(--transition);
+    }
+
+    .footer a:hover {
+      color: var(--primary-color);
+    }
+
+    .social-icons a {
+      font-size: 1.5rem;
+      margin: 0 15px;
+      color: #a0aec0;
+    }
+
+    .social-icons a:hover {
+      color: var(--accent-color);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    [data-aos="fade-up"] {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand" href="/"><i class="fas fa-home"></i> Albania Properties</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="#buy">Buy</a></li>
+            <li class="nav-item"><a class="nav-link" href="#rent">Rent</a></li>
+            <li class="nav-item"><a class="nav-link" href="/sell">Sell</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/market">Market Insights</a></li>
+            <li class="nav-item"><a class="nav-link" href="/signin"><i class="fas fa-user"></i> Sign In</a></li>
+            <li class="nav-item"><a class="nav-link" href="/favorites"><i class="fas fa-heart"></i></a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section" data-aos="fade-up">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Albania Real Estate Market Insights</h1>
+      <p>Stay ahead with the latest trends, prices, and opportunities in Albania’s dynamic property market.</p>
+      <a href="#insights" class="btn-hero">Dive into Insights</a>
+    </div>
+  </section>
+
+  <!-- Market Trends Section -->
+  <section class="insights-section" id="insights">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">Key Market Trends</h2>
+      <div class="row g-4">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="insight-card">
+            <i class="fas fa-arrow-up"></i>
+            <h3>Rising Prices</h3>
+            <p>Property prices in urban areas like Tirana have surged by 15% in 2024, driven by foreign investment and tourism growth.</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="insight-card">
+            <i class="fas fa-leaf"></i>
+            <h3>Sustainability Boom</h3>
+            <p>Eco-friendly developments are up 20%, with buyers prioritizing energy-efficient homes along the coast.</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+          <div class="insight-card">
+            <i class="fas fa-building"></i>
+            <h3>Urban Expansion</h3>
+            <p>Tirana’s suburbs see a 10% increase in demand as infrastructure projects enhance connectivity.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Price Insights Section -->
+  <section class="insights-section" style="background: #fff;">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">Price Insights</h2>
+      <div class="row g-4">
+        <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="insight-card">
+            <h3>Average Property Prices</h3>
+            <p>Tirana: €1,350/m² | Coastal Areas: €950/m² | Suburbs: €700/m² (2025 Estimates)</p>
+            <div class="chart-placeholder">Interactive Price Chart Placeholder</div>
+          </div>
+        </div>
+        <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
+          <div class="insight-card">
+            <h3>Rental Yields</h3>
+            <p>Urban: 5-7% | Coastal Rentals: 8-10% | Stable growth expected through 2029.</p>
+            <div class="chart-placeholder">Rental Yield Trend Placeholder</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Regional Highlights Section -->
+  <section class="insights-section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">Regional Highlights</h2>
+      <div class="row g-4">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="insight-card">
+            <i class="fas fa-city"></i>
+            <h3>Tirana</h3>
+            <p>Urban hub with a 6.08% residential growth rate, fueled by jobs and infrastructure.</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="insight-card">
+            <i class="fas fa-water"></i>
+            <h3>Coastal Riviera</h3>
+            <p>Luxury properties up 71% in value, driven by tourism and foreign buyers.</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+          <div class="insight-card">
+            <i class="fas fa-tree"></i>
+            <h3>Rural Retreats</h3>
+            <p>Affordable options gaining traction for second homes and eco-projects.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section" data-aos="fade-up">
+    <div class="container">
+      <h2>Get Deeper Market Insights</h2>
+      <p>Sign up for detailed reports and personalized analysis to make informed real estate decisions.</p>
+      <a href="/signin" class="btn-cta">Subscribe Now</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <p>© 2025 Albania Properties. All Rights Reserved.</p>
+        </div>
+        <div class="col-md-4 text-center">
+          <p>
+            <a href="/about">About</a> |
+            <a href="/contact">Contact</a> |
+            <a href="/mortgage">Mortgage Tools</a> |
+            <a href="/sell">Sell Your Home</a> |
+            <a href="/market">Market Trends</a>
+          </p>
+        </div>
+        <div class="col-md-4 text-end">
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize AOS animations
+    AOS.init({ duration: 1000, once: true });
+
+    // Sticky header
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('header');
+      header.classList.toggle('scrolled', window.scrollY > 50);
+    });
+  </script>
+</body>
+</html>
