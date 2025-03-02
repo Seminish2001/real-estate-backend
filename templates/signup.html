@@ -208,33 +208,42 @@
     // Initialize AOS
     AOS.init({ duration: 800, once: true });
 
-    // Simulated signup for GitHub Pages (no backend)
-    document.getElementById('signup-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const spinner = document.getElementById('spinner');
-      spinner.style.display = 'block';
+    // Simulated signup for GitHub Pages
+    document.getElementById('signup-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const spinner = document.getElementById('spinner');
+  spinner.style.display = 'block';
 
-      const formData = {
-        name: document.getElementById('full-name').value,
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value,
-        userType: document.getElementById('user-type').value
-      };
+  const formData = {
+    name: document.getElementById('full-name').value,
+    email: document.getElementById('email').value,
+    password: document.getElementById('password').value,
+    user_type: document.getElementById('user-type').value
+  };
 
-      // Basic validation
-      if (!formData.name || !formData.email || !formData.password || !formData.userType) {
-        alert('Please fill in all fields.');
-        spinner.style.display = 'none';
-        return;
-      }
-
-      // Simulate API call
-      setTimeout(() => {
-        spinner.style.display = 'none';
-        alert('Sign up successful! Redirecting to login...');
-        window.location.href = '/login.html'; // Adjust path as needed
-      }, 1000); // Simulate network delay
+  try {
+    const response = await fetch('/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
     });
+
+    spinner.style.display = 'none';
+    if (response.redirected) {
+      window.location.href = response.url; // Follow redirect to dashboard
+    } else if (response.ok) {
+      alert('Sign up successful! Redirecting to login...');
+      window.location.href = '/login';
+    } else {
+      const data = await response.json();
+      alert('Signup failed: ' + data.message);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred during signup.');
+    spinner.style.display = 'none';
+  }
+});
   </script>
 </body>
 </html>
