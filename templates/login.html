@@ -180,16 +180,36 @@
     AOS.init({ duration: 800, once: true });
 
     // Simulated login for GitHub Pages (no backend)
-    document.getElementById('login-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
 
-      // Basic validation
-      if (!email || !password) {
-        alert('Please fill in all fields.');
-        return;
+  const formData = {
+    email: document.getElementById('email').value,
+    password: document.getElementById('password').value
+  };
+
+  try {
+    const response = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+
+    if (response.redirected) {
+      window.location.href = response.url; // Follow redirect to dashboard
+    } else {
+      const data = await response.json();
+      if (response.ok) {
+        alert('Login successful!');
+      } else {
+        alert('Login failed: ' + data.message);
       }
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred during login.');
+  }
+});
 
       // Simulate API call
       setTimeout(() => {
