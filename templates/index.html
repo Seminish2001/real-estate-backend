@@ -182,11 +182,6 @@
       color: #888;
     }
 
-    .search-bar select {
-      appearance: none;
-      background: url('data:image/svg+xml;base64,...') no-repeat right 15px center; /* Custom dropdown arrow */
-    }
-
     .search-bar button {
       background: var(--gradient);
       border: none;
@@ -273,6 +268,102 @@
       border: none;
       border-radius: 20px;
       padding: 10px 25px;
+    }
+
+    /* Free Property Evaluation Section */
+    .evaluation-section {
+      padding: 60px 0;
+      background: var(--gradient);
+      color: var(--text-light);
+      text-align: center;
+    }
+    .evaluation-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .evaluation-section p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 30px;
+    }
+    .btn-evaluate {
+      background: var(--accent-color);
+      color: var(--primary-color);
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+    .btn-evaluate:hover {
+      background: #d9b359;
+      transform: scale(1.05);
+    }
+
+    /* Search by City Section */
+    .city-search-section {
+      padding: 80px 0;
+      background: var(--background-light);
+    }
+    .city-card {
+      border: none;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: var(--shadow);
+      transition: all 0.4s ease;
+    }
+    .city-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+    .city-card img {
+      height: 180px;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .city-card:hover img {
+      transform: scale(1.05);
+    }
+    .city-card .card-body {
+      padding: 15px;
+      text-align: center;
+    }
+    .city-card h5 {
+      font-size: 1.3rem;
+      color: var(--primary-color);
+    }
+    .city-card p {
+      font-size: 1rem;
+      color: #666;
+    }
+
+    /* Property Alerts Section */
+    .alerts-section {
+      padding: 60px 0;
+      background: var(--background-light);
+      text-align: center;
+    }
+    .alerts-section h2 {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+    .alerts-section p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 30px;
+    }
+    .btn-alerts {
+      background: var(--gradient);
+      color: var(--text-light);
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+    .btn-alerts:hover {
+      background: linear-gradient(135deg, #12302b, #e68a4f);
+      transform: scale(1.05);
     }
 
     /* Owner Call-to-Action */
@@ -418,8 +509,71 @@
     </div>
   </section>
 
+  <!-- Free Property Evaluation Section -->
+  <section class="evaluation-section" data-aos="fade-up" data-aos-delay="400">
+    <div class="container">
+      <h2>Free Property Evaluation</h2>
+      <p>Want to sell or rent? Discover your property’s value with our free evaluation based on the latest market data.</p>
+      <a href="/evaluation" class="btn-evaluate">Evaluate Now</a>
+    </div>
+  </section>
+
+  <!-- Search by City Section -->
+  <section class="city-search-section" data-aos="fade-up" data-aos-delay="600">
+    <div class="container">
+      <h2 class="section-title">Search by City</h2>
+      <div class="row g-4">
+        <div class="col-md-3">
+          <a href="/properties?city=Tirana" class="city-card">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070" alt="Tirana">
+            <div class="card-body">
+              <h5>Tirana</h5>
+              <p>120 Listings</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a href="/properties?city=Vlora" class="city-card">
+            <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070" alt="Vlora">
+            <div class="card-body">
+              <h5>Vlorë</h5>
+              <p>85 Listings</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a href="/properties?city=Durres" class="city-card">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070" alt="Durres">
+            <div class="card-body">
+              <h5>Durrës</h5>
+              <p>60 Listings</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a href="/properties?city=Saranda" class="city-card">
+            <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=2070" alt="Saranda">
+            <div class="card-body">
+              <h5>Sarandë</h5>
+              <p>45 Listings</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Property Alerts Section -->
+  <section class="alerts-section" data-aos="fade-up" data-aos-delay="800">
+    <div class="container">
+      <h2>Property Alerts</h2>
+      <p>Save time—get notified when properties matching your criteria are listed.</p>
+      <a href="/alerts" class="btn-alerts">Set Alerts Now</a>
+    </div>
+  </section>
+
   <!-- Owner CTA -->
-  <section class="owner-cta" data-aos="fade-up" data-aos-delay="400">
+  <section class="owner-cta" data-aos="fade-up" data-aos-delay="1000">
     <div class="container">
       <h2>List Your Property with Ease</h2>
       <p>Get a premium valuation and connect with buyers or renters across Albania’s hottest markets.</p>
@@ -430,7 +584,7 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2025 Albania Lux Properties. All Rights Reserved.</p>
+      <p>© 2025 Albania Lux Properties. All Rights Reserved.</p>
       <p>
         <a href="/about">About</a> | <a href="/contact">Contact</a> | 
         <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a>
