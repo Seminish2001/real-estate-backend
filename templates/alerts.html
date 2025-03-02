@@ -325,85 +325,105 @@
   </section>
 
   <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    AOS.init({ duration: 1000, once: true });
+<script>
+  AOS.init({ duration: 1000, once: true });
 
-    const criteriaContainer = document.getElementById('criteria-container');
-    const addCriteriaBtn = document.getElementById('add-criteria');
-    const form = document.getElementById('alerts-form');
-    const successMessage = document.getElementById('success-message');
-    const frequencyDisplay = document.getElementById('frequency-display');
+  const criteriaContainer = document.getElementById('criteria-container');
+  const addCriteriaBtn = document.getElementById('add-criteria');
+  const form = document.getElementById('alerts-form');
+  const successMessage = document.getElementById('success-message');
+  const frequencyDisplay = document.getElementById('frequency-display');
 
-    function updateCriteriaIndices() {
-      const groups = criteriaContainer.querySelectorAll('.criteria-group');
-      groups.forEach((group, index) => {
-        const removeBtn = group.querySelector('.remove-criteria');
-        removeBtn.style.display = groups.length === 1 ? 'none' : 'block';
-        group.querySelectorAll('input, select').forEach(input => {
-          const field = input.getAttribute('data-field') || input.id.split('-')[0];
-          input.id = `${field}-${index + 1}`;
-          input.name = `alerts[${index}][${field}]`;
-        });
-      });
-    }
-
-    document.querySelectorAll('.criteria-group').forEach(group => {
+  function updateCriteriaIndices() {
+    const groups = criteriaContainer.querySelectorAll('.criteria-group');
+    groups.forEach((group, index) => {
+      const removeBtn = group.querySelector('.remove-criteria');
+      removeBtn.style.display = groups.length === 1 ? 'none' : 'block';
       group.querySelectorAll('input, select').forEach(input => {
-        if (!input.hasAttribute('data-field')) {
-          const field = input.id.split('-')[0];
-          input.setAttribute('data-field', field);
-        }
+        const field = input.getAttribute('data-field') || input.id.split('-')[0];
+        input.id = `${field}-${index + 1}`;
+        input.name = `alerts[${index}][${field}]`;
       });
     });
-    updateCriteriaIndices();
+  }
 
-    addCriteriaBtn.addEventListener('click', () => {
-      const firstGroup = criteriaContainer.querySelector('.criteria-group');
-      const newGroup = firstGroup.cloneNode(true);
-      newGroup.querySelectorAll('input').forEach(input => input.value = '');
-      newGroup.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
-      criteriaContainer.appendChild(newGroup);
-      AOS.refresh();
-      updateCriteriaIndices();
-    });
-
-    criteriaContainer.addEventListener('click', (e) => {
-      if (e.target.classList.contains('remove-criteria')) {
-        const groups = criteriaContainer.querySelectorAll('.criteria-group');
-        if (groups.length > 1) {
-          e.target.parentElement.remove();
-          updateCriteriaIndices();
-        }
+  document.querySelectorAll('.criteria-group').forEach(group => {
+    group.querySelectorAll('input, select').forEach(input => {
+      if (!input.hasAttribute('data-field')) {
+        const field = input.id.split('-')[0];
+        input.setAttribute('data-field', field);
       }
     });
+  });
+  updateCriteriaIndices();
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-      const frequency = form.querySelector('input[name="frequency"]:checked').value;
-      console.log('Alerts Data:', { ...data, frequency }); // Replace with backend API call
+  addCriteriaBtn.addEventListener('click', () => {
+    const firstGroup = criteriaContainer.querySelector('.criteria-group');
+    const newGroup = firstGroup.cloneNode(true);
+    newGroup.querySelectorAll('input').forEach(input => input.value = '');
+    newGroup.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+    criteriaContainer.appendChild(newGroup);
+    AOS.refresh();
+    updateCriteriaIndices();
+  });
 
-      // Show success message
-      frequencyDisplay.textContent = frequency;
-      successMessage.style.display = 'block';
-      form.style.display = 'none';
-      addCriteriaBtn.style.display = 'none';
-
-      // Reset form after a delay (simulating backend success)
-      setTimeout(() => {
-        form.reset();
-        while (criteriaContainer.children.length > 1) {
-          criteriaContainer.removeChild(criteriaContainer.lastChild);
-        }
+  criteriaContainer.addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-criteria')) {
+      const groups = criteriaContainer.querySelectorAll('.criteria-group');
+      if (groups.length > 1) {
+        e.target.parentElement.remove();
         updateCriteriaIndices();
-        successMessage.style.display = 'none';
-        form.style.display = 'block';
-        addCriteriaBtn.style.display = 'block';
-      }, 3000);
+      }
+    }
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+      if (key.includes('[')) {
+        const [base, index, field] = key.match(/(\w+)\[(\d+)\]\[(\w+)\]/).slice(1);
+        if (!data[base]) data[base] = [];
+        if (!data[base][index]) data[base][index] = {};
+        data[base][index][field] = value;
+      } else {
+        data[key] = value;
+      }
     });
-  </script>
+    data.alerts = data.alerts || []; // Ensure alerts is an array
+    data.frequency = form.querySelector('input[name="frequency"]:checked').value;
+
+    try {
+      const response = await fetch('/alerts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        frequencyDisplay.textContent = data.frequency;
+        successMessage.style.display = 'block';
+        form.style.display = 'none';
+        addCriteriaBtn.style.display = 'none';
+        setTimeout(() => {
+          form.reset();
+          while (criteriaContainer.children.length > 1) {
+            criteriaContainer.removeChild(criteriaContainer.lastChild);
+          }
+          updateCriteriaIndices();
+          successMessage.style.display = 'none';
+          form.style.display = 'block';
+          addCriteriaBtn.style.display = 'block';
+        }, 3000);
+      } else {
+        const errorData = await response.json();
+        console.error('Error:', errorData.message);
+      }
+    } catch (error) {
+      console.error('Submission Error:', error);
+    }
+  });
+</script>
 </body>
 </html>
