@@ -32,9 +32,9 @@ def serve_dashboard_buyer_renter():
         return render_template("dashboard-buyer-renter.html", user=user)
     return jsonify({"message": "Unauthorized or user not found"}), 403
 
-# Properties Route with Filtering
-@routes.route("/properties")
-def properties():
+# API Endpoint for Properties Data
+@routes.route("/api/properties")
+def api_properties():
     purpose = request.args.get('purpose')
     location = request.args.get('location')
     type = request.args.get('type')
@@ -42,7 +42,7 @@ def properties():
     beds = request.args.get('beds')
     baths = request.args.get('baths')
 
-    # Placeholder for property data (add your Property model here if exists)
+    # Placeholder data (replace with Property model query if added)
     properties = [
         {"id": 1, "title": "Tirana Skyline Penthouse", "price": 450000, "beds": 3, "baths": 2, "size": 1500, "purpose": "buy", "location": "Tirana", "type": "apartment"},
         {"id": 2, "title": "Vlora Coastal Villa", "price": 780000, "beds": 4, "baths": 3, "size": 2200, "purpose": "buy", "location": "Vlorë", "type": "villa"},
@@ -90,7 +90,7 @@ def process_evaluation():
             return jsonify({"message": "Missing required fields"}), 400
 
         user_id = get_jwt_identity() if 'Authorization' in request.headers else None
-        base_value = int(data['area']) * 2000  # Placeholder
+        base_value = int(data['area']) * 2000
         estimated_value = f"€{base_value - 50000} - €{base_value + 50000}"
 
         evaluation = EvaluationRequest(
