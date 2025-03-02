@@ -6,13 +6,7 @@ views = Blueprint("views", __name__)
 def home():
     return render_template("index.html")
 
-@views.route("/login")
-def login():
-    return render_template("login.html")
-
-@views.route("/signup")
-def signup():
-    return render_template("signup.html")
+# Removed /login and /signup routes as they're now handled by modal API calls
 
 @views.route("/for-owners")
 def for_owners():
