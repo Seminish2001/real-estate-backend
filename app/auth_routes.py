@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, redirect, url_for
+from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies, unset_jwt_cookies
 from app.models import db, User, bcrypt
 
@@ -26,23 +26,23 @@ def register():
         # Auto-login after signup
         access_token = create_access_token(identity=new_user.id)
         refresh_token = create_refresh_token(identity=new_user.id)
-        response = jsonify({"message": "User registered and logged in successfully!"})
+        response = make_response('', 201)  # Empty response with 201 status
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
 
-        # Redirect to the appropriate dashboard based on user_type
+        # Set redirect based on user_type
         if new_user.user_type == "Real Estate Agency":
-            response.headers['Location'] = url_for("routes.serve_dashboard_agency")
+            response.headers['Location'] = '/dashboard/agency'
         elif new_user.user_type == "Private Owner":
-            response.headers['Location'] = url_for("routes.serve_dashboard_private")
+            response.headers['Location'] = '/dashboard/private'
         elif new_user.user_type == "Buyer/Renter":
-            response.headers['Location'] = url_for("routes.serve_dashboard_buyer_renter")
+            response.headers['Location'] = '/dashboard/buyer-renter'
         else:
             return jsonify({"message": "Invalid user type"}), 400
 
-        return response, 201
+        return response
     except Exception as e:
-        db.session.rollback()  # Rollback on error
+        db.session.rollback()
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
 @auth_routes.route("/login", methods=["POST"])
@@ -57,28 +57,28 @@ def login():
             access_token = create_access_token(identity=user.id)
             refresh_token = create_refresh_token(identity=user.id)
             
-            response = jsonify({"message": "Login successful!"})
+            response = make_response('', 200)  # Empty response with 200 status
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
 
-            # Redirect to the appropriate dashboard based on user_type
+            # Set redirect based on user_type
             if user.user_type == "Real Estate Agency":
-                response.headers['Location'] = url_for("routes.serve_dashboard_agency")
+                response.headers['Location'] = '/dashboard/agency'
             elif user.user_type == "Private Owner":
-                response.headers['Location'] = url_for("routes.serve_dashboard_private")
+                response.headers['Location'] = '/dashboard/private'
             elif user.user_type == "Buyer/Renter":
-                response.headers['Location'] = url_for("routes.serve_dashboard_buyer_renter")
+                response.headers['Location'] = '/dashboard/buyer-renter'
             else:
                 return jsonify({"message": "Invalid user type"}), 400
 
-            return response, 200
+            return response
         return jsonify({"message": "Invalid credentials!"}), 401
     except Exception as e:
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
 @auth_routes.route("/logout", methods=["POST"])
 def logout():
-    response = jsonify({"message": "Successfully logged out!"})
+    response = make_response('', 200)  # Empty response
     unset_jwt_cookies(response)
-    response.headers['Location'] = url_for("views.login")
-    return response, 200
+    response.headers['Location'] = '/login'
+    return response
