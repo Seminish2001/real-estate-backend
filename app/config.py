@@ -9,13 +9,13 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     JWT_TOKEN_LOCATION = ['cookies']
-    JWT_COOKIE_SECURE = config('JWT_COOKIE_SECURE', default=False, cast=bool)  # Set to True in Render
-    JWT_COOKIE_CSRF_PROTECT = config('JWT_COOKIE_CSRF_PROTECT', default=False, cast=bool)  # Set to True in Render
+    JWT_COOKIE_SECURE = True  # Hardcoded for production
+    JWT_COOKIE_CSRF_PROTECT = True  # Hardcoded for production
 
-    # Cloudinary config
-    CLOUDINARY_CLOUD_NAME = config('dxearodvf')
-    CLOUDINARY_API_KEY = config('292532466535494')
-    CLOUDINARY_API_SECRET = config('7C58WhO-JWQsAG8Lze9C5hMfkD4')
+    # Hardcoded Cloudinary credentials (temporary)
+    CLOUDINARY_CLOUD_NAME = 'dxearodvf'
+    CLOUDINARY_API_KEY = '292532466535494'
+    CLOUDINARY_API_SECRET = '7C58WhO-JWQsAG8Lze9C5hMfkD4'
 
     if JWT_SECRET_KEY == 'default_secret_key':
         print("WARNING: Using default JWT_SECRET_KEY. Set this in production!")
