@@ -32,61 +32,60 @@ def serve_dashboard_buyer_renter():
         return render_template("dashboard-buyer-renter.html", user=user)
     return jsonify({"message": "Unauthorized or user not found"}), 403
 
+# Static Page Routes
+@routes.route("/properties")
+def serve_properties():
+    return render_template("properties.html")
+
+@routes.route("/sell")
+def serve_sell():
+    return render_template("sell.html")
+
+@routes.route("/market")
+def serve_market():
+    return render_template("market.html")
+
+@routes.route("/rent")
+def serve_rent():
+    return render_template("rent.html")
+
+@routes.route("/buy")
+def serve_buy():
+    return render_template("buy.html")
+
 # API Endpoints (Placeholders)
-@routes.route("/api/user/properties")
-@jwt_required()
-def api_user_properties():
-    user_id = get_jwt_identity()
+@routes.route("/api/properties")
+@jwt_required(optional=True)
+def api_properties():
+    purpose = request.args.get('purpose')
+    location = request.args.get('location')
+    type = request.args.get('type')
+    price = request.args.get('price')
+    beds = request.args.get('beds')
+    baths = request.args.get('baths')
+
     properties = [
-        {"id": 1, "title": "Tirana Skyline Penthouse", "price": 450000, "beds": 3, "baths": 2, "size": 1500, "purpose": "buy", "location": "Tirana", "type": "apartment"}
+        {"id": 1, "title": "Tirana Skyline Penthouse", "price": 450000, "beds": 3, "baths": 2, "size": 1500, "purpose": "buy", "location": "Tirana", "type": "apartment"},
+        {"id": 2, "title": "Vlora Coastal Villa", "price": 780000, "beds": 4, "baths": 3, "size": 2200, "purpose": "buy", "location": "Vlorë", "type": "villa"},
+        {"id": 3, "title": "Saranda Seafront Apartment", "price": 220000, "beds": 2, "baths": 1, "size": 900, "purpose": "rent", "location": "Sarandë", "type": "apartment"}
     ]
-    return jsonify({"properties": properties, "count": len(properties)})
 
-@routes.route("/api/evaluations")
-@jwt_required()
-def api_evaluations():
-    user_id = get_jwt_identity()
-    evaluations = EvaluationRequest.query.filter_by(user_id=user_id).order_by(EvaluationRequest.created_at.desc()).limit(1).all()
-    return jsonify({"latest": {"estimated_value": evaluations[0].estimated_value if evaluations else "No evaluations yet"}})
+    filtered = properties
+    if purpose:
+        filtered = [p for p in filtered if p['purpose'] == purpose.lower()]
+    if location:
+        filtered = [p for p in filtered if location.lower() in p['location'].lower()]
+    if type:
+        filtered = [p for p in filtered if p['type'] == type.lower()]
+    if price:
+        filtered = [p for p in filtered if p['price'] <= int(price)]
+    if beds:
+        filtered = [p for p in filtered if p['beds'] >= int(beds)]
+    if baths:
+        filtered = [p for p in filtered if p['baths'] >= int(baths)]
 
-@routes.route("/api/offers")
-@jwt_required()
-def api_offers():
-    return jsonify({"offers": [{"id": 1, "property": "Tirana Skyline Penthouse", "amount": 425000, "status": "pending"}], "count": 1})
+    return jsonify({"properties": filtered, "count": len(filtered)})
 
-@routes.route("/api/agency/properties")
-@jwt_required()
-def api_agency_properties():
-    return jsonify({"properties": [{"id": 1, "title": "Vlora Coastal Villa", "views": 150, "inquiries": 5}], "count": 1})
-
-@routes.route("/api/requests")
-@jwt_required()
-def api_requests():
-    return jsonify({"requests": [{"id": 1, "client": "John Doe", "property": "Vlora Coastal Villa", "status": "new"}], "count": 1})
-
-@routes.route("/api/analytics")
-@jwt_required()
-def api_analytics():
-    return jsonify({"views": 150, "inquiries": 10, "conversion_rate": "6.7%"})
-
-@routes.route("/api/saved")
-@jwt_required()
-def api_saved():
-    return jsonify({"saved": [{"id": 3, "title": "Saranda Seafront Apartment", "price": 220000}], "count": 1})
-
-@routes.route("/api/alerts")
-@jwt_required()
-def api_alerts():
-    user_id = get_jwt_identity()
-    alerts = AlertPreference.query.filter_by(user_id=user_id).all()
-    return jsonify({"alerts": [{"purpose": a.purpose, "location": a.location} for a in alerts], "count": len(alerts)})
-
-@routes.route("/api/market-snapshot")
-@jwt_required()
-def api_market_snapshot():
-    return jsonify({"avg_price": "€1,350/m²", "trend": "Up 5%"})
-
-# Other Routes (Unchanged)
 @routes.route("/alerts")
 def serve_alerts():
     return render_template("alerts.html")
