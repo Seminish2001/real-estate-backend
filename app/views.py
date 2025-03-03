@@ -6,9 +6,9 @@ views = Blueprint("views", __name__)
 def home():
     return render_template("index.html")
 
-@views.route("/auth")
-def auth():
-    return render_template("auth.html")
+@views.route("/signin")
+def signin():
+    return render_template("signin.html")
 
 @views.route("/for-owners")
 def for_owners():
