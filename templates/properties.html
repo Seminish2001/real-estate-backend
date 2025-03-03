@@ -120,7 +120,7 @@
       width: 80%;
     }
 
-    /* Main Content */
+    /* Properties Page Content */
     .properties-page {
       padding: 120px 0 80px;
     }
@@ -136,7 +136,6 @@
       color: var(--primary-color);
     }
 
-    /* Sidebar Filters */
     .filters-sidebar {
       position: sticky;
       top: 120px;
@@ -206,7 +205,6 @@
       transform: scale(1.02);
     }
 
-    /* Listings Area */
     .listings-area {
       padding-left: 20px;
     }
@@ -331,7 +329,6 @@
       color: #ff4757;
     }
 
-    /* Map View */
     #map-view {
       height: 600px;
       border-radius: 16px;
@@ -343,7 +340,6 @@
       display: block;
     }
 
-    /* Pagination */
     .pagination {
       display: flex;
       justify-content: center;
@@ -366,7 +362,7 @@
       color: var(--text-light);
     }
 
-    /* Modal Styles */
+    /* New Popup Styles */
     .auth-modal {
       display: none;
       position: fixed;
@@ -386,10 +382,10 @@
 
     .auth-container {
       background: #fff;
-      max-width: 450px;
+      max-width: 500px;
       width: 90%;
-      padding: 30px;
-      border-radius: 12px;
+      padding: 40px;
+      border-radius: 16px;
       box-shadow: var(--shadow-md);
       position: relative;
       animation: slideIn 0.3s ease-out;
@@ -412,15 +408,15 @@
     .auth-tabs {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 25px;
-      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #e2e8f0;
     }
 
     .auth-tab {
       width: 50%;
       text-align: center;
-      padding: 10px 0;
-      font-size: 1.1rem;
+      padding: 12px 0;
+      font-size: 1.2rem;
       font-weight: 600;
       color: #718096;
       cursor: pointer;
@@ -453,30 +449,30 @@
     }
 
     .auth-content p {
-      font-size: 0.95rem;
+      font-size: 1rem;
       color: #718096;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
 
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .form-group label {
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 600;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       display: block;
     }
 
     .form-group input,
     .form-group select {
       width: 100%;
-      padding: 10px 12px;
+      padding: 12px 15px;
       border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      font-size: 0.9rem;
+      border-radius: 8px;
+      font-size: 1rem;
       transition: border-color 0.3s ease;
     }
 
@@ -495,9 +491,9 @@
       color: var(--text-light);
       padding: 12px 0;
       width: 100%;
-      border-radius: 6px;
+      border-radius: 8px;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 1.1rem;
       border: none;
       transition: var(--transition);
     }
@@ -505,17 +501,26 @@
     .btn-auth:hover {
       background: #1557b0;
       transform: scale(1.02);
+      box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
+    }
+
+    .btn-next {
+      background: var(--accent-color);
+    }
+
+    .btn-next:hover {
+      background: #00a89d;
     }
 
     .social-login {
-      margin-top: 20px;
+      margin-top: 25px;
       text-align: center;
     }
 
     .social-login p {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: #718096;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
     .social-btn {
@@ -523,11 +528,11 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.9rem;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 1rem;
       font-weight: 600;
-      margin: 5px 0;
+      margin: 10px 0;
       transition: var(--transition);
     }
 
@@ -544,8 +549,8 @@
     }
 
     .social-btn i {
-      margin-right: 8px;
-      font-size: 1.1rem;
+      margin-right: 10px;
+      font-size: 1.2rem;
     }
 
     .social-btn:hover {
@@ -555,7 +560,7 @@
 
     .auth-link {
       text-align: center;
-      margin-top: 15px;
+      margin-top: 20px;
       font-size: 0.9rem;
     }
 
@@ -568,7 +573,6 @@
       color: #1557b0;
     }
 
-    /* Animation for Modal */
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -602,7 +606,6 @@
       color: var(--accent-color);
     }
 
-    /* Animations */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
@@ -773,7 +776,7 @@
     </div>
   </section>
 
-  <!-- Auth Modal -->
+  <!-- New Advanced Auth Modal -->
   <div class="auth-modal" id="auth-modal">
     <div class="auth-container">
       <i class="fas fa-times auth-close" id="auth-close"></i>
@@ -785,7 +788,7 @@
       <!-- Sign In Form -->
       <div class="auth-content active" id="signin">
         <h2>Sign In</h2>
-        <p>Welcome back—access your account.</p>
+        <p>Access your Albania Properties account.</p>
         <form id="signin-form">
           <div class="form-group">
             <label for="signin-email">Email</label>
@@ -807,15 +810,11 @@
         </div>
       </div>
 
-      <!-- Sign Up Form -->
+      <!-- Sign Up Form (Step 1: Email/Password) -->
       <div class="auth-content" id="signup">
         <h2>Sign Up</h2>
-        <p>Create an account to get started.</p>
-        <form id="signup-form">
-          <div class="form-group">
-            <label for="signup-name">Full Name</label>
-            <input type="text" id="signup-name" name="name" placeholder="Enter your full name" required />
-          </div>
+        <p>Create your account to get started.</p>
+        <form id="signup-step1-form">
           <div class="form-group">
             <label for="signup-email">Email</label>
             <input type="email" id="signup-email" name="email" placeholder="Enter your email" required />
@@ -824,25 +823,31 @@
             <label for="signup-password">Password</label>
             <input type="password" id="signup-password" name="password" placeholder="Create a password" required />
           </div>
-          <div class="form-group">
-            <label for="signup-phone">Phone (Optional)</label>
-            <input type="tel" id="signup-phone" name="phone" placeholder="Enter your phone" />
-          </div>
-          <div class="form-group">
-            <label for="user-type">I am a</label>
-            <select id="user-type" name="user-type" required>
-              <option value="" disabled selected>Select your role</option>
-              <option value="landlord">Landlord</option>
-              <option value="agency">Agency</option>
-            </select>
-          </div>
-          <button type="submit" class="btn-auth">Sign Up</button>
+          <button type="submit" class="btn-auth btn-next">Next</button>
         </form>
         <div class="social-login">
           <p>Or sign up with</p>
           <button class="social-btn google" id="google-signup"><i class="fab fa-google"></i> Google</button>
           <button class="social-btn facebook" id="facebook-signup"><i class="fab fa-facebook-f"></i> Facebook</button>
         </div>
+      </div>
+
+      <!-- Sign Up Form (Step 2: User Type) -->
+      <div class="auth-content" id="signup-step2">
+        <h2>Choose Your Role</h2>
+        <p>Tell us who you are to personalize your experience.</p>
+        <form id="signup-step2-form">
+          <div class="form-group">
+            <label for="user-type">I am a</label>
+            <select id="user-type" name="user-type" required>
+              <option value="" disabled selected>Select your role</option>
+              <option value="Landlord">Landlord</option>
+              <option value="Agency">Real Estate Agency</option>
+              <option value="Buyer/Renter">Buyer/Renter</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-auth">Sign Up</button>
+        </form>
       </div>
     </div>
   </div>
@@ -879,10 +884,8 @@
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
-  <!-- Firebase SDK (for Google Auth) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
-  <!-- Facebook SDK -->
   <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
   <script>
     // Initialize AOS animations
@@ -922,7 +925,7 @@
       });
     });
 
-    // Initialize Leaflet Map (lazy-loaded)
+    // Initialize Leaflet Map
     let mapInitialized = false;
     function initMap() {
       if (!mapInitialized) {
@@ -932,8 +935,6 @@
         }).addTo(map);
         const markers = L.markerClusterGroup();
         markers.addLayer(L.marker([41.3275, 19.8187]).bindPopup('Tirana Penthouse - €450,000'));
-        markers.addLayer(L.marker([41.3175, 19.8087]).bindPopup('Tirana Villa - €650,000'));
-        markers.addLayer(L.marker([41.3375, 19.8287]).bindPopup('Tirana Apartment - €300,000'));
         map.addLayer(markers);
         mapInitialized = true;
       }
@@ -976,8 +977,6 @@
       if (purpose) {
         purposeFilter.value = purpose.toLowerCase();
       }
-
-      // Set active nav item based on purpose
       const buyLink = document.querySelector('a[href="/properties?purpose=buy"]');
       const rentLink = document.querySelector('a[href="/properties?purpose=rent"]');
       if (purpose === 'buy') {
@@ -1000,6 +999,7 @@
 
     authClose.addEventListener('click', () => {
       authModal.classList.remove('active');
+      resetSignupForm();
     });
 
     // Modal Tab Switching
@@ -1012,35 +1012,81 @@
         contents.forEach(c => c.classList.remove('active'));
         tab.classList.add('active');
         document.getElementById(tab.dataset.tab).classList.add('active');
+        if (tab.dataset.tab === 'signup') {
+          resetSignupForm();
+        }
       });
     });
 
-    // Sign In form submission
-    document.getElementById('signin-form').addEventListener('submit', (e) => {
+    // Sign In Form Submission
+    document.getElementById('signin-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('signin-email').value;
       const password = document.getElementById('signin-password').value;
-      console.log(`Sign In: Email=${email}, Password=${password}`);
-      // Backend integration placeholder
-      authModal.classList.remove('active');
-      // window.location.href = '/dashboard';
+      try {
+        const response = await fetch('/auth/signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // Include cookies
+          body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          authModal.classList.remove('active');
+          window.location.reload(); // Refresh to update logged-in state
+        } else {
+          alert(data.message);
+        }
+      } catch (error) {
+        console.error('Sign In Error:', error);
+        alert('An error occurred during sign in.');
+      }
     });
 
-    // Sign Up form submission
-    document.getElementById('signup-form').addEventListener('submit', (e) => {
+    // Sign Up Step 1: Email/Password
+    let signupEmail = '';
+    let signupPassword = '';
+    document.getElementById('signup-step1-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      const name = document.getElementById('signup-name').value;
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
-      const phone = document.getElementById('signup-phone').value;
-      const userType = document.getElementById('user-type').value;
-      console.log(`Sign Up: Name=${name}, Email=${email}, Password=${password}, Phone=${phone}, UserType=${userType}`);
-      // Backend integration placeholder
-      authModal.classList.remove('active');
-      // window.location.href = '/dashboard';
+      signupEmail = document.getElementById('signup-email').value;
+      signupPassword = document.getElementById('signup-password').value;
+      document.getElementById('signup').classList.remove('active');
+      document.getElementById('signup-step2').classList.add('active');
     });
 
-    // Firebase Configuration (replace with your Firebase project config)
+    // Sign Up Step 2: User Type
+    document.getElementById('signup-step2-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const userType = document.getElementById('user-type').value;
+      try {
+        const response = await fetch('/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // Include cookies
+          body: JSON.stringify({ email: signupEmail, password: signupPassword, user_type: userType })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          authModal.classList.remove('active');
+          window.location.reload();
+        } else {
+          alert(data.message);
+        }
+      } catch (error) {
+        console.error('Sign Up Error:', error);
+        alert('An error occurred during sign up.');
+      }
+    });
+
+    // Reset Signup Form
+    function resetSignupForm() {
+      document.getElementById('signup-step1-form').reset();
+      document.getElementById('signup-step2-form').reset();
+      document.getElementById('signup-step2').classList.remove('active');
+      document.getElementById('signup').classList.add('active');
+    }
+
+    // Firebase Configuration (Replace with your credentials)
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_AUTH_DOMAIN",
@@ -1049,8 +1095,6 @@
       messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
       appId: "YOUR_APP_ID"
     };
-
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
@@ -1058,25 +1102,40 @@
     const googleProvider = new firebase.auth.GoogleAuthProvider();
     document.getElementById('google-signin').addEventListener('click', () => {
       auth.signInWithPopup(googleProvider).then((result) => {
-        const user = result.user;
-        console.log('Google Sign-In Success:', user.displayName, user.email);
-        authModal.classList.remove('active');
-        // window.location.href = '/dashboard';
-      }).catch((error) => {
-        console.error('Google Sign-In Error:', error.message);
-      });
+        const token = result.credential.idToken;
+        fetch('/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ token })
+        }).then(response => response.json()).then(data => {
+          if (response.ok) {
+            authModal.classList.remove('active');
+            window.location.reload();
+          } else {
+            alert(data.message);
+          }
+        });
+      }).catch(error => console.error('Google Sign-In Error:', error));
     });
 
     document.getElementById('google-signup').addEventListener('click', () => {
       auth.signInWithPopup(googleProvider).then((result) => {
-        const user = result.user;
-        console.log('Google Sign-Up Success:', user.displayName, user.email);
-        authModal.classList.remove('active');
-        // Prompt for user type or additional info if needed
-        // window.location.href = '/dashboard';
-      }).catch((error) => {
-        console.error('Google Sign-Up Error:', error.message);
-      });
+        const token = result.credential.idToken;
+        fetch('/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ token })
+        }).then(response => response.json()).then(data => {
+          if (response.ok) {
+            authModal.classList.remove('active');
+            window.location.reload();
+          } else {
+            alert(data.message);
+          }
+        });
+      }).catch(error => console.error('Google Sign-Up Error:', error));
     });
 
     // Facebook SDK Initialization
@@ -1093,10 +1152,18 @@
     document.getElementById('facebook-signin').addEventListener('click', () => {
       FB.login((response) => {
         if (response.authResponse) {
-          FB.api('/me', { fields: 'name,email' }, (user) => {
-            console.log('Facebook Sign-In Success:', user.name, user.email);
-            authModal.classList.remove('active');
-            // window.location.href = '/dashboard';
+          fetch('/auth/facebook', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ accessToken: response.authResponse.accessToken })
+          }).then(response => response.json()).then(data => {
+            if (response.ok) {
+              authModal.classList.remove('active');
+              window.location.reload();
+            } else {
+              alert(data.message);
+            }
           });
         } else {
           console.error('Facebook Sign-In Failed');
@@ -1107,11 +1174,18 @@
     document.getElementById('facebook-signup').addEventListener('click', () => {
       FB.login((response) => {
         if (response.authResponse) {
-          FB.api('/me', { fields: 'name,email' }, (user) => {
-            console.log('Facebook Sign-Up Success:', user.name, user.email);
-            authModal.classList.remove('active');
-            // Prompt for user type or additional info if needed
-            // window.location.href = '/dashboard';
+          fetch('/auth/facebook', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ accessToken: response.authResponse.accessToken })
+          }).then(response => response.json()).then(data => {
+            if (response.ok) {
+              authModal.classList.remove('active');
+              window.location.reload();
+            } else {
+              alert(data.message);
+            }
           });
         } else {
           console.error('Facebook Sign-Up Failed');
