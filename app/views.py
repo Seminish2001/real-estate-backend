@@ -6,15 +6,10 @@ views = Blueprint("views", __name__)
 def home():
     return render_template("index.html")
 
-@views.route("/properties")
-def properties():
-    return render_template("properties.html")
+@views.route("/auth")
+def auth():
+    return render_template("auth.html")
 
-@views.route("/market")
-def market():
-    return render_template("market.html")
-
-@views.route("/sell")
-def sell():
-    return render_template("sell.html")
-
+@views.route("/for-owners")
+def for_owners():
+    return render_template("for-owners.html")
