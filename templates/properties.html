@@ -888,6 +888,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
   <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
   <script>
+  document.addEventListener('DOMContentLoaded', () => {
     // Initialize AOS animations
     AOS.init({ duration: 1000, once: true });
 
@@ -970,37 +971,43 @@
     });
 
     // Pre-select Purpose filter from URL
-    window.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const purpose = urlParams.get('purpose');
-      const purposeFilter = document.getElementById('purpose-filter');
-      if (purpose) {
-        purposeFilter.value = purpose.toLowerCase();
-      }
-      const buyLink = document.querySelector('a[href="/properties?purpose=buy"]');
-      const rentLink = document.querySelector('a[href="/properties?purpose=rent"]');
-      if (purpose === 'buy') {
-        buyLink.classList.add('active');
-        rentLink.classList.remove('active');
-      } else if (purpose === 'rent') {
-        rentLink.classList.add('active');
-        buyLink.classList.remove('active');
-      }
-    });
+    const urlParams = new URLSearchParams(window.location.search);
+    const purpose = urlParams.get('purpose');
+    const purposeFilter = document.getElementById('purpose-filter');
+    if (purpose) {
+      purposeFilter.value = purpose.toLowerCase();
+    }
+    const buyLink = document.querySelector('a[href="/properties?purpose=buy"]');
+    const rentLink = document.querySelector('a[href="/properties?purpose=rent"]');
+    if (purpose === 'buy') {
+      buyLink.classList.add('active');
+      rentLink.classList.remove('active');
+    } else if (purpose === 'rent') {
+      rentLink.classList.add('active');
+      buyLink.classList.remove('active');
+    }
 
     // Modal Toggle
     const authModal = document.getElementById('auth-modal');
     const authToggle = document.getElementById('auth-toggle');
     const authClose = document.getElementById('auth-close');
 
-    authToggle.addEventListener('click', () => {
-      authModal.classList.add('active');
-    });
+    if (authToggle && authModal) {
+      authToggle.addEventListener('click', () => {
+        authModal.classList.add('active');
+      });
+    } else {
+      console.log('authToggle or authModal not found');
+    }
 
-    authClose.addEventListener('click', () => {
-      authModal.classList.remove('active');
-      resetSignupForm();
-    });
+    if (authClose && authModal) {
+      authClose.addEventListener('click', () => {
+        authModal.classList.remove('active');
+        resetSignupForm();
+      });
+    } else {
+      console.log('authClose or authModal not found');
+    }
 
     // Modal Tab Switching
     const tabs = document.querySelectorAll('.auth-tab');
@@ -1027,13 +1034,13 @@
         const response = await fetch('/auth/signin', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include', // Include cookies
+          credentials: 'include',
           body: JSON.stringify({ email, password })
         });
         const data = await response.json();
         if (response.ok) {
           authModal.classList.remove('active');
-          window.location.reload(); // Refresh to update logged-in state
+          window.location.reload();
         } else {
           alert(data.message);
         }
@@ -1062,7 +1069,7 @@
         const response = await fetch('/auth/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include', // Include cookies
+          credentials: 'include',
           body: JSON.stringify({ email: signupEmail, password: signupPassword, user_type: userType })
         });
         const data = await response.json();
@@ -1086,112 +1093,9 @@
       document.getElementById('signup').classList.add('active');
     }
 
-    // Firebase Configuration (Replace with your credentials)
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    // Google Sign-In/Sign-Up
-    const googleProvider = new firebase.auth.GoogleAuthProvider();
-    document.getElementById('google-signin').addEventListener('click', () => {
-      auth.signInWithPopup(googleProvider).then((result) => {
-        const token = result.credential.idToken;
-        fetch('/auth/google', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ token })
-        }).then(response => response.json()).then(data => {
-          if (response.ok) {
-            authModal.classList.remove('active');
-            window.location.reload();
-          } else {
-            alert(data.message);
-          }
-        });
-      }).catch(error => console.error('Google Sign-In Error:', error));
-    });
-
-    document.getElementById('google-signup').addEventListener('click', () => {
-      auth.signInWithPopup(googleProvider).then((result) => {
-        const token = result.credential.idToken;
-        fetch('/auth/google', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ token })
-        }).then(response => response.json()).then(data => {
-          if (response.ok) {
-            authModal.classList.remove('active');
-            window.location.reload();
-          } else {
-            alert(data.message);
-          }
-        });
-      }).catch(error => console.error('Google Sign-Up Error:', error));
-    });
-
-    // Facebook SDK Initialization
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId: 'YOUR_FACEBOOK_APP_ID',
-        cookie: true,
-        xfbml: true,
-        version: 'v20.0'
-      });
-    };
-
-    // Facebook Sign-In/Sign-Up
-    document.getElementById('facebook-signin').addEventListener('click', () => {
-      FB.login((response) => {
-        if (response.authResponse) {
-          fetch('/auth/facebook', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ accessToken: response.authResponse.accessToken })
-          }).then(response => response.json()).then(data => {
-            if (response.ok) {
-              authModal.classList.remove('active');
-              window.location.reload();
-            } else {
-              alert(data.message);
-            }
-          });
-        } else {
-          console.error('Facebook Sign-In Failed');
-        }
-      }, { scope: 'public_profile,email' });
-    });
-
-    document.getElementById('facebook-signup').addEventListener('click', () => {
-      FB.login((response) => {
-        if (response.authResponse) {
-          fetch('/auth/facebook', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ accessToken: response.authResponse.accessToken })
-          }).then(response => response.json()).then(data => {
-            if (response.ok) {
-              authModal.classList.remove('active');
-              window.location.reload();
-            } else {
-              alert(data.message);
-            }
-          });
-        } else {
-          console.error('Facebook Sign-Up Failed');
-        }
-      }, { scope: 'public_profile,email' });
-    });
-  </script>
+    // OAuth Placeholder (Add your Firebase/Facebook credentials later)
+    console.log('OAuth not configured yet. Add Firebase/Facebook credentials to enable.');
+  });
+</script>
 </body>
 </html>
