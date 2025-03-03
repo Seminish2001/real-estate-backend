@@ -1,14 +1,20 @@
 from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies, unset_jwt_cookies, jwt_required, get_jwt_identity
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from app.models import db, User, bcrypt
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 import facebook
+from decouple import config
+import logging
 
 auth_routes = Blueprint("auth_routes", __name__)
+limiter = Limiter(get_remote_address, default_limits=["200 per day", "50 per hour"])
 
 # Sign In (Email/Password)
 @auth_routes.route("/signin", methods=["POST"])
+@limiter.limit("10 per minute")
 def signin():
     try:
         data = request.json
@@ -25,13 +31,16 @@ def signin():
             }), 200)
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
+            logging.info(f"User {user.email} signed in")
             return response
         return jsonify({"message": "Invalid credentials!"}), 401
     except Exception as e:
+        logging.error(f"Signin error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
 # Sign Up (Email/Password)
 @auth_routes.route("/signup", methods=["POST"])
+@limiter.limit("10 per minute")
 def signup():
     try:
         data = request.json
@@ -61,9 +70,11 @@ def signup():
         }), 201)
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
+        logging.info(f"User {new_user.email} signed up")
         return response
     except Exception as e:
         db.session.rollback()
+        logging.error(f"Signup error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
 # Logout
@@ -81,15 +92,13 @@ def google_auth():
         if not token:
             return jsonify({"message": "Missing Google token"}), 400
 
-        # Verify Google token
-        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), "YOUR_GOOGLE_CLIENT_ID")
-        google_id = idinfo['sub']
+        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), config("GOOGLE_CLIENT_ID"))
         email = idinfo['email']
-        name = idinfo['name']
+        name = idinfo.get('name', 'Google User')
 
         user = User.query.filter_by(email=email).first()
         if not user:
-            user = User(name=name, email=email, user_type="Buyer/Renter")  # Default, update later
+            user = User(name=name, email=email, user_type="Buyer/Renter")
             db.session.add(user)
             db.session.commit()
 
@@ -105,6 +114,7 @@ def google_auth():
     except ValueError:
         return jsonify({"message": "Invalid Google token"}), 401
     except Exception as e:
+        logging.error(f"Google auth error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
 # Facebook OAuth Sign In/Sign Up
@@ -115,16 +125,14 @@ def facebook_auth():
         if not access_token:
             return jsonify({"message": "Missing Facebook token"}), 400
 
-        # Verify Facebook token
         graph = facebook.GraphAPI(access_token)
         profile = graph.get_object("me", fields="id,name,email")
-        facebook_id = profile['id']
         email = profile.get('email')
         name = profile['name']
 
         user = User.query.filter_by(email=email).first()
         if not user:
-            user = User(name=name, email=email, user_type="Buyer/Renter")  # Default, update later
+            user = User(name=name, email=email, user_type="Buyer/Renter")
             db.session.add(user)
             db.session.commit()
 
@@ -140,9 +148,10 @@ def facebook_auth():
     except facebook.GraphAPIError:
         return jsonify({"message": "Invalid Facebook token"}), 401
     except Exception as e:
+        logging.error(f"Facebook auth error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
-# Update User Type (for social logins)
+# Update User Type
 @auth_routes.route("/update-type", methods=["POST"])
 @jwt_required()
 def update_user_type():
@@ -150,7 +159,7 @@ def update_user_type():
         user_id = get_jwt_identity()
         data = request.json
         user_type = data.get("user_type")
-        
+
         if user_type not in ["Landlord", "Agency", "Buyer/Renter"]:
             return jsonify({"message": "Invalid user type"}), 400
 
@@ -160,7 +169,9 @@ def update_user_type():
 
         user.user_type = user_type
         db.session.commit()
+        logging.info(f"User {user_id} updated type to {user_type}")
         return jsonify({"message": "User type updated successfully", "user_type": user.user_type}), 200
     except Exception as e:
         db.session.rollback()
+        logging.error(f"Update user type error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
