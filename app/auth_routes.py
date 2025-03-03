@@ -92,7 +92,7 @@ def google_auth():
         if not token:
             return jsonify({"message": "Missing Google token"}), 400
 
-        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), config("GOOGLE_CLIENT_ID"))
+        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), config("GOOGLE_CLIENT_ID", default="your-google-client-id"))
         email = idinfo['email']
         name = idinfo.get('name', 'Google User')
 
