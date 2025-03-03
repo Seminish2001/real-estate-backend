@@ -103,7 +103,7 @@ def create_property():
         user_id = get_jwt_identity()
         data = request.form
         file = request.files.get('image')
-        image_url = upload(file)['url'] if file else None
+        image_url = upload(file)['url'] if file else None  # Optional image upload
         property = Property(
             user_id=user_id,
             title=data["title"],
@@ -115,7 +115,7 @@ def create_property():
             baths=int(data["baths"]),
             size=int(data["size"]),
             image_url=image_url,
-            lat=float(data.get("lat", 0)),  # Default to 0 if not provided
+            lat=float(data.get("lat", 0)),
             lng=float(data.get("lng", 0))
         )
         db.session.add(property)
