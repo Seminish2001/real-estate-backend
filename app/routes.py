@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request, render_template
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models import db, User, EvaluationRequest, AlertPreference
+from app.models import db, User, Property, EvaluationRequest, AlertPreference, Favorite, Offer
+from cloudinary.uploader import upload
+import logging
 
 routes = Blueprint("routes", __name__)
 
@@ -45,47 +47,6 @@ def serve_sell():
 def serve_market():
     return render_template("market.html")
 
-@routes.route("/rent")
-def serve_rent():
-    return render_template("rent.html")
-
-@routes.route("/buy")
-def serve_buy():
-    return render_template("buy.html")
-
-# API Endpoints (Placeholders)
-@routes.route("/api/properties")
-@jwt_required(optional=True)
-def api_properties():
-    purpose = request.args.get('purpose')
-    location = request.args.get('location')
-    type = request.args.get('type')
-    price = request.args.get('price')
-    beds = request.args.get('beds')
-    baths = request.args.get('baths')
-
-    properties = [
-        {"id": 1, "title": "Tirana Skyline Penthouse", "price": 450000, "beds": 3, "baths": 2, "size": 1500, "purpose": "buy", "location": "Tirana", "type": "apartment"},
-        {"id": 2, "title": "Vlora Coastal Villa", "price": 780000, "beds": 4, "baths": 3, "size": 2200, "purpose": "buy", "location": "Vlorë", "type": "villa"},
-        {"id": 3, "title": "Saranda Seafront Apartment", "price": 220000, "beds": 2, "baths": 1, "size": 900, "purpose": "rent", "location": "Sarandë", "type": "apartment"}
-    ]
-
-    filtered = properties
-    if purpose:
-        filtered = [p for p in filtered if p['purpose'] == purpose.lower()]
-    if location:
-        filtered = [p for p in filtered if location.lower() in p['location'].lower()]
-    if type:
-        filtered = [p for p in filtered if p['type'] == type.lower()]
-    if price:
-        filtered = [p for p in filtered if p['price'] <= int(price)]
-    if beds:
-        filtered = [p for p in filtered if p['beds'] >= int(beds)]
-    if baths:
-        filtered = [p for p in filtered if p['baths'] >= int(baths)]
-
-    return jsonify({"properties": filtered, "count": len(filtered)})
-
 @routes.route("/alerts")
 def serve_alerts():
     return render_template("alerts.html")
@@ -102,6 +63,101 @@ def terms():
 def privacy():
     return render_template("privacy.html")
 
+# Property APIs
+@routes.route("/api/properties", methods=["GET"])
+@jwt_required(optional=True)
+def api_properties():
+    try:
+        purpose = request.args.get('purpose')
+        location = request.args.get('location')
+        type = request.args.get('type')
+        price = request.args.get('price')
+        beds = request.args.get('beds')
+        baths = request.args.get('baths')
+        query = Property.query.filter_by(status="active")
+        if purpose:
+            query = query.filter_by(purpose=purpose.lower())
+        if location:
+            query = query.filter(Property.location.ilike(f"%{location}%"))
+        if type:
+            query = query.filter_by(property_type=type.lower())
+        if price:
+            query = query.filter(Property.price <= int(price))
+        if beds:
+            query = query.filter(Property.beds >= int(beds))
+        if baths:
+            query = query.filter(Property.baths >= int(baths))
+        properties = query.all()
+        return jsonify({
+            "properties": [{"id": p.id, "title": p.title, "price": p.price, "beds": p.beds, "baths": p.baths, "size": p.size, "purpose": p.purpose, "location": p.location, "type": p.property_type, "image_url": p.image_url, "lat": p.lat, "lng": p.lng} for p in properties],
+            "count": len(properties)
+        })
+    except Exception as e:
+        logging.error(f"Properties GET error: {str(e)}")
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+@routes.route("/api/properties", methods=["POST"])
+@jwt_required()
+def create_property():
+    try:
+        user_id = get_jwt_identity()
+        data = request.form
+        file = request.files.get('image')
+        image_url = upload(file)['url'] if file else None
+        property = Property(
+            user_id=user_id,
+            title=data["title"],
+            location=data["location"],
+            purpose=data["purpose"],
+            property_type=data["type"],
+            price=int(data["price"]),
+            beds=int(data["beds"]),
+            baths=int(data["baths"]),
+            size=int(data["size"]),
+            image_url=image_url,
+            lat=float(data.get("lat", 0)),  # Default to 0 if not provided
+            lng=float(data.get("lng", 0))
+        )
+        db.session.add(property)
+        db.session.commit()
+        return jsonify({"message": "Property listed successfully", "id": property.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"Property creation error: {str(e)}")
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+# Favorites
+@routes.route("/api/favorites", methods=["POST"])
+@jwt_required()
+def add_favorite():
+    try:
+        user_id = get_jwt_identity()
+        property_id = request.json.get("property_id")
+        if not Property.query.get(property_id):
+            return jsonify({"message": "Property not found"}), 404
+        favorite = Favorite(user_id=user_id, property_id=property_id)
+        db.session.add(favorite)
+        db.session.commit()
+        return jsonify({"message": "Added to favorites"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+@routes.route("/api/favorites", methods=["GET"])
+@jwt_required()
+def get_favorites():
+    try:
+        user_id = get_jwt_identity()
+        favorites = Favorite.query.filter_by(user_id=user_id).all()
+        properties = [Property.query.get(f.property_id) for f in favorites]
+        return jsonify({
+            "saved": [{"id": p.id, "title": p.title, "price": p.price, "image_url": p.image_url} for p in properties],
+            "count": len(properties)
+        })
+    except Exception as e:
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+# Evaluation
 @routes.route("/evaluation", methods=["POST"])
 def process_evaluation():
     try:
@@ -111,7 +167,7 @@ def process_evaluation():
             return jsonify({"message": "Missing required fields"}), 400
 
         user_id = get_jwt_identity() if 'Authorization' in request.headers else None
-        base_value = int(data['area']) * 2000
+        base_value = int(data['area']) * 2000  # Simplified logic
         estimated_value = f"€{base_value - 50000} - €{base_value + 50000}"
 
         evaluation = EvaluationRequest(
@@ -126,12 +182,12 @@ def process_evaluation():
         )
         db.session.add(evaluation)
         db.session.commit()
-
         return jsonify({"message": estimated_value}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
+# Alerts
 @routes.route("/alerts", methods=["POST"])
 def save_alerts():
     try:
@@ -153,23 +209,47 @@ def save_alerts():
         )
         db.session.add(alert)
         db.session.commit()
-
         return jsonify({"message": "Alerts saved successfully"}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
-@routes.route("/request-offer", methods=["POST"])
-@jwt_required(optional=True)
-def request_offer():
+@routes.route("/api/alerts", methods=["GET"])
+@jwt_required()
+def api_alerts():
     try:
-        data = request.json
-        required_fields = ['agency', 'name', 'date']
-        if not all(field in data for field in required_fields):
-            return jsonify({"message": "Missing required fields"}), 400
-
         user_id = get_jwt_identity()
-        print(f"Offer Request: User {user_id or 'Anonymous'}, Agency: {data['agency']}, Name: {data['name']}, Date: {data['date']}, Phone: {data.get('phone', '')}, Email: {data.get('email', '')}")
-        return jsonify({"message": "Offer request sent successfully"}), 200
+        alerts = AlertPreference.query.filter_by(user_id=user_id).all()
+        return jsonify({
+            "count": len(alerts),
+            "alerts": [{"purpose": a.purpose, "location": a.location, "min_price": a.min_price, "max_price": a.max_price} for a in alerts]
+        })
+    except Exception as e:
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+# Dashboard APIs
+@routes.route("/api/agency/properties")
+@jwt_required()
+def agency_properties():
+    try:
+        user_id = get_jwt_identity()
+        properties = Property.query.filter_by(user_id=user_id).all()
+        return jsonify({
+            "count": len(properties),
+            "properties": [{"id": p.id, "views": 150, "inquiries": 10} for p in properties]  # Placeholder stats
+        })
+    except Exception as e:
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+@routes.route("/api/user/properties")
+@jwt_required()
+def user_properties():
+    try:
+        user_id = get_jwt_identity()
+        properties = Property.query.filter_by(user_id=user_id).all()
+        return jsonify({
+            "count": len(properties),
+            "properties": [{"id": p.id, "title": p.title, "status": p.status, "price": p.price} for p in properties]
+        })
     except Exception as e:
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
