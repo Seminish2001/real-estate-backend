@@ -12,4 +12,4 @@ def signin():
 
 @views.route("/for-owners")
 def for_owners():
-    return render_template("for-owners.html")
+    return render_template("for-owners.html")  # Placeholder, create if needed
