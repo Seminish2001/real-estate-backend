@@ -667,21 +667,7 @@
           const authLink = document.getElementById('auth-link');
           authLink.innerHTML = `
             <a class="nav-link" href="/dashboard/${user.user_type.replace('/', '-').toLowerCase()}"><i class="fas fa-user"></i> ${user.name}</a>
-            <a class="nav-link" href="#" id="logout-link">Logout</a>
           `;
-          document.getElementById('logout-link').addEventListener('click', async (e) => {
-            e.preventDefault();
-            try {
-              await fetch('/logout', {
-                method: 'POST',
-                credentials: 'include'
-              });
-              window.location.reload(); // Refresh to reset header
-            } catch (error) {
-              console.error('Logout Error:', error);
-              alert('An error occurred during logout.');
-            }
-          });
         } else {
           console.log('Not logged in:', data.message);
         }
