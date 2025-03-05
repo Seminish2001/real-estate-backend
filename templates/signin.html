@@ -391,7 +391,9 @@
             <li class="nav-item"><a class="nav-link" href="/properties?purpose=rent">Rent</a></li>
             <li class="nav-item"><a class="nav-link" href="/sell">Sell</a></li>
             <li class="nav-item"><a class="nav-link" href="/market">Market Insights</a></li>
-            <li class="nav-item"><a class="nav-link active" href="/signin"><i class="fas fa-user"></i> Sign In</a></li>
+            <li class="nav-item" id="auth-link">
+              <a class="nav-link active" href="/signin"><i class="fas fa-user"></i> Sign In</a>
+            </li>
             <li class="nav-item"><a class="nav-link" href="/favorites"><i class="fas fa-heart"></i></a></li>
           </ul>
         </div>
@@ -513,6 +515,33 @@
       header.classList.toggle('scrolled', window.scrollY > 50);
     });
 
+    // Check if user is logged in and update header
+    async function checkLoginStatus() {
+      try {
+        const response = await fetch('/whoami', {
+          method: 'GET',
+          credentials: 'include'  // Send JWT cookies
+        });
+        const data = await response.json();
+        if (response.ok) {
+          const user = data.user;
+          const authLink = document.getElementById('auth-link');
+          authLink.innerHTML = `
+            <a class="nav-link" href="/dashboard/${user.user_type.replace('/', '-').toLowerCase()}"><i class="fas fa-user"></i> ${user.name}</a>
+          `;
+        } else {
+          console.log('Not logged in:', data.message);
+        }
+      } catch (error) {
+        console.error('Error checking login status:', error);
+      }
+    }
+
+    // Run on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      checkLoginStatus();
+    });
+
     // Tab Switching
     const tabs = document.querySelectorAll('.auth-tab');
     const contents = document.querySelectorAll('.auth-content');
@@ -542,9 +571,9 @@
           body: JSON.stringify({ email, password })
         });
         const data = await response.json();
-        console.log('Sign In Response:', data); // Debug log
+        console.log('Sign In Response:', data);
         if (response.ok) {
-          const userType = data.user.user_type.replace('/', '-').toLowerCase(); // e.g., "Buyer/Renter" -> "buyer-renter"
+          const userType = data.user.user_type.replace('/', '-').toLowerCase();
           window.location.href = `/dashboard/${userType}`;
         } else {
           alert(data.message);
@@ -570,9 +599,9 @@
           body: JSON.stringify({ name, email, password, user_type: userType })
         });
         const data = await response.json();
-        console.log('Sign Up Response:', data); // Debug log
+        console.log('Sign Up Response:', data);
         if (response.ok) {
-          const userTypeFormatted = userType.replace('/', '-').toLowerCase(); // e.g., "Buyer/Renter" -> "buyer-renter"
+          const userTypeFormatted = userType.replace('/', '-').toLowerCase();
           window.location.href = `/dashboard/${userTypeFormatted}`;
         } else {
           alert(data.message);
@@ -595,24 +624,7 @@
 
     // Google Sign-In/Sign-Up (Client-side, requires Google API setup)
     async function googleSignInOrUp(isSignUp = false) {
-      // This requires Google API client setup (e.g., gapi). Simplified for now.
       alert('Google Sign-In/Sign-Up requires additional client-side setup. Please configure Google API.');
-      // Example (needs Google API script):
-      /*
-      const token = await googleAuth(); // Hypothetical function
-      const response = await fetch('/auth/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ token })
-      });
-      const data = await response.json();
-      if (response.ok) {
-        window.location.href = `/dashboard/${data.user.user_type.toLowerCase()}`;
-      } else {
-        alert(data.message);
-      }
-      */
     }
 
     document.getElementById('google-signin').addEventListener('click', () => googleSignInOrUp(false));
