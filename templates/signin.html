@@ -18,16 +18,16 @@
   <!-- Custom CSS -->
   <style>
     :root {
-      --primary-color: #1a73e8; /* Vibrant blue for buttons */
-      --secondary-color: #2d3748; /* Deep slate for text */
-      --accent-color: #d4af37; /* Luxury gold for highlights */
-      --background-light: #f8f9fa; /* Soft off-white */
-      --background-dark: #1f2a44; /* Midnight blue for footer */
-      --text-dark: #2d3748;
+      --primary-color: #1a73e8; /* Vibrant, modern blue - MATCHES INDEX */
+      --secondary-color: #2d3748; /* Deep slate for elegance */
+      --accent-color: #00c4b4; /* Bright teal - MATCHES INDEX */
+      --background-light: #f9fafb; /* Crisp, airy white - MATCHES INDEX */
+      --background-dark: #1f2a44; /* Rich midnight blue */
+      --text-dark: #1f2a44; /* MATCHES INDEX */
       --text-light: #fff;
-      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
-      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.15);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.08); /* MATCHES INDEX */
+      --shadow-md: 0 6px 25px rgba(0, 0, 0, 0.12); /* MATCHES INDEX */
+      --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* MATCHES INDEX */
     }
 
     * {
@@ -112,7 +112,7 @@
 
     .navbar-nav .nav-link:hover,
     .navbar-nav .nav-link.active {
-      color: var(--accent-color);
+      color: var(--primary-color); /* MATCHES INDEX */
     }
 
     .navbar-nav .nav-link::after {
@@ -120,7 +120,7 @@
       position: absolute;
       width: 0;
       height: 2px;
-      background: var(--accent-color);
+      background: var(--primary-color); /* MATCHES INDEX */
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
