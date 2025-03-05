@@ -23,8 +23,8 @@ def signin():
 
         user = User.query.filter_by(email=data["email"]).first()
         if user and user.check_password(data["password"]):
-            access_token = create_access_token(identity=user.id)
-            refresh_token = create_refresh_token(identity=user.id)
+            access_token = create_access_token(identity=str(user.id))  # Convert to string
+            refresh_token = create_refresh_token(identity=str(user.id))  # Convert to string
             response = make_response(jsonify({
                 "message": "Signed in successfully",
                 "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type}
@@ -62,8 +62,8 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        access_token = create_access_token(identity=new_user.id)
-        refresh_token = create_refresh_token(identity=new_user.id)
+        access_token = create_access_token(identity=str(new_user.id))  # Convert to string
+        refresh_token = create_refresh_token(identity=str(new_user.id))  # Convert to string
         response = make_response(jsonify({
             "message": "Signed up successfully",
             "user": {"id": new_user.id, "name": new_user.name, "email": new_user.email, "user_type": new_user.user_type}
@@ -102,8 +102,8 @@ def google_auth():
             db.session.add(user)
             db.session.commit()
 
-        access_token = create_access_token(identity=user.id)
-        refresh_token = create_refresh_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))  # Convert to string
+        refresh_token = create_refresh_token(identity=str(user.id))  # Convert to string
         response = make_response(jsonify({
             "message": "Google auth successful",
             "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type}
@@ -136,8 +136,8 @@ def facebook_auth():
             db.session.add(user)
             db.session.commit()
 
-        access_token = create_access_token(identity=user.id)
-        refresh_token = create_refresh_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))  # Convert to string
+        refresh_token = create_refresh_token(identity=str(user.id))  # Convert to string
         response = make_response(jsonify({
             "message": "Facebook auth successful",
             "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type}
