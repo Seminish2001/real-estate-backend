@@ -399,7 +399,7 @@
       background: var(--background-dark);
       color: var(--text-light);
       padding: 80px 0 30px;
-      font-size = "";
+      font-size: 1rem;
     }
 
     .footer a {
@@ -443,7 +443,7 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul class="navbar-nav">
-            <li class="nav-item"><a class="nav-link active" href="/properties?purpose=buy">Buy</a></li>
+            <li class="nav-item"><a class="nav-link" href="/properties?purpose=buy">Buy</a></li>
             <li class="nav-item"><a class="nav-link" href="/properties?purpose=rent">Rent</a></li>
             <li class="nav-item"><a class="nav-link" href="/sell">Sell</a></li>
             <li class="nav-item"><a class="nav-link" href="/market">Market Insights</a></li>
@@ -515,11 +515,11 @@
         <!-- Listings Area -->
         <div class="col-md-9 listings-area">
           <div class="search-summary" data-aos="fade-up">
-            Showing <span>245 properties</span> in <span>Tirana</span>
+            Showing <span id="property-count">0</span> properties in <span id="search-location">All</span>
           </div>
 
           <div class="toolbar" data-aos="fade-up" data-aos-delay="200">
-            <select name="sort">
+            <select name="sort" id="sort-filter">
               <option>Sort by: Relevance</option>
               <option>Price: Low to High</option>
               <option>Price: High to Low</option>
@@ -533,50 +533,13 @@
 
           <!-- Grid View -->
           <div id="grid-view" class="row g-4 active" data-aos="fade-up" data-aos-delay="300">
-            <div class="col-md-4">
-              <div class="property-card">
-                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Tirana Penthouse" />
-                <div class="card-body">
-                  <span class="badge bg-success">New</span>
-                  <h5>Tirana Skyline Penthouse</h5>
-                  <p class="price">€450,000</p>
-                  <p class="details">3 Beds • 2 Baths • 1500 sqft</p>
-                  <a href="/property/tirana-penthouse" class="btn">View Details</a>
-                  <i class="fas fa-heart"></i>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="property-card">
-                <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vlora Villa" />
-                <div class="card-body">
-                  <h5>Vlora Coastal Villa</h5>
-                  <p class="price">€780,000</p>
-                  <p class="details">4 Beds • 3 Baths • 2200 sqft</p>
-                  <a href="/property/vlora-villa" class="btn">View Details</a>
-                  <i class="fas fa-heart"></i>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="property-card">
-                <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Saranda Apartment" />
-                <div class="card-body">
-                  <span class="badge bg-info">Open House</span>
-                  <h5>Saranda Seafront Apartment</h5>
-                  <p class="price">€220,000</p>
-                  <p class="details">2 Beds • 1 Bath • 900 sqft</p>
-                  <a href="/property/saranda-apartment" class="btn">View Details</a>
-                  <i class="fas fa-heart"></i>
-                </div>
-              </div>
-            </div>
+            <!-- Properties will be dynamically inserted here -->
           </div>
 
           <!-- Map View -->
           <div id="map-view"></div>
 
-          <!-- Pagination -->
+          <!-- Pagination (simplified, dynamic pagination can be added later) -->
           <div class="pagination" data-aos="fade-up" data-aos-delay="400">
             <a href="#">1</a>
             <a href="#" class="active">2</a>
@@ -637,6 +600,7 @@
       const mapView = document.getElementById('map-view');
       const gridBtn = document.getElementById('grid-view-btn');
       const mapBtn = document.getElementById('map-view-btn');
+      let map, markers;
 
       gridBtn.addEventListener('click', () => {
         gridView.classList.add('active');
@@ -662,17 +626,22 @@
 
       // Initialize Leaflet Map
       let mapInitialized = false;
-      function initMap() {
+      function initMap(properties = []) {
         if (!mapInitialized) {
-          const map = L.map('map-view').setView([41.3275, 19.8187], 10);
+          map = L.map('map-view').setView([41.3275, 19.8187], 10);
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           }).addTo(map);
-          const markers = L.markerClusterGroup();
-          markers.addLayer(L.marker([41.3275, 19.8187]).bindPopup('Tirana Penthouse - €450,000'));
+          markers = L.markerClusterGroup();
           map.addLayer(markers);
           mapInitialized = true;
         }
+        markers.clearLayers();
+        properties.forEach(prop => {
+          if (prop.lat && prop.lng) {
+            markers.addLayer(L.marker([prop.lat, prop.lng]).bindPopup(`${prop.title} - €${prop.price}`));
+          }
+        });
       }
 
       // Autocomplete for location filter
@@ -701,6 +670,81 @@
         limit: 10
       });
 
+      // Fetch and display properties
+      function fetchProperties() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const location = document.getElementById('location-filter').value || urlParams.get('location');
+        const purpose = document.getElementById('purpose-filter').value;
+        const type = document.querySelector('select[name="type"]').value;
+        const maxPrice = document.getElementById('max-price').value;
+        const beds = document.querySelector('select[name="beds"]').value;
+        const baths = document.querySelector('select[name="baths"]').value;
+        const sort = document.getElementById('sort-filter').value;
+
+        let query = '/api/properties?';
+        if (location) query += `location=${encodeURIComponent(location)}&`;
+        if (purpose) query += `purpose=${encodeURIComponent(purpose)}&`;
+        if (type) query += `type=${encodeURIComponent(type)}&`;
+        if (maxPrice) query += `price=${encodeURIComponent(maxPrice)}&`;
+        if (beds) query += `beds=${encodeURIComponent(beds)}&`;
+        if (baths) query += `baths=${encodeURIComponent(baths)}`;
+
+        fetch(query)
+          .then(response => response.json())
+          .then(data => {
+            const gridView = document.getElementById('grid-view');
+            gridView.innerHTML = ''; // Clear existing cards
+            let properties = data.properties;
+
+            // Apply client-side sorting
+            if (sort === 'Price: Low to High') {
+              properties.sort((a, b) => a.price - b.price);
+            } else if (sort === 'Price: High to Low') {
+              properties.sort((a, b) => b.price - a.price);
+            } else if (sort === 'Newest') {
+              properties.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            }
+
+            properties.forEach(prop => {
+              const card = `
+                <div class="col-md-4">
+                  <div class="property-card">
+                    <img src="${prop.image_url || 'https://via.placeholder.com/600x220'}" alt="${prop.title}" />
+                    <div class="card-body">
+                      <span class="badge bg-success">${prop.status === 'active' && new Date(prop.created_at) > new Date(Date.now() - 7*24*60*60*1000) ? 'New' : ''}</span>
+                      <h5>${prop.title}</h5>
+                      <p class="price">€${prop.price.toLocaleString()}</p>
+                      <p class="details">${prop.beds} Beds • ${prop.baths} Baths • ${prop.size} sqft</p>
+                      <a href="/property/${prop.id}" class="btn">View Details</a>
+                      <i class="fas fa-heart"></i>
+                    </div>
+                  </div>
+                </div>`;
+              gridView.insertAdjacentHTML('beforeend', card);
+            });
+
+            // Update summary
+            document.getElementById('property-count').textContent = data.count;
+            document.getElementById('search-location').textContent = location || 'All';
+
+            // Update map if active
+            if (mapView.classList.contains('active')) {
+              initMap(properties);
+            }
+          })
+          .catch(error => console.error('Error fetching properties:', error));
+      }
+
+      // Initial fetch and prefill from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const location = urlParams.get('location');
+      const purpose = urlParams.get('purpose');
+      const maxPrice = urlParams.get('maxPrice');
+      if (location) document.getElementById('location-filter').value = decodeURIComponent(location);
+      if (purpose) document.getElementById('purpose-filter').value = decodeURIComponent(purpose);
+      if (maxPrice) document.getElementById('max-price').value = decodeURIComponent(maxPrice);
+      fetchProperties();
+
       // Apply filters
       document.querySelector('.btn-apply').addEventListener('click', () => {
         const location = document.getElementById('location-filter').value;
@@ -709,32 +753,21 @@
         const maxPrice = document.getElementById('max-price').value;
         const beds = document.querySelector('select[name="beds"]').value;
         const baths = document.querySelector('select[name="baths"]').value;
-        const query = `/properties.html?location=${encodeURIComponent(location)}&purpose=${purpose}&type=${type}&maxPrice=${encodeURIComponent(maxPrice)}&beds=${beds}&baths=${baths}`;
-        window.location.href = query;
+        const query = `/properties?location=${encodeURIComponent(location)}&purpose=${encodeURIComponent(purpose)}&type=${encodeURIComponent(type)}&maxPrice=${encodeURIComponent(maxPrice)}&beds=${encodeURIComponent(beds)}&baths=${encodeURIComponent(baths)}`;
+        window.history.pushState({}, document.title, query);
+        fetchProperties();
       });
 
-      // Pre-select filters from URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const location = urlParams.get('location');
-      const purpose = urlParams.get('purpose');
-      const maxPrice = urlParams.get('maxPrice');
-      if (location) {
-        document.getElementById('location-filter').value = decodeURIComponent(location);
-      }
-      if (purpose) {
-        document.getElementById('purpose-filter').value = purpose.toLowerCase();
-      }
-      if (maxPrice) {
-        document.getElementById('max-price').value = decodeURIComponent(maxPrice);
-      }
-      const buyLink = document.querySelector('a[href="/properties?purpose=buy"]');
-      const rentLink = document.querySelector('a[href="/properties?purpose=rent"]');
+      // Sort filter change
+      document.getElementById('sort-filter').addEventListener('change', fetchProperties);
+
+      // Pre-select Purpose from URL
       if (purpose === 'buy') {
-        buyLink.classList.add('active');
-        rentLink.classList.remove('active');
+        document.querySelector('a[href="/properties?purpose=buy"]').classList.add('active');
+        document.querySelector('a[href="/properties?purpose=rent"]').classList.remove('active');
       } else if (purpose === 'rent') {
-        rentLink.classList.add('active');
-        buyLink.classList.remove('active');
+        document.querySelector('a[href="/properties?purpose=rent"]').classList.add('active');
+        document.querySelector('a[href="/properties?purpose=buy"]').classList.remove('active');
       }
     });
   </script>
