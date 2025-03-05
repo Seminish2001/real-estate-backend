@@ -175,3 +175,19 @@ def update_user_type():
         db.session.rollback()
         logging.error(f"Update user type error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+# Get Current User Info
+@auth_routes.route("/whoami", methods=["GET"])
+@jwt_required()
+def whoami():
+    try:
+        user_id = get_jwt_identity()  # This is a string now, thanks to our fix
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"message": "User not found"}), 404
+        return jsonify({
+            "message": "User info retrieved",
+            "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type}
+        }), 200
+    except Exception as e:
+        logging.error(f"Whoami error: {str(e)}")
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
