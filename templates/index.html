@@ -169,7 +169,7 @@
     .search-bar {
       background: rgba(255, 255, 255, 0.95);
       border-radius: 50px;
-      padding: 10px;
+      padding: 0; /* Remove padding to align button at edge */
       display: flex;
       align-items: center;
       box-shadow: var(--shadow-md);
@@ -210,7 +210,7 @@
       color: var(--text-light);
       font-weight: 600;
       transition: var(--transition);
-      margin-left: 0; /* Ensure no gap between input and button */
+      margin: 0; /* Ensure no gap */
     }
 
     .search-bar button:hover {
@@ -656,7 +656,7 @@
     document.getElementById('search-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const location = document.getElementById('location').value;
-      window.location.href = `/properties.html?location=${encodeURIComponent(location)}`;
+      window.location.href = `/properties?location=${encodeURIComponent(location)}`; // Redirect to properties.html with query
     });
 
     // Autocomplete for search
