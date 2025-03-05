@@ -169,7 +169,7 @@
     .search-bar {
       background: rgba(255, 255, 255, 0.95);
       border-radius: 50px;
-      padding: 0; /* Remove padding to align button at edge */
+      padding: 0;
       display: flex;
       align-items: center;
       box-shadow: var(--shadow-md);
@@ -194,7 +194,7 @@
       flex: 1;
       outline: none;
       color: var(--text-dark);
-      border-radius: 50px 0 0 50px; /* Rounded left edge */
+      border-radius: 50px 0 0 50px;
     }
 
     .search-bar input::placeholder {
@@ -204,13 +204,13 @@
     .search-bar button {
       background: var(--primary-color);
       border: none;
-      border-radius: 0 50px 50px 0; /* Rounded right edge only */
+      border-radius: 0 50px 50px 0;
       padding: 15px 40px;
       font-size: 1.2rem;
       color: var(--text-light);
       font-weight: 600;
       transition: var(--transition);
-      margin: 0; /* Ensure no gap */
+      margin: 0;
     }
 
     .search-bar button:hover {
@@ -507,7 +507,9 @@
             <li class="nav-item"><a class="nav-link" href="/properties?purpose=rent">Rent</a></li>
             <li class="nav-item"><a class="nav-link" href="/sell">Sell</a></li>
             <li class="nav-item"><a class="nav-link" href="/market">Market Insights</a></li>
-            <li class="nav-item"><a class="nav-link" href="/signin"><i class="fas fa-user"></i> Sign In</a></li>
+            <li class="nav-item" id="auth-link">
+              <a class="nav-link" href="/signin"><i class="fas fa-user"></i> Sign In</a>
+            </li>
             <li class="nav-item"><a class="nav-link" href="/favorites"><i class="fas fa-heart"></i></a></li>
           </ul>
         </div>
@@ -652,11 +654,52 @@
       header.classList.toggle('scrolled', window.scrollY > 50);
     });
 
+    // Check if user is logged in and update header
+    async function checkLoginStatus() {
+      try {
+        const response = await fetch('/whoami', {
+          method: 'GET',
+          credentials: 'include'  // Send JWT cookies
+        });
+        const data = await response.json();
+        if (response.ok) {
+          const user = data.user;
+          const authLink = document.getElementById('auth-link');
+          authLink.innerHTML = `
+            <a class="nav-link" href="/dashboard/${user.user_type.replace('/', '-').toLowerCase()}"><i class="fas fa-user"></i> ${user.name}</a>
+            <a class="nav-link" href="#" id="logout-link">Logout</a>
+          `;
+          document.getElementById('logout-link').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+              await fetch('/logout', {
+                method: 'POST',
+                credentials: 'include'
+              });
+              window.location.reload(); // Refresh to reset header
+            } catch (error) {
+              console.error('Logout Error:', error);
+              alert('An error occurred during logout.');
+            }
+          });
+        } else {
+          console.log('Not logged in:', data.message);
+        }
+      } catch (error) {
+        console.error('Error checking login status:', error);
+      }
+    }
+
+    // Run on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      checkLoginStatus();
+    });
+
     // Search form submission
     document.getElementById('search-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const location = document.getElementById('location').value;
-      window.location.href = `/properties?location=${encodeURIComponent(location)}`; // Redirect to properties.html with query
+      window.location.href = `/properties?location=${encodeURIComponent(location)}`;
     });
 
     // Autocomplete for search
