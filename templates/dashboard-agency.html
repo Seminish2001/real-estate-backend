@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Agency Dashboard - Manage your listings with Albania Properties." />
-  <meta name="keywords" content="dashboard, agency, real estate, Albania, listings" />
+  <meta name="description" content="Agency Dashboard - Manage your real estate business with advanced tools." />
+  <meta name="keywords" content="dashboard, agency, real estate, listings, agents, membership" />
   <meta name="author" content="Albania Properties" />
   <title>Agency Dashboard | Albania Properties</title>
   <!-- Bootstrap CSS -->
@@ -15,6 +15,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <!-- AOS Animation Library -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Custom CSS -->
   <style>
     :root {
@@ -29,13 +31,11 @@
       --shadow-md: 0 6px 25px rgba(0, 0, 0, 0.12);
       --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
       background: var(--background-light);
@@ -43,35 +43,21 @@
       line-height: 1.6;
       overflow-x: hidden;
     }
-
-    h1, h2, h3, h4 {
-      font-weight: 700;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-      transition: var(--transition);
-    }
-
-    /* Header */
     header {
       position: fixed;
       top: 0;
       width: 100%;
-      z-index: 1000;
+      z-index: 1100;
       background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(12px);
-      padding: 20px 0;
+      padding: 15px 0;
       box-shadow: var(--shadow-sm);
       transition: padding 0.3s ease, background 0.3s ease;
     }
-
     header.scrolled {
-      padding: 10px 0;
+      padding: 8px 0;
       background: rgba(255, 255, 255, 1);
     }
-
     .navbar-brand {
       font-size: 1.8rem;
       color: var(--text-dark);
@@ -79,13 +65,11 @@
       align-items: center;
       font-weight: 600;
     }
-
     .navbar-brand i {
       margin-right: 12px;
       color: var(--primary-color);
       font-size: 1.4rem;
     }
-
     .navbar-nav .nav-link {
       color: var(--text-dark);
       font-size: 1.1rem;
@@ -95,12 +79,10 @@
       padding-bottom: 6px;
       cursor: pointer;
     }
-
     .navbar-nav .nav-link:hover,
     .navbar-nav .nav-link.active {
       color: var(--primary-color);
     }
-
     .navbar-nav .nav-link::after {
       content: '';
       position: absolute;
@@ -112,76 +94,32 @@
       transform: translateX(-50%);
       transition: width 0.3s ease;
     }
-
     .navbar-nav .nav-link:hover::after,
     .navbar-nav .nav-link.active::after {
       width: 80%;
     }
-
-    /* Dashboard Content */
     .dashboard-section {
-      padding: 120px 0 80px;
-      min-height: 100vh;
+      padding: 100px 20px 80px;
+      margin-top: 70px;
     }
-
-    .welcome-card {
-      background: var(--primary-color);
-      color: var(--text-light);
-      border-radius: 16px;
-      padding: 40px;
-      margin-bottom: 40px;
-      box-shadow: var(--shadow-md);
-    }
-
-    .welcome-card h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-
-    .welcome-card p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-    }
-
-    .dashboard-card {
-      background: #fff;
+    .card-custom {
       border-radius: 16px;
       box-shadow: var(--shadow-sm);
-      padding: 25px;
       transition: var(--transition);
       margin-bottom: 30px;
     }
-
-    .dashboard-card:hover {
-      transform: translateY(-10px);
+    .card-custom:hover {
+      transform: translateY(-5px);
       box-shadow: var(--shadow-md);
     }
-
-    .dashboard-card h3 {
-      font-size: 1.6rem;
-      color: var(--text-dark);
-      margin-bottom: 15px;
-    }
-
-    .dashboard-card p {
-      font-size: 1rem;
-      color: #718096;
-    }
-
-    .dashboard-card .btn {
-      background: var(--accent-color);
+    .card-custom .card-header {
+      background: var(--primary-color);
       color: var(--text-light);
-      padding: 10px 20px;
-      border-radius: 6px;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      font-size: 1.4rem;
       font-weight: 600;
-      transition: var(--transition);
     }
-
-    .dashboard-card .btn:hover {
-      background: #00a89d;
-      transform: scale(1.05);
-    }
-
     .stats-box {
       background: #f1f5f9;
       border-radius: 12px;
@@ -189,53 +127,45 @@
       text-align: center;
       margin-bottom: 15px;
     }
-
     .stats-box h4 {
       font-size: 1.2rem;
       color: var(--primary-color);
       margin-bottom: 5px;
     }
-
     .stats-box p {
       font-size: 0.9rem;
       color: #718096;
     }
-
-    /* Footer */
+    .nav-tabs .nav-link {
+      border: none;
+      border-bottom: 2px solid transparent;
+      transition: border-bottom 0.3s ease;
+    }
+    .nav-tabs .nav-link.active {
+      border-bottom: 2px solid var(--primary-color);
+      font-weight: 600;
+    }
     .footer {
       background: var(--background-dark);
       color: var(--text-light);
       padding: 80px 0 30px;
       font-size: 1rem;
     }
-
     .footer a {
       color: #a0aec0;
       margin: 0 20px;
       transition: var(--transition);
     }
-
     .footer a:hover {
       color: var(--primary-color);
     }
-
     .social-icons a {
       font-size: 1.5rem;
       margin: 0 15px;
       color: #a0aec0;
     }
-
     .social-icons a:hover {
       color: var(--accent-color);
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    [data-aos="fade-up"] {
-      animation: fadeInUp 0.8s ease-out forwards;
     }
   </style>
 </head>
@@ -262,67 +192,253 @@
     </nav>
   </header>
 
-  <!-- Dashboard Section -->
+  <!-- Main Dashboard Section -->
   <section class="dashboard-section">
     <div class="container">
-      <div class="welcome-card" data-aos="fade-up">
-        <h1>Welcome, {{ user.name }}!</h1>
-        <p>Your Agency Command Center - Oversee your real estate business.</p>
+      <!-- Tabs Navigation -->
+      <ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">Overview</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="listings-tab" data-bs-toggle="tab" data-bs-target="#listings" type="button" role="tab">Listings</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="agents-tab" data-bs-toggle="tab" data-bs-target="#agents" type="button" role="tab">Agents</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab">Reports</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="membership-tab" data-bs-toggle="tab" data-bs-target="#membership" type="button" role="tab">Membership</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">Profile</button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="dashboardTabsContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+          <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+              <div class="card card-custom">
+                <div class="card-header">Agency Listings</div>
+                <div class="card-body">
+                  <p><span id="agency-property-count">15</span> active listings this month.</p>
+                  <div class="stats-box">
+                    <h4>Views: <span id="view-count">150</span></h4>
+                    <p>Total views this month</p>
+                  </div>
+                  <div class="stats-box">
+                    <h4>Inquiries: <span id="inquiry-count">10</span></h4>
+                    <p>New leads generated</p>
+                  </div>
+                  <a href="#" class="btn btn-primary" onclick="loadAgencyProperties()">Manage Listings</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+              <div class="card card-custom">
+                <div class="card-header">Client Management</div>
+                <div class="card-body">
+                  <p><span id="request-count">5</span> new client inquiries.</p>
+                  <div id="requests-list" class="mt-3">
+                    <!-- Dynamic requests will load here -->
+                  </div>
+                  <a href="#" class="btn btn-primary" onclick="loadRequests()">View Requests</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+              <div class="card card-custom">
+                <div class="card-header">Performance Analytics</div>
+                <div class="card-body">
+                  <div class="stats-box">
+                    <h4>Conversion Rate: <span id="conversion-rate">6.7%</span></h4>
+                    <p>Inquiries to offers</p>
+                  </div>
+                  <a href="#" class="btn btn-primary" onclick="loadAnalytics()">See Insights</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Listings Tab -->
+        <div class="tab-pane fade" id="listings" role="tabpanel">
+          <div class="card card-custom" data-aos="fade-up">
+            <div class="card-header">Manage Listings</div>
+            <div class="card-body">
+              <p>Here you can add, edit, and remove property listings.</p>
+              <a href="/sell" class="btn btn-success mb-3">Add New Listing</a>
+              <!-- Listings Table -->
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Property</th>
+                      <th>Status</th>
+                      <th>Views</th>
+                      <th>Inquiries</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="listings-table">
+                    <!-- Dynamic listing rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agents Tab -->
+        <div class="tab-pane fade" id="agents" role="tabpanel">
+          <div class="card card-custom" data-aos="fade-up">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span>Manage Agents</span>
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAgentModal"><i class="fas fa-user-plus"></i> Add Agent</button>
+            </div>
+            <div class="card-body">
+              <p>View and manage agents connected to your agency account.</p>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Agent Name</th>
+                      <th>Email</th>
+                      <th>Photo</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="agents-table">
+                    <!-- Dynamic agents list -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div class="tab-pane fade" id="reports" role="tabpanel">
+          <div class="card card-custom" data-aos="fade-up">
+            <div class="card-header">Advanced Reports</div>
+            <div class="card-body">
+              <p>Analyze detailed performance metrics and trends.</p>
+              <!-- Chart Container -->
+              <canvas id="analyticsChart" height="100"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Membership Tab -->
+        <div class="tab-pane fade" id="membership" role="tabpanel">
+          <div class="card card-custom" data-aos="fade-up">
+            <div class="card-header">Membership Management</div>
+            <div class="card-body">
+              <p>Upgrade your agency's membership to access premium features such as enhanced listings and personalized marketing.</p>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="card card-custom">
+                    <div class="card-header">Basic</div>
+                    <div class="card-body">
+                      <p>Standard listings and limited features.</p>
+                      <button class="btn btn-outline-primary">Current Plan</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card card-custom">
+                    <div class="card-header">Premium</div>
+                    <div class="card-body">
+                      <p>Premium listings, advanced reports, and enhanced visibility.</p>
+                      <button class="btn btn-primary">Upgrade to Premium</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card card-custom">
+                    <div class="card-header">Enterprise</div>
+                    <div class="card-body">
+                      <p>All features including personalized marketing and dedicated support.</p>
+                      <button class="btn btn-primary">Contact Sales</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Tab -->
+        <div class="tab-pane fade" id="profile" role="tabpanel">
+          <div class="card card-custom" data-aos="fade-up">
+            <div class="card-header">Agency Profile</div>
+            <div class="card-body">
+              <p>Update your agency's profile information and upload a profile photo.</p>
+              <form id="agencyProfileForm">
+                <div class="mb-3">
+                  <label for="agencyName" class="form-label">Agency Name</label>
+                  <input type="text" class="form-control" id="agencyName" placeholder="Enter agency name" value="{{ user.agency_name }}">
+                </div>
+                <div class="mb-3">
+                  <label for="agencyEmail" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="agencyEmail" placeholder="Enter email" value="{{ user.email }}">
+                </div>
+                <div class="mb-3">
+                  <label for="agencyPhoto" class="form-label">Profile Photo</label>
+                  <input type="file" class="form-control" id="agencyPhoto">
+                </div>
+                <button type="submit" class="btn btn-success">Update Profile</button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="row g-4">
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-          <div class="dashboard-card">
-            <h3>Agency Listings</h3>
-            <p><span id="agency-property-count">15</span> active listings this month.</p>
-            <div class="stats-box">
-              <h4>Views: <span id="view-count">150</span></h4>
-              <p>Total views this month</p>
-            </div>
-            <div class="stats-box">
-              <h4>Inquiries: <span id="inquiry-count">10</span></h4>
-              <p>New leads generated</p>
-            </div>
-            <a href="#" class="btn" onclick="loadAgencyProperties()">Manage Listings</a>
-          </div>
-        </div>
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-          <div class="dashboard-card">
-            <h3>Client Management</h3>
-            <p><span id="request-count">5</span> new client inquiries.</p>
-            <div id="requests-list" class="mt-3">
-              <!-- Dynamic requests will load here -->
-            </div>
-            <a href="#" class="btn" onclick="loadRequests()">View Requests</a>
-          </div>
-        </div>
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
-          <div class="dashboard-card">
-            <h3>Performance Analytics</h3>
-            <p>Track your listing performance.</p>
-            <div class="stats-box">
-              <h4>Conversion Rate: <span id="conversion-rate">6.7%</span></h4>
-              <p>Inquiries to offers</p>
-            </div>
-            <a href="#" class="btn" onclick="loadAnalytics()">See Insights</a>
-          </div>
-        </div>
-      </div>
+    </div>
+  </section>
 
-      <div class="row g-4 mt-4">
-        <div class="col-md-12" data-aos="fade-up" data-aos-delay="500">
-          <div class="dashboard-card text-center">
-            <h3>Quick Actions</h3>
-            <div class="d-flex justify-content-center gap-3">
-              <a href="/sell" class="btn">Add Listing</a>
-              <a href="/market" class="btn">View Market Insights</a>
-              <a href="#" class="btn">Invite Team</a>
+  <!-- Add Agent Modal -->
+  <div class="modal fade" id="addAgentModal" tabindex="-1" aria-labelledby="addAgentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addAgentModalLabel">Add New Agent</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addAgentForm">
+            <div class="mb-3">
+              <label for="agentName" class="form-label">Agent Name</label>
+              <input type="text" class="form-control" id="agentName" placeholder="Enter agent's name" required>
             </div>
-          </div>
+            <div class="mb-3">
+              <label for="agentEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="agentEmail" placeholder="Enter agent's email" required>
+            </div>
+            <div class="mb-3">
+              <label for="agentPhoto" class="form-label">Agent Photo</label>
+              <input type="file" class="form-control" id="agentPhoto">
+            </div>
+            <div class="mb-3">
+              <label for="agentRole" class="form-label">Role</label>
+              <select class="form-select" id="agentRole" required>
+                <option value="">Select Role</option>
+                <option value="agent">Agent</option>
+                <option value="manager">Manager</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Agent Account</button>
+          </form>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
   <!-- Footer -->
   <footer class="footer">
@@ -351,33 +467,24 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- Bootstrap JS and AOS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    // Initialize AOS animations
     AOS.init({ duration: 1000, once: true });
-
-    // Sticky header
     window.addEventListener('scroll', () => {
       const header = document.querySelector('header');
       header.classList.toggle('scrolled', window.scrollY > 50);
     });
-
-    // Logout
     document.getElementById('logout-btn').addEventListener('click', async () => {
       try {
         const response = await fetch('/auth/logout', { method: 'POST' });
-        if (response.ok) {
-          window.location.href = '/';
-        }
-      } catch (error) {
-        console.error('Logout Error:', error);
-      }
+        if (response.ok) { window.location.href = '/'; }
+      } catch (error) { console.error('Logout Error:', error); }
     });
 
-    // Load Dynamic Data
     async function loadAgencyProperties() {
+      // Fetch and update listings count and stats
       const response = await fetch('/api/agency/properties', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } });
       const data = await response.json();
       document.getElementById('agency-property-count').textContent = data.count;
@@ -402,14 +509,92 @@
       const response = await fetch('/api/analytics', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } });
       const data = await response.json();
       document.getElementById('conversion-rate').textContent = data.conversion_rate;
+
+      // Load chart data for advanced reports
+      const ctx = document.getElementById('analyticsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.chart.labels,
+          datasets: [{
+            label: 'Monthly Views',
+            data: data.chart.views,
+            fill: false,
+            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim(),
+            tension: 0.1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: true } }
+        }
+      });
     }
 
     async function respondRequest(requestId) { console.log(`Respond to request ${requestId}`); }
 
-    // Initial Data Load
+    // Add Agent Form submission
+    document.getElementById('addAgentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const response = await fetch('/api/agents/add', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+        body: formData
+      });
+      if (response.ok) {
+        // Optionally refresh agents list and close modal
+        loadAgents();
+        var addAgentModal = bootstrap.Modal.getInstance(document.getElementById('addAgentModal'));
+        addAgentModal.hide();
+      }
+    });
+
+    async function loadAgents() {
+      const response = await fetch('/api/agents', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } });
+      const data = await response.json();
+      const agentsTable = document.getElementById('agents-table');
+      agentsTable.innerHTML = data.agents.map(agent => `
+        <tr>
+          <td>${agent.name}</td>
+          <td>${agent.email}</td>
+          <td><img src="${agent.photo}" alt="Agent Photo" style="width:40px;height:40px;border-radius:50%;"></td>
+          <td>${agent.status}</td>
+          <td>
+            <button class="btn btn-sm btn-warning" onclick="editAgent(${agent.id})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteAgent(${agent.id})">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function editAgent(agentId) {
+      // Implement agent edit functionality
+      console.log(`Edit agent ${agentId}`);
+    }
+
+    async function deleteAgent(agentId) {
+      // Implement agent delete functionality
+      console.log(`Delete agent ${agentId}`);
+    }
+
+    // Update Agency Profile Form submission
+    document.getElementById('agencyProfileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const response = await fetch('/api/agency/profile', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+        body: formData
+      });
+      if (response.ok) { alert('Profile updated successfully!'); }
+    });
+
+    // Initial Data Loads
     loadAgencyProperties();
     loadRequests();
     loadAnalytics();
+    loadAgents();
   </script>
 </body>
 </html>
