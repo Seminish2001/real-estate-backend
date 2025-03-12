@@ -121,15 +121,12 @@
 
     /* Hero Section */
     .hero-section {
-      position: relative;
-      height: 100vh;
+      height: 80vh;
       background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      position: relative;
       display: flex;
       align-items: center;
-      justify-content: center;
       color: var(--text-light);
-      text-align: center;
-      overflow: hidden;
     }
 
     .hero-overlay {
@@ -145,175 +142,58 @@
     .hero-content {
       position: relative;
       z-index: 2;
-      max-width: 1200px;
-      padding: 0 20px;
+      padding-top: 120px; /* Account for fixed header */
     }
 
-    .hero-content h1 {
-      font-size: 5rem;
-      line-height: 1.1;
-      margin-bottom: 25px;
-      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-      animation: fadeInUp 1s ease-out;
-    }
-
-    .hero-content p {
-      font-size: 1.5rem;
-      font-weight: 300;
-      margin-bottom: 40px;
-      animation: fadeInUp 1s ease-out 0.3s forwards;
-      opacity: 0;
-    }
-
-    /* Search Bar */
-    .search-bar {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 50px;
-      padding: 0;
-      display: flex;
-      align-items: center;
+    .search-card {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 16px;
       box-shadow: var(--shadow-md);
-      max-width: 600px;
-      margin: 0 auto;
-      transition: var(--transition);
-      animation: fadeInUp 1s ease-out 0.6s forwards;
-      opacity: 0;
-      position: relative;
     }
 
-    .search-bar:hover {
-      transform: scale(1.02);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    }
-
-    .search-bar input {
-      border: none;
-      background: transparent;
-      font-size: 1.2rem;
-      padding: 15px 25px;
-      flex: 1;
-      outline: none;
+    .search-card .nav-pills .nav-link {
       color: var(--text-dark);
-      border-radius: 50px 0 0 50px;
+      padding: 10px 20px;
+      font-weight: 600;
     }
 
-    .search-bar input::placeholder {
-      color: #a0aec0;
-    }
-
-    .search-bar button {
+    .search-card .nav-pills .nav-link.active {
       background: var(--primary-color);
-      border: none;
-      border-radius: 0 50px 50px 0;
-      padding: 15px 40px;
-      font-size: 1.2rem;
       color: var(--text-light);
+    }
+
+    .search-card .btn {
+      background: var(--primary-color);
+      color: var(--text-light);
+      border-radius: 8px;
       font-weight: 600;
       transition: var(--transition);
-      margin: 0;
     }
 
-    .search-bar button:hover {
+    .search-card .btn:hover {
       background: #1557b0;
-      transform: scale(1.05);
-    }
-
-    /* Typeahead Suggestion Styles */
-    .tt-menu {
-      position: absolute;
-      top: 100%;
-      left: 25px;
-      right: 25px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-      border: 1px solid #e2e8f0;
-      max-height: 300px;
-      overflow-y: auto;
-      z-index: 1000;
-      margin-top: 5px;
-    }
-
-    .tt-suggestion {
-      padding: 10px 20px;
-      font-size: 1.1rem;
-      color: var(--text-dark);
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-
-    .tt-suggestion:hover,
-    .tt-suggestion.tt-cursor {
-      background: #f1f5f9;
-    }
-
-    .tt-highlight {
-      color: var(--primary-color);
-      font-weight: 600;
-    }
-
-    .tt-empty {
-      padding: 10px 20px;
-      font-size: 1.1rem;
-      color: #718096;
     }
 
     /* Featured Listings */
     .featured-listings {
-      padding: 100px 0;
-      background: var(--background-light);
-      position: relative;
+      padding: 80px 0;
     }
 
     .section-title {
-      text-align: center;
-      font-size: 3rem;
+      font-size: 2.5rem;
       color: var(--text-dark);
-      margin-bottom: 60px;
       position: relative;
     }
 
     .section-title::after {
       content: '';
-      width: 80px;
+      width: 60px;
       height: 4px;
       background: var(--accent-color);
       position: absolute;
-      bottom: -15px;
+      bottom: -10px;
       left: 50%;
       transform: translateX(-50%);
-    }
-
-    .filter-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 40px;
-      background: #fff;
-      padding: 15px 25px;
-      border-radius: 10px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .filter-bar select,
-    .filter-bar button {
-      padding: 12px 20px;
-      border-radius: 8px;
-      border: none;
-      font-size: 1rem;
-      background: #f1f5f9;
-      color: var(--text-dark);
-      cursor: pointer;
-    }
-
-    .filter-bar button {
-      background: var(--accent-color);
-      color: var(--text-light);
-      transition: var(--transition);
-    }
-
-    .filter-bar button:hover {
-      background: #00a89d;
     }
 
     .property-card {
@@ -327,56 +207,56 @@
     }
 
     .property-card:hover {
-      transform: translateY(-15px);
+      transform: translateY(-10px);
       box-shadow: var(--shadow-md);
     }
 
     .property-card img {
-      height: 250px;
+      height: 220px;
       object-fit: cover;
       transition: transform 0.6s ease;
     }
 
     .property-card:hover img {
-      transform: scale(1.08);
+      transform: scale(1.05);
     }
 
     .property-card .card-body {
-      padding: 25px;
+      padding: 20px;
     }
 
     .property-card .badge {
       position: absolute;
-      top: 20px;
-      left: 20px;
+      top: 15px;
+      left: 15px;
       font-size: 0.9rem;
-      padding: 8px 15px;
+      padding: 6px 12px;
       border-radius: 20px;
     }
 
     .property-card h5 {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       color: var(--text-dark);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .property-card .price {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       color: var(--primary-color);
       font-weight: 600;
     }
 
     .property-card .details {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #718096;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
     .property-card .btn {
       background: var(--primary-color);
       border: none;
       border-radius: 8px;
-      padding: 12px 30px;
+      padding: 10px 25px;
       color: var(--text-light);
       font-weight: 600;
       transition: var(--transition);
@@ -389,9 +269,9 @@
 
     .property-card .fa-heart {
       position: absolute;
-      top: 25px;
-      right: 25px;
-      font-size: 1.4rem;
+      top: 20px;
+      right: 20px;
+      font-size: 1.3rem;
       color: #e2e8f0;
       cursor: pointer;
       transition: var(--transition);
@@ -402,42 +282,64 @@
       color: #ff4757;
     }
 
-    /* Map Section */
-    .map-section {
-      padding: 100px 0;
-      background: #fff;
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 5%;
+      opacity: 0.8;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      padding: 20px;
+    }
+
+    /* Map + Listings Section */
+    .map-listings-section {
+      padding: 80px 0;
+      background: #f1f5f9;
     }
 
     #map {
-      height: 600px;
-      border-radius: 16px;
+      height: 400px;
+      border-radius: 12px;
       box-shadow: var(--shadow-sm);
-      position: relative;
     }
 
-    /* Property Alerts Section */
-    .alerts-section {
-      padding: 100px 0;
-      background: var(--background-dark);
+    .property-list .property-item {
+      transition: var(--transition);
+      background: #fff;
+      border-radius: 10px;
+    }
+
+    .property-list .property-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .property-item .btn {
+      background: var(--primary-color);
       color: var(--text-light);
+      padding: 8px 20px;
+      font-size: 0.95rem;
+      border-radius: 8px;
+    }
+
+    .property-item .price {
+      font-size: 1.1rem;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 80px 0;
+      background: var(--background-light);
       text-align: center;
-      position: relative;
-      overflow: hidden;
     }
 
-    .alerts-section h2 {
-      font-size: 2.8rem;
-      margin-bottom: 25px;
-    }
-
-    .alerts-section p {
-      font-size: 1.3rem;
-      max-width: 900px;
-      margin: 0 auto 40px;
-      color: #a0aec0;
-    }
-
-    .btn-alerts {
+    .cta-section .btn-alerts {
       background: var(--accent-color);
       color: var(--text-light);
       padding: 15px 40px;
@@ -447,7 +349,7 @@
       transition: var(--transition);
     }
 
-    .btn-alerts:hover {
+    .cta-section .btn-alerts:hover {
       background: #00a89d;
       transform: scale(1.05);
       box-shadow: 0 6px 20px rgba(0, 196, 180, 0.3);
@@ -490,6 +392,46 @@
     [data-aos="fade-up"] {
       animation: fadeInUp 0.8s ease-out forwards;
     }
+
+    /* Typeahead Suggestion Styles */
+    .tt-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      border: 1px solid #e2e8f0;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      margin-top: 5px;
+    }
+
+    .tt-suggestion {
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .tt-suggestion:hover,
+    .tt-suggestion.tt-cursor {
+      background: #f1f5f9;
+    }
+
+    .tt-highlight {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .tt-empty {
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: #718096;
+    }
   </style>
 </head>
 <body>
@@ -517,76 +459,176 @@
     </nav>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero-section" id="home" data-aos="fade-up">
+  <!-- Hero Section: Interactive Property Search -->
+  <section class="hero-section" id="home">
     <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <h1>Your Gateway to Exceptional Homes</h1>
-      <p>Discover Albania’s finest properties with ease and elegance.</p>
-      <form id="search-form" class="search-bar">
-        <input id="location" name="location" placeholder="Search by city, region, or ZIP" required />
-        <button type="submit"><i class="fas fa-search"></i> Search</button>
-      </form>
+    <div class="hero-content container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 text-start text-light">
+          <h1 class="display-4 mb-4">Find Your Dream Home in Albania</h1>
+          <p class="lead mb-5">Explore thousands of properties—buy, rent, or invest today.</p>
+        </div>
+        <div class="col-lg-6">
+          <div class="search-card bg-white p-4 rounded-3 shadow-lg" data-aos="fade-up">
+            <ul class="nav nav-pills mb-4" id="searchTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="buy-tab" data-bs-toggle="pill" data-bs-target="#buy" type="button">Buy</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="rent-tab" data-bs-toggle="pill" data-bs-target="#rent" type="button">Rent</button>
+              </li>
+            </ul>
+            <div class="tab-content" id="searchTabContent">
+              <div class="tab-pane fade show active" id="buy" role="tabpanel">
+                <form id="search-buy" class="row g-3">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" id="location-buy" placeholder="City, Region, ZIP" required />
+                  </div>
+                  <div class="col-md-6">
+                    <select class="form-select" name="property-type-buy">
+                      <option value="">Property Type</option>
+                      <option value="house">House</option>
+                      <option value="apartment">Apartment</option>
+                      <option value="villa">Villa</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="number" class="form-control" placeholder="Max Price (€)" name="max-price-buy" />
+                  </div>
+                  <div class="col-md-6">
+                    <button type="submit" class="btn w-100">Search Properties</button>
+                  </div>
+                </form>
+              </div>
+              <div class="tab-pane fade" id="rent" role="tabpanel">
+                <form id="search-rent" class="row g-3">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" id="location-rent" placeholder="City, Region, ZIP" required />
+                  </div>
+                  <div class="col-md-6">
+                    <select class="form-select" name="property-type-rent">
+                      <option value="">Property Type</option>
+                      <option value="house">House</option>
+                      <option value="apartment">Apartment</option>
+                      <option value="villa">Villa</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="number" class="form-control" placeholder="Max Rent (€/mo)" name="max-rent" />
+                  </div>
+                  <div class="col-md-6">
+                    <button type="submit" class="btn w-100">Search Rentals</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Featured Listings -->
+  <!-- Featured Listings: Carousel Style -->
   <section class="featured-listings" data-aos="fade-up" data-aos-delay="200">
     <div class="container">
-      <h2 class="section-title">Featured Properties</h2>
-      <div class="filter-bar">
-        <div>
-          <select name="sort">
-            <option>Sort by: Relevance</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-            <option>Newest</option>
-          </select>
-          <select name="filter" class="ms-3">
-            <option>Filter: All</option>
-            <option>New Listings</option>
-            <option>Open Houses</option>
-            <option>Luxury Homes</option>
-          </select>
-        </div>
-        <button><i class="fas fa-map"></i> View Map</button>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-title mb-0">Explore Top Properties</h2>
+        <a href="/properties" class="btn btn-outline-primary">View All Listings</a>
       </div>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="property-card">
-            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Tirana Penthouse" />
-            <div class="card-body">
-              <span class="badge bg-success">New</span>
-              <h5>Tirana Skyline Penthouse</h5>
-              <p class="price">€450,000</p>
-              <p class="details">3 Beds • 2 Baths • 1500 sqft</p>
-              <a href="/property/tirana-penthouse" class="btn">View Details</a>
-              <i class="fas fa-heart"></i>
+      <div id="propertyCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <div class="row g-4">
+              <div class="col-md-4">
+                <div class="property-card">
+                  <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Tirana Penthouse" />
+                  <div class="card-body">
+                    <span class="badge bg-success">New</span>
+                    <h5>Tirana Skyline Penthouse</h5>
+                    <p class="price">€450,000</p>
+                    <p class="details">3 Beds • 2 Baths • 1500 sqft</p>
+                    <a href="/property/tirana-penthouse" class="btn">View Details</a>
+                    <i class="fas fa-heart"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="property-card">
+                  <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vlora Villa" />
+                  <div class="card-body">
+                    <h5>Vlora Coastal Villa</h5>
+                    <p class="price">€780,000</p>
+                    <p class="details">4 Beds • 3 Baths • 2200 sqft</p>
+                    <a href="/property/vlora-villa" class="btn">View Details</a>
+                    <i class="fas fa-heart"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="property-card">
+                  <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Saranda Apartment" />
+                  <div class="card-body">
+                    <span class="badge bg-info">Open House</span>
+                    <h5>Saranda Seafront Apartment</h5>
+                    <p class="price">€220,000</p>
+                    <p class="details">2 Beds • 1 Bath • 900 sqft</p>
+                    <a href="/property/saranda-apartment" class="btn">View Details</a>
+                    <i class="fas fa-heart"></i>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+          <!-- Add more carousel-items here if needed -->
         </div>
-        <div class="col-md-4">
-          <div class="property-card">
-            <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vlora Villa" />
-            <div class="card-body">
-              <h5>Vlora Coastal Villa</h5>
-              <p class="price">€780,000</p>
-              <p class="details">4 Beds • 3 Baths • 2200 sqft</p>
-              <a href="/property/vlora-villa" class="btn">View Details</a>
-              <i class="fas fa-heart"></i>
+        <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map + Listings Combo Section -->
+  <section class="map-listings-section" data-aos="fade-up" data-aos-delay="400">
+    <div class="container-fluid">
+      <h2 class="section-title text-center mb-5">Browse Properties Near You</h2>
+      <div class="row">
+        <div class="col-lg-6">
+          <div id="map" class="mb-4"></div>
+        </div>
+        <div class="col-lg-6">
+          <div class="property-list">
+            <div class="property-item d-flex align-items-center p-3 mb-3 bg-white rounded-3 shadow-sm">
+              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Tirana Penthouse" class="rounded me-3" style="width: 120px; height: 80px; object-fit: cover;" />
+              <div>
+                <h6 class="mb-1">Tirana Skyline Penthouse</h6>
+                <p class="price mb-1">€450,000</p>
+                <small class="text-muted">3 Beds • 2 Baths</small>
+              </div>
+              <a href="/property/tirana-penthouse" class="btn btn-sm ms-auto">Details</a>
             </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="property-card">
-            <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Saranda Apartment" />
-            <div class="card-body">
-              <span class="badge bg-info">Open House</span>
-              <h5>Saranda Seafront Apartment</h5>
-              <p class="price">€220,000</p>
-              <p class="details">2 Beds • 1 Bath • 900 sqft</p>
-              <a href="/property/saranda-apartment" class="btn">View Details</a>
-              <i class="fas fa-heart"></i>
+            <div class="property-item d-flex align-items-center p-3 mb-3 bg-white rounded-3 shadow-sm">
+              <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Vlora Villa" class="rounded me-3" style="width: 120px; height: 80px; object-fit: cover;" />
+              <div>
+                <h6 class="mb-1">Vlora Coastal Villa</h6>
+                <p class="price mb-1">€780,000</p>
+                <small class="text-muted">4 Beds • 3 Baths</small>
+              </div>
+              <a href="/property/vlora-villa" class="btn btn-sm ms-auto">Details</a>
+            </div>
+            <div class="property-item d-flex align-items-center p-3 mb-3 bg-white rounded-3 shadow-sm">
+              <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Saranda Apartment" class="rounded me-3" style="width: 120px; height: 80px; object-fit: cover;" />
+              <div>
+                <h6 class="mb-1">Saranda Seafront Apartment</h6>
+                <p class="price mb-1">€220,000</p>
+                <small class="text-muted">2 Beds • 1 Bath</small>
+              </div>
+              <a href="/property/saranda-apartment" class="btn btn-sm ms-auto">Details</a>
             </div>
           </div>
         </div>
@@ -594,20 +636,12 @@
     </div>
   </section>
 
-  <!-- Map Section -->
-  <section class="map-section" data-aos="fade-up" data-aos-delay="400">
+  <!-- Call-to-Action Section -->
+  <section class="cta-section" data-aos="fade-up" data-aos-delay="600">
     <div class="container">
-      <h2 class="section-title">Discover Properties on the Map</h2>
-      <div id="map"></div>
-    </div>
-  </section>
-
-  <!-- Property Alerts Section -->
-  <section class="alerts-section" data-aos="fade-up" data-aos-delay="600">
-    <div class="container">
-      <h2>Never Miss Your Perfect Property</h2>
-      <p>Sign up for real-time alerts tailored to your dream home preferences.</p>
-      <a href="/alerts" class="btn-alerts">Get Alerts</a>
+      <h2 class="mb-4">Ready to Find Your Perfect Property?</h2>
+      <p class="lead mb-5">Join thousands of buyers and renters discovering Albania’s best homes.</p>
+      <a href="/properties" class="btn-alerts">Browse All Properties</a>
     </div>
   </section>
 
@@ -654,13 +688,10 @@
       header.classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    // Check if user is logged in and update header
+    // Check login status
     async function checkLoginStatus() {
       try {
-        const response = await fetch('/whoami', {
-          method: 'GET',
-          credentials: 'include'  // Send JWT cookies
-        });
+        const response = await fetch('/whoami', { method: 'GET', credentials: 'include' });
         const data = await response.json();
         if (response.ok) {
           const user = data.user;
@@ -676,19 +707,28 @@
       }
     }
 
-    // Run on page load
     document.addEventListener('DOMContentLoaded', () => {
       checkLoginStatus();
     });
 
-    // Search form submission
-    document.getElementById('search-form').addEventListener('submit', (e) => {
+    // Search form submissions
+    document.getElementById('search-buy').addEventListener('submit', (e) => {
       e.preventDefault();
-      const location = document.getElementById('location').value;
-      window.location.href = `/properties?location=${encodeURIComponent(location)}`;
+      const location = document.getElementById('location-buy').value;
+      const type = document.querySelector('#search-buy [name="property-type-buy"]').value;
+      const maxPrice = document.querySelector('#search-buy [name="max-price-buy"]').value;
+      window.location.href = `/properties?purpose=buy&location=${encodeURIComponent(location)}&type=${type}&maxPrice=${maxPrice}`;
     });
 
-    // Autocomplete for search
+    document.getElementById('search-rent').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const location = document.getElementById('location-rent').value;
+      const type = document.querySelector('#search-rent [name="property-type-rent"]').value;
+      const maxRent = document.querySelector('#search-rent [name="max-rent"]').value;
+      window.location.href = `/properties?purpose=rent&location=${encodeURIComponent(location)}&type=${type}&maxRent=${maxRent}`;
+    });
+
+    // Autocomplete for search inputs
     $(document).ready(function() {
       const locations = [
         "Berat", "Kučové", "Poliçan", "Ura Vajgurore", "Peshkopi", "Bulqizë", "Klos", "Burrel",
@@ -711,7 +751,7 @@
           cb(matches);
         };
       };
-      $('#location').typeahead({
+      $('#location-buy, #location-rent').typeahead({
         hint: false,
         highlight: true,
         minLength: 1
@@ -729,7 +769,7 @@
       });
     });
 
-    // Initialize Leaflet Map with clustering
+    // Initialize Leaflet Map
     const map = L.map('map').setView([41.3275, 19.8187], 7);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
