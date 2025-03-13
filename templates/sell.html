@@ -117,6 +117,11 @@
       width: 80%;
     }
 
+    /* Remove default arrow from language dropdown */
+    #languageDropdown::after {
+      display: none !important;
+    }
+
     /* Hero Section */
     .hero-section {
       position: relative;
@@ -365,11 +370,23 @@
             <li class="nav-item"><a class="nav-link" href="/properties?purpose=buy">Buy</a></li>
             <li class="nav-item"><a class="nav-link" href="/properties?purpose=rent">Rent</a></li>
             <li class="nav-item"><a class="nav-link active" href="/sell">Sell</a></li>
-            <li class="nav-item"><a class="nav-link" href="/market">Market Insights</a></li>
+            <!-- Replace Market Insights with Find an Agent -->
+            <li class="nav-item"><a class="nav-link" href="/agents">Find an Agent</a></li>
             <li class="nav-item" id="auth-link">
               <a class="nav-link" href="/signin"><i class="fas fa-user"></i> Sign In</a>
             </li>
-            <li class="nav-item"><a class="nav-link" href="/favorites"><i class="fas fa-heart"></i></a></li>
+            <!-- Remove favorites icon and add language dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-globe"></i>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                <li><a class="dropdown-item" href="/?lang=al">🇦🇱 Albanian</a></li>
+                <li><a class="dropdown-item" href="/?lang=en">🇬🇧 English</a></li>
+                <li><a class="dropdown-item" href="/?lang=it">🇮🇹 Italian</a></li>
+                <li><a class="dropdown-item" href="/?lang=de">🇩🇪 German</a></li>
+              </ul>
+            </li>
           </ul>
         </div>
       </div>
@@ -478,7 +495,8 @@
           <div class="social-icons">
             <a href="#"><i class="fab fa-facebook-f"></i></a>
             <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <!-- Replace LinkedIn with TikTok -->
+            <a href="#"><i class="fab fa-tiktok"></i></a>
           </div>
         </div>
       </div>
@@ -510,7 +528,9 @@
           const user = data.user;
           const authLink = document.getElementById('auth-link');
           authLink.innerHTML = `
-            <a class="nav-link" href="/dashboard/${user.user_type.replace('/', '-').toLowerCase()}"><i class="fas fa-user"></i> ${user.name}</a>
+            <a class="nav-link" href="/dashboard/${user.user_type.replace('/', '-').toLowerCase()}">
+              <i class="fas fa-user"></i> ${user.name}
+            </a>
           `;
         } else {
           console.log('Not logged in:', data.message);
