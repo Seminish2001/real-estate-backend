@@ -1,34 +1,40 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 from app.config import Config
-
-db = SQLAlchemy()
-migrate = Migrate()
-login_manager = LoginManager()
-jwt = JWTManager()
+from app.models import db, bcrypt
+from app.routes import routes
+from app.auth_routes import auth_routes
+from app.views import views
+import logging
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder="../templates")  # Adjust if templates move
     app.config.from_object(Config)
 
+    # Initialize extensions
     db.init_app(app)
-    migrate.init_app(app, db)
-    login_manager.init_app(app)
-    jwt.init_app(app)
+    bcrypt.init_app(app)
+    jwt = JWTManager(app)
+    CORS(app)  # Enable CORS for potential frontend separation
 
-    login_manager.login_view = 'auth.signin'
+    # Logging for debugging
+    logging.basicConfig(level=logging.INFO)
+    app.logger.info("Application started")
 
-    from app.models import User
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
+    # Register blueprints
+    app.register_blueprint(routes)
+    app.register_blueprint(auth_routes)
+    app.register_blueprint(views)
 
-    from app.routes import bp as main_bp
-    from app.auth_routes import auth_bp
-    app.register_blueprint(main_bp)
-    app.register_blueprint(auth_bp, url_prefix='/auth')
+    # Global error handler
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        app.logger.error(f"Unhandled exception: {str(e)}")
+        return {"message": f"Server error: {str(e)}"}, 500
+
+    # Initialize database
+    with app.app_context():
+        db.create_all()
 
     return app
