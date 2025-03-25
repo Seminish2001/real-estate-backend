@@ -15,9 +15,10 @@ flask-bcrypt==1.0.1
 flask-jwt-extended==4.7.1
 cloudinary==1.42.2
 flask-cors==5.0.1
-python-decouple==3.8  # Updated from decouple==0.0.7
+python-decouple==3.8
 flask-limiter==3.10.1
 marshmallow==3.19.0
 google-auth-oauthlib==1.2.1
 facebook-sdk==3.1.0
-psycopg2-binary==2.9.9  # For PostgreSQL on Render
+psycopg2-binary==2.9.9
+flask-migrate==4.0.7  # Added for database migrations
