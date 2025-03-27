@@ -340,6 +340,10 @@ def terms_page():
 @app.route("/privacy")
 def privacy_page():
     return render_template("privacy.html")
+    
+@app.route("/agents")
+def agents_page():
+    return render_template("agents.html")
 
 # --- API Endpoints for Properties, Favorites, Evaluation, and Alerts ---
 @app.route("/api/properties", methods=["GET"])
