@@ -300,6 +300,47 @@
       padding: 20px;
     }
 
+    /* List Your Property Section */
+    .list-property-section {
+      padding: 80px 0;
+      background: var(--background-light);
+    }
+
+    .role-card .card {
+      transition: var(--transition);
+      height: 100%;
+      text-align: center;
+    }
+
+    .role-card .card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-color);
+    }
+
+    .role-card i {
+      color: var(--primary-color);
+      transition: transform 0.3s ease;
+    }
+
+    .role-card:hover i {
+      transform: scale(1.2);
+    }
+
+    .role-card h5 {
+      font-size: 1.3rem;
+      color: var(--text-dark);
+    }
+
+    .role-card p {
+      font-size: 0.95rem;
+      margin-bottom: 0;
+    }
+
+    .role-card:hover {
+      color: inherit;
+    }
+
     /* Map + Listings Section */
     .map-listings-section {
       padding: 80px 0;
@@ -605,6 +646,43 @@
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- List Your Property Section -->
+  <section class="list-property-section" data-aos="fade-up" data-aos-delay="300">
+    <div class="container text-center">
+      <h2 class="section-title mb-4">Want to Showcase Your Property?</h2>
+      <p class="lead mb-5 text-muted">Reach thousands of buyers and renters effortlessly—list with us today!</p>
+      <div class="row justify-content-center g-4">
+        <div class="col-md-4">
+          <a href="/list/agency" class="role-card d-block text-decoration-none">
+            <div class="card border-0 shadow-sm p-4 bg-white rounded-3">
+              <i class="fas fa-building fa-2x mb-3 text-primary"></i>
+              <h5 class="mb-2">Agency</h5>
+              <p class="small text-muted">Scale your business with premium tools.</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="/list/private-agent" class="role-card d-block text-decoration-none">
+            <div class="card border-0 shadow-sm p-4 bg-white rounded-3">
+              <i class="fas fa-user-tie fa-2x mb-3 text-primary"></i>
+              <h5 class="mb-2">Private Agent</h5>
+              <p class="small text-muted">Maximize exposure, minimize hassle.</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="/list/landlord" class="role-card d-block text-decoration-none">
+            <div class="card border-0 shadow-sm p-4 bg-white rounded-3">
+              <i class="fas fa-house-user fa-2x mb-3 text-primary"></i>
+              <h5 class="mb-2">Landlord</h5>
+              <p class="small text-muted">Rent or sell your property fast.</p>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
   </section>
