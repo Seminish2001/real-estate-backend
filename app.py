@@ -2,7 +2,7 @@ import os
 import logging
 from datetime import timedelta
 
-from flask import Flask, jsonify, request, render_template, make_response
+from flask import Flask, jsonify, request, render_template, make_response, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import (
@@ -377,10 +377,24 @@ def terms_page():
 @app.route("/privacy")
 def privacy_page():
     return render_template("privacy.html")
-    
+
 @app.route("/agents")
 def agents_page():
     return render_template("agents.html")
+
+@app.route("/dashboard/<role>")
+@jwt_required()
+def dashboard(role):
+    templates = {
+        "agency": "dashboard-agency.html",
+        "landlord": "dashboard-landlord.html",
+        "buyer-renter": "dashboard-buyer-renter.html",
+        "independent": "dashboard-independent.html",
+    }
+    template = templates.get(role)
+    if not template:
+        abort(404)
+    return render_template(template)
 
 # --- API Endpoints for Properties, Favorites, Evaluation, and Alerts ---
 @app.route("/api/properties", methods=["GET"])
