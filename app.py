@@ -300,6 +300,29 @@ def whoami():
         logging.error(f"Whoami error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
+# New route to check authentication status
+@app.route("/api/auth/status", methods=["GET"])
+@jwt_required(optional=True)
+def auth_status():
+    try:
+        user_id = get_jwt_identity()
+        if user_id:
+            user = User.query.get(user_id)
+            if user:
+                return jsonify({
+                    "authenticated": True,
+                    "user": {
+                        "id": user.id,
+                        "name": user.name,
+                        "email": user.email,
+                        "user_type": user.user_type,
+                    },
+                }), 200
+        return jsonify({"authenticated": False}), 200
+    except Exception as e:
+        logging.error(f"Auth status error: {str(e)}")
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
 # --- Template & Dashboard Routes ---
 @app.route("/")
 def home():
