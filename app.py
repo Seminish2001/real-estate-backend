@@ -95,6 +95,20 @@ class EvaluationRequest(db.Model):
     estimated_value = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
+# New Agent model to store real estate agents
+class Agent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100))
+    phone = db.Column(db.String(50))
+    agency = db.Column(db.String(100))
+    specialty = db.Column(db.String(100))
+    languages = db.Column(db.String(200))
+    location = db.Column(db.String(100))
+    bio = db.Column(db.Text)
+    photo_url = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
 class AlertPreference(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
@@ -546,6 +560,123 @@ def api_alerts():
             ]
         })
     except Exception as e:
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+# --- Agent Endpoints ---
+@app.route("/api/agents", methods=["GET"])
+def get_agents():
+    try:
+        agents = Agent.query.all()
+        return jsonify({
+            "count": len(agents),
+            "agents": [
+                {
+                    "id": a.id,
+                    "name": a.name,
+                    "email": a.email,
+                    "phone": a.phone,
+                    "agency": a.agency,
+                    "specialty": a.specialty,
+                    "languages": a.languages,
+                    "location": a.location,
+                    "bio": a.bio,
+                    "photo_url": a.photo_url,
+                }
+                for a in agents
+            ],
+        })
+    except Exception as e:
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+
+@app.route("/api/agents", methods=["POST"])
+@jwt_required()
+def create_agent():
+    try:
+        data = request.json
+        agent = Agent(
+            name=data.get("name"),
+            email=data.get("email"),
+            phone=data.get("phone"),
+            agency=data.get("agency"),
+            specialty=data.get("specialty"),
+            languages=data.get("languages"),
+            location=data.get("location"),
+            bio=data.get("bio"),
+            photo_url=data.get("photo_url"),
+        )
+        db.session.add(agent)
+        db.session.commit()
+        return jsonify({"message": "Agent created", "id": agent.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+
+@app.route("/api/agents/<int:agent_id>", methods=["GET"])
+def get_agent(agent_id):
+    try:
+        agent = Agent.query.get(agent_id)
+        if not agent:
+            return jsonify({"message": "Agent not found"}), 404
+        return jsonify(
+            {
+                "id": agent.id,
+                "name": agent.name,
+                "email": agent.email,
+                "phone": agent.phone,
+                "agency": agent.agency,
+                "specialty": agent.specialty,
+                "languages": agent.languages,
+                "location": agent.location,
+                "bio": agent.bio,
+                "photo_url": agent.photo_url,
+            }
+        )
+    except Exception as e:
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+
+@app.route("/api/agents/<int:agent_id>", methods=["PUT"])
+@jwt_required()
+def update_agent(agent_id):
+    try:
+        agent = Agent.query.get(agent_id)
+        if not agent:
+            return jsonify({"message": "Agent not found"}), 404
+        data = request.json
+        for field in [
+            "name",
+            "email",
+            "phone",
+            "agency",
+            "specialty",
+            "languages",
+            "location",
+            "bio",
+            "photo_url",
+        ]:
+            if field in data:
+                setattr(agent, field, data[field])
+        db.session.commit()
+        return jsonify({"message": "Agent updated"})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+
+@app.route("/api/agents/<int:agent_id>", methods=["DELETE"])
+@jwt_required()
+def delete_agent(agent_id):
+    try:
+        agent = Agent.query.get(agent_id)
+        if not agent:
+            return jsonify({"message": "Agent not found"}), 404
+        db.session.delete(agent)
+        db.session.commit()
+        return jsonify({"message": "Agent deleted"})
+    except Exception as e:
+        db.session.rollback()
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
 @app.route("/api/agency/properties")

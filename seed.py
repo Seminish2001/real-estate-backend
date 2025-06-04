@@ -1,4 +1,4 @@
-from app import app, db, User, Property
+from app import app, db, User, Property, Agent
 
 with app.app_context():
     # Clear existing data
@@ -37,6 +37,32 @@ with app.app_context():
     )
     db.session.add(prop1)
     db.session.add(prop2)
+
+    # Add sample agents
+    agent1 = Agent(
+        name='Ana Kovaçi',
+        email='ana@example.com',
+        phone='123456789',
+        agency='Elite Properties Albania',
+        specialty='Luxury Homes',
+        languages='Albanian, English, Italian',
+        location='Tirana',
+        bio='Experienced agent specializing in luxury homes.',
+        photo_url='https://randomuser.me/api/portraits/women/44.jpg'
+    )
+    agent2 = Agent(
+        name='Besnik Rama',
+        email='besnik@example.com',
+        phone='987654321',
+        agency='Coastal Realty Group',
+        specialty='Buying',
+        languages='Albanian, English, German',
+        location='Durrës',
+        bio='Helping buyers find the perfect home on the coast.',
+        photo_url='https://randomuser.me/api/portraits/men/32.jpg'
+    )
+    db.session.add(agent1)
+    db.session.add(agent2)
 
 
     db.session.commit()
