@@ -7,4 +7,12 @@ requires-python = ">=3.11"
 dependencies = [
     "flask-sqlalchemy>=3.1.1",
     "flask>=3.1.0",
+    "flask-bcrypt>=1.0.1",
+    "flask-jwt-extended>=4.7.1",
+    "flask-cors>=5.0.1",
+    "flask-limiter>=3.10.1",
+    "cloudinary>=1.42.2",
+    "python-decouple>=3.8",
+    "google-auth>=2.29.0",
+    "facebook-sdk>=3.1.0",
 ]
