@@ -618,7 +618,13 @@
     // Social Login Stubs
     document.getElementById('google-signin').addEventListener('click', async () => {
       try {
-        const response = await fetch('/auth/google', { method: 'GET', credentials: 'include' });
+        const token = window.googleToken;
+        const response = await fetch('/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ token })
+        });
         const data = await response.json();
         if (response.ok) {
           const userType = data.user.user_type.replace('/', '-').toLowerCase();
@@ -634,7 +640,13 @@
     
     document.getElementById('google-signup').addEventListener('click', async () => {
       try {
-        const response = await fetch('/auth/google', { method: 'GET', credentials: 'include' });
+        const token = window.googleToken;
+        const response = await fetch('/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ token })
+        });
         const data = await response.json();
         if (response.ok) {
           const userType = data.user.user_type.replace('/', '-').toLowerCase();
@@ -650,7 +662,13 @@
     
     document.getElementById('facebook-signin').addEventListener('click', async () => {
       try {
-        const response = await fetch('/auth/facebook', { method: 'GET', credentials: 'include' });
+        const accessToken = window.facebookAccessToken;
+        const response = await fetch('/auth/facebook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ accessToken })
+        });
         const data = await response.json();
         if (response.ok) {
           const userType = data.user.user_type.replace('/', '-').toLowerCase();
@@ -666,7 +684,13 @@
     
     document.getElementById('facebook-signup').addEventListener('click', async () => {
       try {
-        const response = await fetch('/auth/facebook', { method: 'GET', credentials: 'include' });
+        const accessToken = window.facebookAccessToken;
+        const response = await fetch('/auth/facebook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ accessToken })
+        });
         const data = await response.json();
         if (response.ok) {
           const userType = data.user.user_type.replace('/', '-').toLowerCase();
