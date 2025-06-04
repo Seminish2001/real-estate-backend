@@ -2,7 +2,7 @@ import os
 import logging
 from datetime import timedelta
 
-from flask import Flask, jsonify, request, render_template, make_response
+from flask import Flask, jsonify, request, render_template, make_response, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import (
@@ -381,6 +381,43 @@ def privacy_page():
 @app.route("/agents")
 def agents_page():
     return render_template("agents.html")
+
+@app.route("/about")
+def about_page():
+    return render_template("about.html")
+
+@app.route("/contact")
+def contact_page():
+    return render_template("contact.html")
+
+@app.route("/mortgage")
+def mortgage_page():
+    return render_template("mortgage.html")
+
+@app.route("/market-trends")
+def market_trends_page():
+    return render_template("market-trends.html")
+
+@app.route("/blog")
+def blog_page():
+    return render_template("blog.html")
+
+@app.route("/favorites")
+def favorites_page():
+    return render_template("favorites.html")
+
+@app.route("/dashboard/<user_type>")
+def dashboard_page(user_type):
+    template_map = {
+        "agency": "dashboard-agency.html",
+        "buyer-renter": "dashboard-buyer-renter.html",
+        "independent": "dashboard-independent.html",
+        "landlord": "dashboard-landlord.html",
+    }
+    template = template_map.get(user_type)
+    if not template:
+        abort(404)
+    return render_template(template)
 
 # --- API Endpoints for Properties, Favorites, Evaluation, and Alerts ---
 @app.route("/api/properties", methods=["GET"])

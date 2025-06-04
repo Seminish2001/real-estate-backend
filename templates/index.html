@@ -1483,7 +1483,7 @@
         if (response.ok && data.authenticated) {
           const authLink = document.getElementById('auth-link');
           const user = data.user;
-          const dashboardLink = user.user_type === 'agent' ? '/agent-dashboard' : '/user-dashboard';
+          const dashboardLink = '/dashboard/'.concat(user.user_type.replace('/', '-').toLowerCase());
           
           authLink.innerHTML = `
             <div class="dropdown">
