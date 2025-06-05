@@ -379,6 +379,10 @@ def terms_page():
 def privacy_page():
     return render_template("privacy.html")
 
+@app.route("/newsletter-preferences")
+def newsletter_preferences_page():
+    return render_template("newsletter_preferences.html")
+
 @app.route("/agents")
 def agents_page():
     return render_template("agents.html")
