@@ -13,6 +13,7 @@ This project is a simple Flask backend for a real estate website. The applicatio
    - `DATABASE_URL` – Database connection string (default: `sqlite:///properties.db`).
    - `JWT_SECRET_KEY` – Secret key used to sign JWT tokens.
    - `GOOGLE_CLIENT_ID` – Client ID for Google OAuth (optional).
+   - `GOOGLE_MAPS_API_KEY` – API key for Google Maps (required for map features).
    - `PORT` – Port for the development server (default: `5000`).
 
 You can create a `.env` file or export these variables in your shell before running the server.

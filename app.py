@@ -36,6 +36,7 @@ app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_COOKIE_SECURE'] = True
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+app.config['GOOGLE_MAPS_API_KEY'] = config('GOOGLE_MAPS_API_KEY', default='')
 
 if app.config['JWT_SECRET_KEY'] == 'default_secret_key':
     print("WARNING: Using default JWT_SECRET_KEY. Set this in production!")
@@ -340,7 +341,7 @@ def auth_status():
 # --- Template & Dashboard Routes ---
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index.html", google_maps_api_key=app.config['GOOGLE_MAPS_API_KEY'])
 
 @app.route("/signin")
 def signin_page():
@@ -352,7 +353,7 @@ def for_owners():
 
 @app.route("/properties")
 def properties_page():
-    return render_template("properties.html")
+    return render_template("properties.html", google_maps_api_key=app.config['GOOGLE_MAPS_API_KEY'])
 
 @app.route("/sell")
 def sell_page():
