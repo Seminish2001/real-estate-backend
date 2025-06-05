@@ -19,17 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <!-- AOS Animation Library -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-  <!-- Leaflet for Map -->
-  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
-  <!-- Leaflet MarkerCluster CSS -->
-  <link
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-    rel="stylesheet"
-  />
-  <link
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-    rel="stylesheet"
-  />
+  <!-- Google Maps -->
   <!-- Custom CSS -->
   <style>
     :root {
@@ -1451,8 +1441,8 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+  <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
   <script>
     // Initialize AOS animations
@@ -1643,23 +1633,11 @@
       });
     });
 
-    // Initialize Leaflet Map with more markers
-    const map = L.map('map').setView([41.3275, 19.8187], 7);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-    
-    // Custom icon
-    const propertyIcon = L.icon({
-      iconUrl: 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png',
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32]
-    });
-    
-    // Marker cluster group
-    const markers = L.markerClusterGroup();
-    
+    // Initialize Google Map with more markers
+    let map;
+    let markers = [];
+    let markerCluster;
+
     // Sample properties data
     const properties = [
       {
@@ -1730,22 +1708,42 @@
       }
     ];
     
-    // Add markers to map
-    properties.forEach(property => {
-      const marker = L.marker(property.coords, { icon: propertyIcon })
-        .bindPopup(`
-          <div class="map-popup">
-            <h5>${property.title}</h5>
-            <p class="price">${property.price}</p>
-            <p>${property.beds} Beds • ${property.baths} Baths • ${property.area}</p>
-            <p><small>${property.location}</small></p>
-            <a href="/property/${property.id}" class="btn btn-sm btn-primary w-100">View Details</a>
-          </div>
-        `);
-      markers.addLayer(marker);
-    });
-    
-    map.addLayer(markers);
+    function addMarkers(props) {
+      if (markerCluster) {
+        markerCluster.clearMarkers();
+      }
+      markers.forEach(m => m.setMap(null));
+      markers = props.map(p => {
+        const marker = new google.maps.Marker({
+          position: { lat: p.coords[0], lng: p.coords[1] },
+          title: p.title,
+          map: map
+        });
+        const info = new google.maps.InfoWindow({
+          content: `
+            <div class="map-popup">
+              <h5>${p.title}</h5>
+              <p class="price">${p.price}</p>
+              <p>${p.beds} Beds • ${p.baths} Baths • ${p.area}</p>
+              <p><small>${p.location}</small></p>
+              <a href="/property/${p.id}" class="btn btn-sm btn-primary w-100">View Details</a>
+            </div>`
+        });
+        marker.addListener('click', () => info.open({ map, anchor: marker }));
+        return marker;
+      });
+      markerCluster = new markerClusterer.MarkerClusterer({ map, markers });
+    }
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 41.3275, lng: 19.8187 },
+        zoom: 7
+      });
+      addMarkers(properties);
+    }
+
+    initMap();
     
     // Filter functionality for map/listings
     document.querySelector('.filter-apply').addEventListener('click', function() {
@@ -1772,21 +1770,13 @@
         }
       });
       
-      // Filter map markers
-      markers.eachLayer(layer => {
-        const property = properties.find(p => p.title === layer._popup._content.match(/<h5>(.*?)<\/h5>/)[1]);
-        if (property) {
-          const price = parseFloat(property.price.replace(/[^\d.]/g, ''));
-          const priceMatch = price >= minPrice && price <= maxPrice;
-          const typeMatch = selectedTypes.includes(property.type);
-          
-          if (priceMatch && typeMatch) {
-            map.addLayer(layer);
-          } else {
-            map.removeLayer(layer);
-          }
-        }
+      const filtered = properties.filter(p => {
+        const price = parseFloat(p.price.replace(/[^\d.]/g, ''));
+        const priceMatch = price >= minPrice && price <= maxPrice;
+        const typeMatch = selectedTypes.includes(p.type);
+        return priceMatch && typeMatch;
       });
+      addMarkers(filtered);
     });
 
     // Newsletter form submission
