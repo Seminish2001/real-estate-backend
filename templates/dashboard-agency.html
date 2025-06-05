@@ -476,16 +476,28 @@
       const header = document.querySelector('header');
       header.classList.toggle('scrolled', window.scrollY > 50);
     });
+
+    function getCsrfToken() {
+      const match = document.cookie.match(/csrf_access_token=([^;]+)/);
+      return match ? decodeURIComponent(match[1]) : '';
+    }
     document.getElementById('logout-btn').addEventListener('click', async () => {
       try {
-        const response = await fetch('/logout', { method: 'POST' });
+        const response = await fetch('/logout', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'X-CSRF-TOKEN': getCsrfToken() }
+        });
         if (response.ok) { window.location.href = '/'; }
       } catch (error) { console.error('Logout Error:', error); }
     });
 
     async function loadAgencyProperties() {
       // Fetch and update listings count and stats
-      const response = await fetch('/api/agency/properties', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } });
+      const response = await fetch('/api/agency/properties', {
+        credentials: 'include',
+        headers: { 'X-CSRF-TOKEN': getCsrfToken() }
+      });
       const data = await response.json();
       document.getElementById('agency-property-count').textContent = data.count;
       document.getElementById('view-count').textContent = data.properties[0].views;
@@ -493,7 +505,10 @@
     }
 
     async function loadRequests() {
-      const response = await fetch('/api/requests', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } });
+      const response = await fetch('/api/requests', {
+        credentials: 'include',
+        headers: { 'X-CSRF-TOKEN': getCsrfToken() }
+      });
       const data = await response.json();
       document.getElementById('request-count').textContent = data.count;
       const requestsList = document.getElementById('requests-list');
@@ -506,7 +521,10 @@
     }
 
     async function loadAnalytics() {
-      const response = await fetch('/api/analytics', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } });
+      const response = await fetch('/api/analytics', {
+        credentials: 'include',
+        headers: { 'X-CSRF-TOKEN': getCsrfToken() }
+      });
       const data = await response.json();
       document.getElementById('conversion-rate').textContent = data.conversion_rate;
 
@@ -539,7 +557,8 @@
       const formData = new FormData(e.target);
       const response = await fetch('/api/agents/add', {
         method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+        credentials: 'include',
+        headers: { 'X-CSRF-TOKEN': getCsrfToken() },
         body: formData
       });
       if (response.ok) {
@@ -551,7 +570,10 @@
     });
 
     async function loadAgents() {
-      const response = await fetch('/api/agents', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } });
+      const response = await fetch('/api/agents', {
+        credentials: 'include',
+        headers: { 'X-CSRF-TOKEN': getCsrfToken() }
+      });
       const data = await response.json();
       const agentsTable = document.getElementById('agents-table');
       agentsTable.innerHTML = data.agents.map(agent => `
@@ -584,7 +606,8 @@
       const formData = new FormData(e.target);
       const response = await fetch('/api/agency/profile', {
         method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+        credentials: 'include',
+        headers: { 'X-CSRF-TOKEN': getCsrfToken() },
         body: formData
       });
       if (response.ok) { alert('Profile updated successfully!'); }
