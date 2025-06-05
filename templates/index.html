@@ -342,6 +342,46 @@
       padding: 20px;
     }
 
+    /* Testimonials Section */
+    .testimonials-section {
+      padding: 5rem 0;
+      background-color: #f1f5f9;
+    }
+
+    .testimonial-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      height: 100%;
+    }
+
+    .testimonial-text {
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+    }
+
+    .testimonial-author-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 1rem;
+    }
+
+    .testimonial-author-name {
+      font-weight: 600;
+    }
+
+    .testimonial-author-role {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
 
     /* List Your Property Section */
     .list-property-section {
@@ -602,6 +642,19 @@
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .newsletter-form {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .newsletter-input {
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      width: 100%;
+      margin-bottom: 1rem;
     }
 
     .newsletter-submit {
@@ -942,6 +995,14 @@
                       <option value="commercial">Commercial</option>
                     </select>
                   </div>
+                  <div class="col-md-6">
+                    <label for="min-price-buy" class="visually-hidden">Min Price</label>
+                    <input type="number" class="form-control" id="min-price-buy" placeholder="Min Price (€)" name="min-price-buy" aria-label="Minimum price" />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="max-price-buy" class="visually-hidden">Max Price</label>
+                    <input type="number" class="form-control" id="max-price-buy" placeholder="Max Price (€)" name="max-price-buy" aria-label="Maximum price" />
+                  </div>
                   <div class="col-12">
                     <button type="submit" class="btn w-100" id="search-buy-btn">
                       <span class="search-btn-text">Search Properties</span>
@@ -966,6 +1027,14 @@
                       <option value="studio">Studio</option>
                     </select>
                   </div>
+                  <div class="col-md-6">
+                    <label for="min-rent" class="visually-hidden">Min Rent</label>
+                    <input type="number" class="form-control" id="min-rent" placeholder="Min Rent (€/mo)" name="min-rent" aria-label="Minimum rent" />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="max-rent" class="visually-hidden">Max Rent</label>
+                    <input type="number" class="form-control" id="max-rent" placeholder="Max Rent (€/mo)" name="max-rent" aria-label="Maximum rent" />
+                  </div>
                   <div class="col-12">
                     <button type="submit" class="btn w-100" id="search-rent-btn">
                       <span class="search-btn-text">Search Rentals</span>
@@ -976,11 +1045,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="row mt-4">
-        <div class="col-12">
-          <div id="map" aria-label="Interactive map of rental locations"></div>
         </div>
       </div>
     </div>
@@ -1103,6 +1167,50 @@
     </div>
   </section>
 
+  <!-- Testimonials Section -->
+  <section class="testimonials-section" data-aos="fade-up" data-aos-delay="300">
+    <div class="container">
+      <h2 class="section-title">What Our Clients Say</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="testimonial-card">
+            <p class="testimonial-text">"Albania Properties helped me find my dream home in Tirana. Their agents were knowledgeable and patient throughout the entire process."</p>
+            <div class="testimonial-author">
+              <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Sarah Johnson" class="testimonial-author-img" loading="lazy" />
+              <div>
+                <div class="testimonial-author-name">Sarah Johnson</div>
+                <div class="testimonial-author-role">Homeowner in Tirana</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="testimonial-card">
+            <p class="testimonial-text">"As an international investor, I was impressed with their market knowledge and professional service. They made buying property in Albania seamless."</p>
+            <div class="testimonial-author">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Bianchi" class="testimonial-author-img" loading="lazy" />
+              <div>
+                <div class="testimonial-author-name">Michael Bianchi</div>
+                <div class="testimonial-author-role">Investor from Italy</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="testimonial-card">
+            <p class="testimonial-text">"The team found me the perfect rental apartment in Vlora within my budget. Great communication and support even after I moved in."</p>
+            <div class="testimonial-author">
+              <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Elena Petrova" class="testimonial-author-img" loading="lazy" />
+              <div>
+                <div class="testimonial-author-name">Elena Petrova</div>
+                <div class="testimonial-author-role">Renter in Vlora</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- List Your Property Section -->
   <section class="list-property-section" data-aos="fade-up" data-aos-delay="300">
@@ -1150,11 +1258,11 @@
   <!-- Map + Listings Combo Section -->
   <section class="map-listings-section" data-aos="fade-up" data-aos-delay="400">
     <div class="container">
-      <h2 class="section-title text-center mb-5">Browse Rentals Near You</h2>
+      <h2 class="section-title text-center mb-5">Browse Properties Near You</h2>
       <div class="row">
         <div class="col-lg-6">
           <div class="filter-section">
-            <h3 class="filter-title">Filter Rentals</h3>
+            <h3 class="filter-title">Filter Properties</h3>
             <div class="filter-group">
               <h4 class="filter-group-title">Property Type</h4>
               <div class="filter-option">
@@ -1189,53 +1297,54 @@
             </div>
             <button class="filter-apply">Apply Filters</button>
           </div>
+          <div id="map" aria-label="Interactive map of property locations"></div>
         </div>
         <div class="col-lg-6">
           <div class="property-list">
             <div class="property-item">
-              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Tirana Apartment" class="property-item-img" loading="lazy" />
+              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Tirana Penthouse" class="property-item-img" loading="lazy" />
               <div class="property-item-info">
-                <h6 class="property-item-title">Tirana City Apartment</h6>
-                <p class="property-item-price">€700/mo</p>
-                <p class="property-item-details">2 Beds • 1 Bath • Central Tirana</p>
+                <h6 class="property-item-title">Tirana Skyline Penthouse</h6>
+                <p class="property-item-price">€450,000</p>
+                <p class="property-item-details">3 Beds • 2 Baths • Central Tirana</p>
               </div>
-              <a href="/property/tirana-apartment" class="property-item-btn">Details</a>
+              <a href="/property/tirana-penthouse" class="property-item-btn">Details</a>
             </div>
             <div class="property-item">
-              <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Vlora Studio" class="property-item-img" loading="lazy" />
+              <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Vlora Villa" class="property-item-img" loading="lazy" />
               <div class="property-item-info">
-                <h6 class="property-item-title">Vlora Beach Studio</h6>
-                <p class="property-item-price">€500/mo</p>
-                <p class="property-item-details">1 Bed • 1 Bath • Near Beach</p>
+                <h6 class="property-item-title">Vlora Coastal Villa</h6>
+                <p class="property-item-price">€780,000</p>
+                <p class="property-item-details">4 Beds • 3 Baths • Vlora Beach</p>
               </div>
-              <a href="/property/vlora-studio" class="property-item-btn">Details</a>
+              <a href="/property/vlora-villa" class="property-item-btn">Details</a>
             </div>
             <div class="property-item">
               <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Saranda Apartment" class="property-item-img" loading="lazy" />
               <div class="property-item-info">
-                <h6 class="property-item-title">Saranda Sea View Apartment</h6>
-                <p class="property-item-price">€650/mo</p>
-                <p class="property-item-details">2 Beds • 1 Bath • Sea View</p>
+                <h6 class="property-item-title">Saranda Seafront Apartment</h6>
+                <p class="property-item-price">€220,000</p>
+                <p class="property-item-details">2 Beds • 1 Bath • Saranda Center</p>
               </div>
-              <a href="/property/saranda-rental" class="property-item-btn">Details</a>
+              <a href="/property/saranda-apartment" class="property-item-btn">Details</a>
             </div>
             <div class="property-item">
-              <img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Durres House" class="property-item-img" loading="lazy" />
+              <img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Berat House" class="property-item-img" loading="lazy" />
               <div class="property-item-info">
-                <h6 class="property-item-title">Durres Family House</h6>
-                <p class="property-item-price">€800/mo</p>
-                <p class="property-item-details">3 Beds • 2 Baths • Durres Port</p>
+                <h6 class="property-item-title">Berat Historic Home</h6>
+                <p class="property-item-price">€195,000</p>
+                <p class="property-item-details">3 Beds • 2 Baths • Berat Castle</p>
               </div>
-              <a href="/property/durres-house-rent" class="property-item-btn">Details</a>
+              <a href="/property/berat-house" class="property-item-btn">Details</a>
             </div>
             <div class="property-item">
-              <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Shkodra Villa" class="property-item-img" loading="lazy" />
+              <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Durres Apartment" class="property-item-img" loading="lazy" />
               <div class="property-item-info">
-                <h6 class="property-item-title">Shkodra Cozy Villa</h6>
-                <p class="property-item-price">€550/mo</p>
-                <p class="property-item-details">2 Beds • 1 Bath • Shkodra Lake</p>
+                <h6 class="property-item-title">Durres Luxury Apartment</h6>
+                <p class="property-item-price">€275,000</p>
+                <p class="property-item-details">3 Beds • 2 Baths • Durres Marina</p>
               </div>
-              <a href="/property/shkodra-villa-rent" class="property-item-btn">Details</a>
+              <a href="/property/durres-apartment" class="property-item-btn">Details</a>
             </div>
           </div>
         </div>
@@ -1258,7 +1367,10 @@
       <div class="newsletter-card">
         <h2 class="newsletter-title">Stay Updated</h2>
         <p class="newsletter-description">Subscribe to our newsletter for the latest property listings, market trends, and real estate news in Albania.</p>
-        <a href="/newsletter-preferences" class="btn newsletter-submit">Choose Preferences</a>
+        <form class="newsletter-form">
+          <input type="email" class="newsletter-input" placeholder="Your email address" aria-label="Your email address" required />
+          <button type="submit" class="newsletter-submit">Subscribe</button>
+        </form>
       </div>
     </div>
   </section>
@@ -1273,7 +1385,7 @@
           <div class="social-icons">
             <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
             <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="social-icon" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
             <a href="#" class="social-icon" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
           </div>
         </div>
@@ -1398,8 +1510,10 @@
       
       const location = document.getElementById('location-buy').value;
       const type = document.getElementById('property-type-buy').value;
-
-      window.location.href = `/properties?purpose=buy&location=${encodeURIComponent(location)}&type=${type}`;
+      const minPrice = document.getElementById('min-price-buy').value;
+      const maxPrice = document.getElementById('max-price-buy').value;
+      
+      window.location.href = `/properties?purpose=buy&location=${encodeURIComponent(location)}&type=${type}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
     });
 
     document.getElementById('search-rent').addEventListener('submit', async (e) => {
@@ -1417,8 +1531,10 @@
       
       const location = document.getElementById('location-rent').value;
       const type = document.getElementById('property-type-rent').value;
-
-      window.location.href = `/properties?purpose=rent&location=${encodeURIComponent(location)}&type=${type}`;
+      const minRent = document.getElementById('min-rent').value;
+      const maxRent = document.getElementById('max-rent').value;
+      
+      window.location.href = `/properties?purpose=rent&location=${encodeURIComponent(location)}&type=${type}&minRent=${minRent}&maxRent=${maxRent}`;
     });
 
     // Autocomplete for search inputs with more locations
@@ -1522,62 +1638,73 @@
     let markers = [];
     let markerCluster;
 
-    // Sample rental data
+    // Sample properties data
     const properties = [
       {
-        id: 'tirana-apartment',
-        title: 'Tirana City Apartment',
-        price: '€700/mo',
+        id: 'tirana-penthouse',
+        title: 'Tirana Skyline Penthouse',
+        price: '€450,000',
         type: 'apartment',
         coords: [41.3275, 19.8187],
-        beds: 2,
-        baths: 1,
-        area: '80 sqm',
+        beds: 3,
+        baths: 2,
+        area: '1500 sqft',
         location: 'Central Tirana'
       },
       {
-        id: 'vlora-studio',
-        title: 'Vlora Beach Studio',
-        price: '€500/mo',
-        type: 'apartment',
+        id: 'vlora-villa',
+        title: 'Vlora Coastal Villa',
+        price: '€780,000',
+        type: 'villa',
         coords: [40.4664, 19.4914],
-        beds: 1,
-        baths: 1,
-        area: '45 sqm',
-        location: 'Near Beach'
+        beds: 4,
+        baths: 3,
+        area: '2200 sqft',
+        location: 'Vlora Beach'
       },
       {
-        id: 'saranda-rental',
-        title: 'Saranda Sea View Apartment',
-        price: '€650/mo',
+        id: 'saranda-apartment',
+        title: 'Saranda Seafront Apartment',
+        price: '€220,000',
         type: 'apartment',
         coords: [39.8760, 20.0050],
         beds: 2,
         baths: 1,
-        area: '70 sqm',
-        location: 'Sea View'
+        area: '900 sqft',
+        location: 'Saranda Center'
       },
       {
-        id: 'durres-house-rent',
-        title: 'Durres Family House',
-        price: '€800/mo',
+        id: 'berat-house',
+        title: 'Berat Historic Home',
+        price: '€195,000',
         type: 'house',
+        coords: [40.7048, 19.9497],
+        beds: 3,
+        baths: 2,
+        area: '1200 sqft',
+        location: 'Berat Castle'
+      },
+      {
+        id: 'durres-apartment',
+        title: 'Durres Luxury Apartment',
+        price: '€275,000',
+        type: 'apartment',
         coords: [41.3236, 19.4547],
         beds: 3,
         baths: 2,
-        area: '120 sqm',
-        location: 'Durres Port'
+        area: '1400 sqft',
+        location: 'Durres Marina'
       },
       {
-        id: 'shkodra-villa-rent',
-        title: 'Shkodra Cozy Villa',
-        price: '€550/mo',
-        type: 'villa',
-        coords: [42.0683, 19.5126],
-        beds: 2,
-        baths: 1,
-        area: '90 sqm',
-        location: 'Shkodra Lake'
+        id: 'theth-retreat',
+        title: 'Theth Mountain Retreat',
+        price: '€320,000',
+        type: 'house',
+        coords: [42.3969, 19.7744],
+        beds: 4,
+        baths: 3,
+        area: '1800 sqft',
+        location: 'Theth National Park'
       }
     ];
     
@@ -1652,6 +1779,22 @@
       addMarkers(filtered);
     });
 
+    // Newsletter form submission
+    document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = this.querySelector('input[type="email"]').value;
+      
+      // Simple validation
+      if (!email.includes('@')) {
+        alert('Please enter a valid email address');
+        return;
+      }
+      
+      // In a real app, you would send this to your backend
+      console.log('Subscribed email:', email);
+      alert('Thank you for subscribing to our newsletter!');
+      this.reset();
+    });
 
     // Initialize favorite buttons from local storage
     document.addEventListener('DOMContentLoaded', () => {
