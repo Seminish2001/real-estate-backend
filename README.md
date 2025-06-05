@@ -37,3 +37,7 @@ pytest
 
 The tests use an in-memory SQLite database and cover basic authentication endpoints (signup and signin).
 
+## Authentication
+
+JWT access and refresh tokens are stored as **HttpOnly cookies**. Frontend scripts should not read or write these tokens with `localStorage`. Instead, include `credentials: 'include'` with each `fetch` request so the cookies are sent automatically. When CSRF protection is enabled, pass the `csrf_access_token` cookie value as the `X-CSRF-TOKEN` header on POST/PUT/DELETE requests.
+

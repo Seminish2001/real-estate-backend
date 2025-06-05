@@ -391,11 +391,20 @@
     window.addEventListener('scroll', () => {
       document.querySelector('header').classList.toggle('scrolled', window.scrollY > 50);
     });
+
+    function getCsrfToken() {
+      const match = document.cookie.match(/csrf_access_token=([^;]+)/);
+      return match ? decodeURIComponent(match[1]) : '';
+    }
     
     // Logout functionality
     document.getElementById('logout-btn').addEventListener('click', async () => {
       try {
-        const response = await fetch('/logout', { method: 'POST' });
+        const response = await fetch('/logout', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'X-CSRF-TOKEN': getCsrfToken() }
+        });
         if (response.ok) {
           window.location.href = '/';
         }
@@ -406,8 +415,9 @@
     
     // Dynamic Data Loading Functions
     async function loadSavedProperties() {
-      const response = await fetch('/api/saved', { 
-        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } 
+      const response = await fetch('/api/saved', {
+        credentials: 'include',
+        headers: { 'X-CSRF-TOKEN': getCsrfToken() }
       });
       const data = await response.json();
       document.getElementById('saved-count').textContent = data.count || 4;
@@ -431,8 +441,9 @@
     }
     
     async function loadAlerts() {
-      const response = await fetch('/api/alerts', { 
-        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } 
+      const response = await fetch('/api/alerts', {
+        credentials: 'include',
+        headers: { 'X-CSRF-TOKEN': getCsrfToken() }
       });
       const data = await response.json();
       document.getElementById('alert-count').textContent = data.count || 2;
@@ -446,8 +457,9 @@
     }
     
     async function loadMarketSnapshot() {
-      const response = await fetch('/api/market-snapshot', { 
-        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } 
+      const response = await fetch('/api/market-snapshot', {
+        credentials: 'include',
+        headers: { 'X-CSRF-TOKEN': getCsrfToken() }
       });
       const data = await response.json();
       document.getElementById('avg-price').textContent = data.avg_price || '€1,350/m²';
