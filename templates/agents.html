@@ -1,8 +1,1451 @@
-{% extends "base.html" %}
-{% block title %}Find an Agent{% endblock %}
-{% block content %}
-<div class="container py-5">
-  <h1>Find an Agent</h1>
-  <p>This page is under construction.</p>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Connect with top-rated real estate agents in Albania specializing in buying, selling, and renting properties. Find your perfect agent today." />
+  <meta name="keywords" content="Albania real estate agents, find agent Albania, property experts, buy home Albania, sell property Albania" />
+  <meta name="author" content="Albania Properties" />
+  <title>Find Top Real Estate Agents in Albania | Albania Properties</title>
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" as="style" />
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" as="style" />
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <!-- AOS Animation Library -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  
+  <!-- Custom CSS -->
+  <style>
+    :root {
+      --primary-color: #1a73e8;
+      --primary-dark: #1557b0;
+      --secondary-color: #2d3748;
+      --accent-color: #00c4b4;
+      --accent-dark: #00a89d;
+      --background-light: #f9fafb;
+      --background-dark: #1f2a44;
+      --text-dark: #1f2a44;
+      --text-light: #fff;
+      --text-muted: #718096;
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 6px 25px rgba(0, 0, 0, 0.12);
+      --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --border-radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--background-light);
+      color: var(--text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(12px);
+      padding: 20px 0;
+      box-shadow: var(--shadow-sm);
+      transition: padding 0.3s ease, background 0.3s ease;
+    }
+
+    header.scrolled {
+      padding: 10px 0;
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .navbar-brand {
+      font-size: 1.8rem;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .navbar-brand i {
+      margin-right: 12px;
+      color: var(--primary-color);
+      font-size: 1.4rem;
+    }
+
+    .navbar-nav .nav-link {
+      color: var(--text-dark);
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-left: 30px;
+      position: relative;
+      padding-bottom: 6px;
+    }
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+      color: var(--primary-color);
+    }
+
+    .navbar-nav .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: var(--primary-color);
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: width 0.3s ease;
+    }
+
+    .navbar-nav .nav-link:hover::after,
+    .navbar-nav .nav-link.active::after {
+      width: 80%;
+    }
+
+    /* Remove default arrow from language dropdown */
+    #languageDropdown::after {
+      display: none !important;
+    }
+
+    /* Skip to content link for accessibility */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--primary-color);
+      color: white;
+      padding: 8px;
+      z-index: 100;
+      transition: top 0.3s;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* Agents Section */
+    .agents-section {
+      padding: 150px 0 80px;
+      background: var(--background-light);
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      color: var(--text-dark);
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      width: 60px;
+      height: 4px;
+      background: var(--accent-color);
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .section-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 50px;
+    }
+
+    .agent-search-bar {
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 25px;
+      box-shadow: var(--shadow-sm);
+      max-width: 900px;
+      margin: 0 auto 50px;
+    }
+
+    .agent-search-bar form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .agent-search-bar .search-group {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .agent-search-bar input,
+    .agent-search-bar select {
+      width: 100%;
+      padding: 12px 20px;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .agent-search-bar input:focus,
+    .agent-search-bar select:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+    }
+
+    .agent-search-bar button {
+      background: var(--primary-color);
+      color: var(--text-light);
+      border: none;
+      padding: 12px 30px;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .agent-search-bar button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .agent-search-bar button:active {
+      transform: translateY(0);
+    }
+
+    .agent-card {
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      padding: 25px;
+      transition: var(--transition);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .agent-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .agent-card-header {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .agent-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 20px;
+      border: 3px solid var(--primary-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .agent-card-info {
+      flex: 1;
+    }
+
+    .agent-card h3 {
+      font-size: 1.5rem;
+      color: var(--text-dark);
+      margin-bottom: 5px;
+    }
+
+    .agent-card .agency {
+      font-size: 1rem;
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .agent-card .experience {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .agent-card .sales {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .agent-card .rating {
+      color: #f1c40f;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .agent-card .rating-count {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .agent-card .specialty {
+      display: inline-block;
+      background: rgba(0, 196, 180, 0.1);
+      color: var(--accent-dark);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .agent-card .languages {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .agent-card .languages i {
+      color: var(--primary-color);
+      margin-right: 5px;
+    }
+
+    .agent-card .btn {
+      background: var(--primary-color);
+      color: var(--text-light);
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 10px 25px;
+      font-weight: 600;
+      transition: var(--transition);
+      margin-top: auto;
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .agent-card .btn:hover {
+      background: var(--primary-dark);
+      transform: scale(1.05);
+    }
+
+    .agent-card .btn-outline {
+      background: transparent;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      margin-top: 10px;
+    }
+
+    .agent-card .btn-outline:hover {
+      background: rgba(26, 115, 232, 0.1);
+    }
+
+    /* Featured Agents Section */
+    .featured-agents {
+      background: var(--background-dark);
+      color: var(--text-light);
+      padding: 80px 0;
+      margin-bottom: 80px;
+    }
+
+    .featured-agents .section-title {
+      color: var(--text-light);
+    }
+
+    .featured-agents .section-title::after {
+      background: var(--accent-color);
+    }
+
+    .featured-agent-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--border-radius);
+      padding: 25px;
+      transition: var(--transition);
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-agent-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-color);
+    }
+
+    .featured-agent-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--accent-color);
+      color: var(--text-light);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* How It Works Section */
+    .how-it-works {
+      padding: 80px 0;
+      background: #fff;
+    }
+
+    .step-card {
+      text-align: center;
+      padding: 30px;
+      height: 100%;
+    }
+
+    .step-number {
+      width: 50px;
+      height: 50px;
+      background: var(--primary-color);
+      color: var(--text-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 auto 20px;
+    }
+
+    .step-card h4 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: var(--text-dark);
+    }
+
+    .step-card p {
+      color: var(--text-muted);
+    }
+
+    /* Testimonials Section */
+    .testimonials-section {
+      padding: 80px 0;
+      background: var(--background-light);
+    }
+
+    .testimonial-card {
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 30px;
+      box-shadow: var(--shadow-sm);
+      height: 100%;
+      position: relative;
+    }
+
+    .testimonial-card::before {
+      content: '"';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 5rem;
+      color: rgba(26, 115, 232, 0.1);
+      font-family: serif;
+      line-height: 1;
+    }
+
+    .testimonial-text {
+      font-style: italic;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+    }
+
+    .testimonial-author img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+
+    .testimonial-author-name {
+      font-weight: 600;
+    }
+
+    .testimonial-author-role {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Become Agent CTA */
+    .become-agent-cta {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: var(--text-light);
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .become-agent-cta h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .become-agent-cta p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 30px;
+    }
+
+    .btn-cta {
+      background: var(--text-light);
+      color: var(--primary-color);
+      padding: 15px 40px;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      font-size: 1.2rem;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .btn-cta:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+      color: var(--primary-dark);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--background-dark);
+      color: var(--text-light);
+      padding: 80px 0 30px;
+    }
+
+    .footer-logo {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+
+    .footer-logo i {
+      color: var(--primary-color);
+      margin-right: 10px;
+    }
+
+    .footer-about {
+      margin-bottom: 30px;
+    }
+
+    .footer-about-text {
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .footer-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-light);
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--primary-color);
+      padding-left: 5px;
+    }
+
+    .footer-contact-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      color: var(--text-muted);
+    }
+
+    .footer-contact-icon {
+      color: var(--primary-color);
+      margin-right: 15px;
+      margin-top: 3px;
+    }
+
+    .social-icons {
+      display: flex;
+      margin-top: 20px;
+    }
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      color: var(--text-light);
+      transition: var(--transition);
+    }
+
+    .social-icon:hover {
+      background: var(--primary-color);
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 30px;
+      margin-top: 50px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Loading spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* No results state */
+    .no-results {
+      text-align: center;
+      padding: 50px;
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      grid-column: 1 / -1;
+    }
+
+    .no-results i {
+      font-size: 3rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .no-results h4 {
+      color: var(--text-dark);
+      margin-bottom: 15px;
+    }
+
+    .no-results p {
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* Typeahead Styles */
+    .tt-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      border: 1px solid #e2e8f0;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      margin-top: 5px;
+    }
+
+    .tt-suggestion {
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .tt-suggestion:hover,
+    .tt-suggestion.tt-cursor {
+      background: #f1f5f9;
+    }
+
+    .tt-highlight {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .tt-empty {
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      .agents-section {
+        padding: 120px 0 60px;
+      }
+      
+      .section-title {
+        font-size: 2.2rem;
+      }
+      
+      .agent-card-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .agent-card img {
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
+      
+      .agent-card .btn {
+        align-self: center;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar-nav .nav-link {
+        margin-left: 0;
+        padding: 10px 0;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .agent-search-bar form {
+        flex-direction: column;
+      }
+      
+      .agent-search-bar .search-group {
+        width: 100%;
+      }
+      
+      .agent-search-bar button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .agents-section {
+        padding: 100px 0 40px;
+      }
+      
+      .section-title {
+        font-size: 1.8rem;
+      }
+      
+      .agent-card {
+        padding: 20px;
+      }
+      
+      .agent-card img {
+        width: 80px;
+        height: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip to content link for accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Header -->
+  <header>
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand" href="/" aria-label="Albania Properties Home">
+          <i class="fas fa-home" aria-hidden="true"></i> Albania Properties
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/properties?purpose=buy">Buy</a></li>
+            <li class="nav-item"><a class="nav-link" href="/properties?purpose=rent">Rent</a></li>
+            <li class="nav-item"><a class="nav-link" href="/sell">Sell</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/agents" aria-current="page">Find an Agent</a></li>
+            <li class="nav-item" id="auth-link">
+              <a class="nav-link" href="/signin" aria-label="Sign In">
+                <i class="fas fa-user" aria-hidden="true"></i> Sign In
+              </a>
+            </li>
+            <!-- Language dropdown with a globe icon -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Language selector">
+                <i class="fas fa-globe" aria-hidden="true"></i>
+                <span class="visually-hidden">Language</span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                <li><a class="dropdown-item" href="/?lang=al" lang="sq">🇦🇱 Albanian</a></li>
+                <li><a class="dropdown-item" href="/?lang=en" lang="en">🇬🇧 English</a></li>
+                <li><a class="dropdown-item" href="/?lang=it" lang="it">🇮🇹 Italian</a></li>
+                <li><a class="dropdown-item" href="/?lang=de" lang="de">🇩🇪 German</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Agents Section -->
+  <section class="agents-section" id="main-content">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">Find Your Perfect Real Estate Agent</h2>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+        Connect with Albania's top-rated property experts to help you buy, sell, or rent your dream home
+      </p>
+
+      <!-- Agent Search Bar -->
+      <div class="agent-search-bar" data-aos="fade-up" data-aos-delay="200">
+        <form id="agent-search-form">
+          <div class="search-group">
+            <label for="location" class="visually-hidden">Location</label>
+            <input type="text" id="location" placeholder="City or region" aria-label="Search by location" />
+          </div>
+          <div class="search-group">
+            <label for="specialty" class="visually-hidden">Specialty</label>
+            <select name="specialty" id="specialty" aria-label="Filter by specialty">
+              <option value="">All Specialties</option>
+              <option value="buying">Buying</option>
+              <option value="selling">Selling</option>
+              <option value="renting">Renting</option>
+              <option value="luxury">Luxury Homes</option>
+              <option value="commercial">Commercial</option>
+              <option value="investment">Investment</option>
+            </select>
+          </div>
+          <div class="search-group">
+            <label for="language" class="visually-hidden">Language</label>
+            <select name="language" id="language" aria-label="Filter by language">
+              <option value="">Any Language</option>
+              <option value="albanian">Albanian</option>
+              <option value="english">English</option>
+              <option value="italian">Italian</option>
+              <option value="german">German</option>
+            </select>
+          </div>
+          <button type="submit" id="search-agents-btn">
+            <span class="search-text">Search Agents</span>
+            <span class="loading-spinner d-none" aria-hidden="true"></span>
+            <i class="fas fa-search" aria-hidden="true"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Featured Agents Section -->
+      <div class="featured-agents" data-aos="fade-up">
+        <div class="container">
+          <h2 class="section-title">Featured Agents</h2>
+          <p class="section-subtitle">Our top-performing agents with exceptional customer satisfaction</p>
+          
+          <div class="row g-4">
+            <!-- Featured Agent 1 -->
+            <div class="col-lg-4 col-md-6">
+              <div class="featured-agent-card">
+                <span class="featured-badge">Top Seller</span>
+                <div class="agent-card-header">
+                  <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Agent Ana Kovaçi" loading="lazy" />
+                  <div class="agent-card-info">
+                    <h3>Ana Kovaçi</h3>
+                    <p class="agency">Elite Properties Albania</p>
+                    <p class="experience">12+ years experience</p>
+                  </div>
+                </div>
+                <div class="rating">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                  <span class="rating-count">4.8 (25 reviews)</span>
+                </div>
+                <span class="specialty">Luxury Homes</span>
+                <p class="languages"><i class="fas fa-language"></i> Albanian, English, Italian</p>
+                <a href="/agent/ana-kovaci" class="btn">Contact Agent</a>
+                <a href="/agent/ana-kovaci/properties" class="btn btn-outline">View Listings</a>
+              </div>
+            </div>
+            
+            <!-- Featured Agent 2 -->
+            <div class="col-lg-4 col-md-6">
+              <div class="featured-agent-card">
+                <span class="featured-badge">Best Reviews</span>
+                <div class="agent-card-header">
+                  <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Agent Besnik Rama" loading="lazy" />
+                  <div class="agent-card-info">
+                    <h3>Besnik Rama</h3>
+                    <p class="agency">Coastal Realty Group</p>
+                    <p class="experience">8+ years experience</p>
+                  </div>
+                </div>
+                <div class="rating">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <span class="rating-count">5.0 (18 reviews)</span>
+                </div>
+                <span class="specialty">Buying</span>
+                <p class="languages"><i class="fas fa-language"></i> Albanian, English, German</p>
+                <a href="/agent/besnik-rama" class="btn">Contact Agent</a>
+                <a href="/agent/besnik-rama/properties" class="btn btn-outline">View Listings</a>
+              </div>
+            </div>
+            
+            <!-- Featured Agent 3 -->
+            <div class="col-lg-4 col-md-6">
+              <div class="featured-agent-card">
+                <span class="featured-badge">Rising Star</span>
+                <div class="agent-card-header">
+                  <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Agent Elira Deda" loading="lazy" />
+                  <div class="agent-card-info">
+                    <h3>Elira Deda</h3>
+                    <p class="agency">South Shore Realty</p>
+                    <p class="experience">5+ years experience</p>
+                  </div>
+                </div>
+                <div class="rating">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                  <span class="rating-count">4.2 (15 reviews)</span>
+                </div>
+                <span class="specialty">Renting</span>
+                <p class="languages"><i class="fas fa-language"></i> Albanian, English, Italian</p>
+                <a href="/agent/elira-deda" class="btn">Contact Agent</a>
+                <a href="/agent/elira-deda/properties" class="btn btn-outline">View Listings</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- All Agents Section -->
+      <h3 class="section-title" data-aos="fade-up">All Agents</h3>
+      
+      <div class="row g-4" id="agent-list" data-aos="fade-up" data-aos-delay="200">
+        <!-- Agent Card 1 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="agent-card">
+            <div class="agent-card-header">
+              <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Agent Arben Hoxha" loading="lazy" />
+              <div class="agent-card-info">
+                <h3>Arben Hoxha</h3>
+                <p class="agency">Tirana Real Estate</p>
+                <p class="experience">10+ years experience</p>
+              </div>
+            </div>
+            <div class="rating">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+              <span class="rating-count">4.9 (32 reviews)</span>
+            </div>
+            <p class="sales">47 properties sold</p>
+            <span class="specialty">Selling</span>
+            <p class="languages"><i class="fas fa-language"></i> Albanian, English</p>
+            <a href="/agent/arben-hoxha" class="btn">Contact Agent</a>
+          </div>
+        </div>
+        
+        <!-- Agent Card 2 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="agent-card">
+            <div class="agent-card-header">
+              <img src="https://randomuser.me/api/portraits/women/22.jpg" alt="Agent Blerta Shala" loading="lazy" />
+              <div class="agent-card-info">
+                <h3>Blerta Shala</h3>
+                <p class="agency">Durrës Property Group</p>
+                <p class="experience">7+ years experience</p>
+              </div>
+            </div>
+            <div class="rating">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+              <span class="rating-count">4.7 (24 reviews)</span>
+            </div>
+            <p class="sales">35 properties sold</p>
+            <span class="specialty">Buying</span>
+            <p class="languages"><i class="fas fa-language"></i> Albanian, Italian</p>
+            <a href="/agent/blerta-shala" class="btn">Contact Agent</a>
+          </div>
+        </div>
+        
+        <!-- Agent Card 3 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="agent-card">
+            <div class="agent-card-header">
+              <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Agent Dritan Prifti" loading="lazy" />
+              <div class="agent-card-info">
+                <h3>Dritan Prifti</h3>
+                <p class="agency">Vlorë Coastal Homes</p>
+                <p class="experience">9+ years experience</p>
+              </div>
+            </div>
+            <div class="rating">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+              <span class="rating-count">4.1 (19 reviews)</span>
+            </div>
+            <p class="sales">28 properties sold</p>
+            <span class="specialty">Luxury Homes</span>
+            <p class="languages"><i class="fas fa-language"></i> Albanian, English, German</p>
+            <a href="/agent/dritan-prifti" class="btn">Contact Agent</a>
+          </div>
+        </div>
+        
+        <!-- Agent Card 4 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="agent-card">
+            <div class="agent-card-header">
+              <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="Agent Enkeleda Leka" loading="lazy" />
+              <div class="agent-card-info">
+                <h3>Enkeleda Leka</h3>
+                <p class="agency">Saranda Seaside Properties</p>
+                <p class="experience">6+ years experience</p>
+              </div>
+            </div>
+            <div class="rating">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+              <span class="rating-count">4.6 (21 reviews)</span>
+            </div>
+            <p class="sales">42 properties sold</p>
+            <span class="specialty">Renting</span>
+            <p class="languages"><i class="fas fa-language"></i> Albanian, English, Italian</p>
+            <a href="/agent/enkeleda-leka" class="btn">Contact Agent</a>
+          </div>
+        </div>
+        
+        <!-- Agent Card 5 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="agent-card">
+            <div class="agent-card-header">
+              <img src="https://randomuser.me/api/portraits/men/55.jpg" alt="Agent Fatmir Gjoka" loading="lazy" />
+              <div class="agent-card-info">
+                <h3>Fatmir Gjoka</h3>
+                <p class="agency">Berat Heritage Homes</p>
+                <p class="experience">11+ years experience</p>
+              </div>
+            </div>
+            <div class="rating">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+              <span class="rating-count">4.9 (27 reviews)</span>
+            </div>
+            <p class="sales">39 properties sold</p>
+            <span class="specialty">Investment</span>
+            <p class="languages"><i class="fas fa-language"></i> Albanian, English</p>
+            <a href="/agent/fatmir-gjoka" class="btn">Contact Agent</a>
+          </div>
+        </div>
+        
+        <!-- Agent Card 6 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="agent-card">
+            <div class="agent-card-header">
+              <img src="https://randomuser.me/api/portraits/women/66.jpg" alt="Agent Genta Basha" loading="lazy" />
+              <div class="agent-card-info">
+                <h3>Genta Basha</h3>
+                <p class="agency">Shkodër Lakeview Properties</p>
+                <p class="experience">4+ years experience</p>
+              </div>
+            </div>
+            <div class="rating">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+              <span class="rating-count">4.0 (14 reviews)</span>
+            </div>
+            <p class="sales">22 properties sold</p>
+            <span class="specialty">First-time Buyers</span>
+            <p class="languages"><i class="fas fa-language"></i> Albanian, Italian</p>
+            <a href="/agent/genta-basha" class="btn">Contact Agent</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Pagination -->
+      <div class="pagination mt-5" data-aos="fade-up">
+        <a href="#" class="disabled"><i class="fas fa-chevron-left"></i></a>
+        <a href="#" class="active">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#"><i class="fas fa-chevron-right"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">How It Works</h2>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Find and connect with the perfect agent in just a few simple steps</p>
+      
+      <div class="row g-4">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <h4>Search Agents</h4>
+            <p>Browse our network of experienced agents by location, specialty, and language.</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <h4>Compare Profiles</h4>
+            <p>Review agent profiles, experience, ratings, and listings to find your perfect match.</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h4>Connect & Collaborate</h4>
+            <p>Contact your chosen agent directly to start your property journey together.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">What Our Clients Say</h2>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Hear from people who found their perfect agent through Albania Properties</p>
+      
+      <div class="row g-4">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="testimonial-card">
+            <p class="testimonial-text">Ana helped us find our dream home in Tirana. Her knowledge of the local market and negotiation skills saved us thousands of euros.</p>
+            <div class="testimonial-author">
+              <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Sarah Johnson" loading="lazy" />
+              <div>
+                <div class="testimonial-author-name">Sarah Johnson</div>
+                <div class="testimonial-author-role">Homeowner in Tirana</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="testimonial-card">
+            <p class="testimonial-text">As an international investor, Besnik's expertise in the Albanian market was invaluable. He found me the perfect rental property in Durrës.</p>
+            <div class="testimonial-author">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Bianchi" loading="lazy" />
+              <div>
+                <div class="testimonial-author-name">Michael Bianchi</div>
+                <div class="testimonial-author-role">Investor from Italy</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+          <div class="testimonial-card">
+            <p class="testimonial-text">Elira made renting our apartment in Vlorå so easy. She understood exactly what we were looking for and found it within a week!</p>
+            <div class="testimonial-author">
+              <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Elena Petrova" loading="lazy" />
+              <div>
+                <div class="testimonial-author-name">Elena Petrova</div>
+                <div class="testimonial-author-role">Renter in Vlorå</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Become Agent CTA -->
+  <section class="become-agent-cta" data-aos="fade-up">
+    <div class="container">
+      <h2>Join Our Network of Top Agents</h2>
+      <p>Grow your business with Albania Properties and get access to thousands of qualified buyers and sellers.</p>
+      <a href="/join-as-agent" class="btn-cta">Become an Agent</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-6 mb-5">
+          <a href="/" class="footer-logo"><i class="fas fa-home"></i> Albania Properties</a>
+          <div class="footer-about">
+            <p class="footer-about-text">Connecting buyers, sellers, and renters with Albania's finest properties since 2015. Our mission is to make real estate transactions seamless and transparent.</p>
+            <div class="social-icons">
+              <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="social-icon" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6 mb-5">
+          <h3 class="footer-title">Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="/properties">Browse Properties</a></li>
+            <li><a href="/sell">Sell Your Property</a></li>
+            <li><a href="/agents">Find an Agent</a></li>
+            <li><a href="/mortgage">Mortgage Calculator</a></li>
+            <li><a href="/market-trends">Market Trends</a></li>
+            <li><a href="/blog">Real Estate Blog</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-6 mb-5">
+          <h3 class="footer-title">Cities</h3>
+          <ul class="footer-links">
+            <li><a href="/agents?location=Tirana">Tirana</a></li>
+            <li><a href="/agents?location=Durrës">Durrës</a></li>
+            <li><a href="/agents?location=Vlorë">Vlorë</a></li>
+            <li><a href="/agents?location=Sarandë">Sarandë</a></li>
+            <li><a href="/agents?location=Shkodër">Shkodër</a></li>
+            <li><a href="/agents?location=Berat">Berat</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-5">
+          <h3 class="footer-title">Contact Us</h3>
+          <div class="footer-contact-item">
+            <i class="fas fa-map-marker-alt footer-contact-icon"></i>
+            <div>Rr. Deshmoret e 4 Shkurtit, Tirana 1001, Albania</div>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-phone-alt footer-contact-icon"></i>
+            <div>+355 4 123 4567</div>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-envelope footer-contact-icon"></i>
+            <div>info@albaniaproperties.com</div>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-clock footer-contact-icon"></i>
+            <div>Mon-Fri: 9AM-6PM<br>Sat: 10AM-4PM</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Albania Properties. All Rights Reserved. | <a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize AOS animations
+      AOS.init({ 
+        duration: 1000, 
+        once: true,
+        offset: 120
+      });
+
+      // Sticky header
+      window.addEventListener('scroll', () => {
+        const header = document.querySelector('header');
+        header.classList.toggle('scrolled', window.scrollY > 50);
+      });
+
+      // Check login status
+      async function checkLoginStatus() {
+        try {
+          const response = await fetch('/api/auth/status', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          const data = await response.json();
+          
+          if (response.ok && data.authenticated) {
+            const authLink = document.getElementById('auth-link');
+            const user = data.user;
+            const dashboardLink = `/dashboard/${user.user_type.replace('/', '-').toLowerCase()}`;
+            
+            authLink.innerHTML = `
+              <div class="dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="User menu">
+                  <i class="fas fa-user-circle"></i> ${user.name}
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                  <li><a class="dropdown-item" href="${dashboardLink}">Dashboard</a></li>
+                  <li><a class="dropdown-item" href="/favorites">Favorites</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul>
+              </div>
+            `;
+          }
+        } catch (error) {
+          console.error('Error checking login status:', error);
+        }
+      }
+
+      // Run on page load
+      checkLoginStatus();
+
+      // Agent search form submission
+      document.getElementById('agent-search-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const btn = document.getElementById('search-agents-btn');
+        const btnText = btn.querySelector('.search-text');
+        const spinner = btn.querySelector('.loading-spinner');
+        
+        btnText.classList.add('d-none');
+        spinner.classList.remove('d-none');
+        btn.disabled = true;
+        
+        const location = document.getElementById('location').value;
+        const specialty = document.getElementById('specialty').value;
+        const language = document.getElementById('language').value;
+        
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // In a real app, you would fetch filtered agents from your API
+        console.log(`Searching for agents in ${location} with specialty: ${specialty} and language: ${language}`);
+        
+        // Show toast notification
+        showToast(`Showing agents matching your criteria`);
+        
+        btnText.classList.remove('d-none');
+        spinner.classList.add('d-none');
+        btn.disabled = false;
+      });
+
+      // Show toast notification
+      function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed bottom-0 end-0 p-3';
+        toast.style.zIndex = '11';
+        toast.innerHTML = `
+          <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+              <strong class="me-auto">Albania Properties</strong>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+              ${message}
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(toast);
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
+      }
+
+      // Autocomplete for location search
+      const locations = [
+        "Berat", "Kučové", "Poliçan", "Ura Vajgurore", "Peshkopi", "Bulqizë", "Klos", "Burrel",
+        "Durrës", "Krujë", "Shijak", "Manëz", "Elbasan", "Cërrik", "Librazhd", "Peqin",
+        "Gramsh", "Belsh", "Fier", "Lushnjë", "Patos", "Ballsh", "Roskovec", "Gjirokastër",
+        "Tepelenë", "Memaliaj", "Përmet", "Korçë", "Pogradec", "Maliq", "Bilisht", "Kukës",
+        "Krumë", "Bajram Curri", "Lezhë", "Laç", "Rreshen", "Mamurras", "Shkodër", "Pukë",
+        "Fushë-Arrëz", "Vau i Dejës", "Koplik", "Tirana", "Kamëz", "Vora", "Kavajë",
+        "Rrogozhinë", "Vlorë", "Sarandë", "Himarë", "Delvinë", "Konispol", "Orikum", "Selenicë"
+      ];
+      
+      const substringMatcher = function(strs) {
+        return function findMatches(q, cb) {
+          const matches = [];
+          const substrRegex = new RegExp(q, 'i');
+          
+          // First check for exact matches
+          const exactMatches = strs.filter(str => str.toLowerCase() === q.toLowerCase());
+          
+          // Then check for partial matches
+          const partialMatches = strs.filter(str => 
+            substrRegex.test(str) && !exactMatches.includes(str)
+          );
+          
+          cb(exactMatches.concat(partialMatches).slice(0, 10));
+        };
+      };
+      
+      $('#location').typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 1
+      }, {
+        name: 'locations',
+        source: substringMatcher(locations),
+        templates: {
+          suggestion: function(data) {
+            return '<div class="tt-suggestion">' + data + '</div>';
+          },
+          empty: [
+            '<div class="tt-empty">No matching locations found</div>'
+          ].join('\n')
+        }
+      });
+
+      // Initialize tooltips
+      $('[data-bs-toggle="tooltip"]').tooltip();
+    });
+  </script>
+</body>
+</html>

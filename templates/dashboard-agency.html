@@ -1,8 +1,600 @@
-{% extends "base.html" %}
-{% block title %}Agency Dashboard{% endblock %}
-{% block content %}
-<div class="container py-5">
-  <h1>Agency Dashboard</h1>
-  <p>Welcome to your dashboard.</p>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Agency Dashboard - Manage your real estate business with advanced tools." />
+  <meta name="keywords" content="dashboard, agency, real estate, listings, agents, membership" />
+  <meta name="author" content="Albania Properties" />
+  <title>Agency Dashboard | Albania Properties</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <!-- AOS Animation Library -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom CSS -->
+  <style>
+    :root {
+      --primary-color: #1a73e8;
+      --secondary-color: #2d3748;
+      --accent-color: #00c4b4;
+      --background-light: #f9fafb;
+      --background-dark: #1f2a44;
+      --text-dark: #1f2a44;
+      --text-light: #fff;
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 6px 25px rgba(0, 0, 0, 0.12);
+      --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--background-light);
+      color: var(--text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1100;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(12px);
+      padding: 15px 0;
+      box-shadow: var(--shadow-sm);
+      transition: padding 0.3s ease, background 0.3s ease;
+    }
+    header.scrolled {
+      padding: 8px 0;
+      background: rgba(255, 255, 255, 1);
+    }
+    .navbar-brand {
+      font-size: 1.8rem;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+    }
+    .navbar-brand i {
+      margin-right: 12px;
+      color: var(--primary-color);
+      font-size: 1.4rem;
+    }
+    .navbar-nav .nav-link {
+      color: var(--text-dark);
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-left: 30px;
+      position: relative;
+      padding-bottom: 6px;
+      cursor: pointer;
+    }
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+      color: var(--primary-color);
+    }
+    .navbar-nav .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: var(--primary-color);
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: width 0.3s ease;
+    }
+    .navbar-nav .nav-link:hover::after,
+    .navbar-nav .nav-link.active::after {
+      width: 80%;
+    }
+    .dashboard-section {
+      padding: 100px 20px 80px;
+      margin-top: 70px;
+    }
+    .card-custom {
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      margin-bottom: 30px;
+    }
+    .card-custom:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+    .card-custom .card-header {
+      background: var(--primary-color);
+      color: var(--text-light);
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+    .stats-box {
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .stats-box h4 {
+      font-size: 1.2rem;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+    .stats-box p {
+      font-size: 0.9rem;
+      color: #718096;
+    }
+    .nav-tabs .nav-link {
+      border: none;
+      border-bottom: 2px solid transparent;
+      transition: border-bottom 0.3s ease;
+    }
+    .nav-tabs .nav-link.active {
+      border-bottom: 2px solid var(--primary-color);
+      font-weight: 600;
+    }
+    .footer {
+      background: var(--background-dark);
+      color: var(--text-light);
+      padding: 80px 0 30px;
+      font-size: 1rem;
+    }
+    .footer a {
+      color: #a0aec0;
+      margin: 0 20px;
+      transition: var(--transition);
+    }
+    .footer a:hover {
+      color: var(--primary-color);
+    }
+    .social-icons a {
+      font-size: 1.5rem;
+      margin: 0 15px;
+      color: #a0aec0;
+    }
+    .social-icons a:hover {
+      color: var(--accent-color);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand" href="/"><i class="fas fa-home"></i> Albania Properties</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/properties?purpose=buy">Buy</a></li>
+            <li class="nav-item"><a class="nav-link" href="/properties?purpose=rent">Rent</a></li>
+            <li class="nav-item"><a class="nav-link" href="/sell">Sell</a></li>
+            <li class="nav-item"><a class="nav-link" href="/market">Market Insights</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/dashboard/agency">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Dashboard Section -->
+  <section class="dashboard-section">
+    <div class="container">
+      <!-- Tabs Navigation -->
+      <ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">Overview</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="listings-tab" data-bs-toggle="tab" data-bs-target="#listings" type="button" role="tab">Listings</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="agents-tab" data-bs-toggle="tab" data-bs-target="#agents" type="button" role="tab">Agents</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab">Reports</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="membership-tab" data-bs-toggle="tab" data-bs-target="#membership" type="button" role="tab">Membership</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">Profile</button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="dashboardTabsContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+          <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+              <div class="card card-custom">
+                <div class="card-header">Agency Listings</div>
+                <div class="card-body">
+                  <p><span id="agency-property-count">15</span> active listings this month.</p>
+                  <div class="stats-box">
+                    <h4>Views: <span id="view-count">150</span></h4>
+                    <p>Total views this month</p>
+                  </div>
+                  <div class="stats-box">
+                    <h4>Inquiries: <span id="inquiry-count">10</span></h4>
+                    <p>New leads generated</p>
+                  </div>
+                  <a href="#" class="btn btn-primary" onclick="loadAgencyProperties()">Manage Listings</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+              <div class="card card-custom">
+                <div class="card-header">Client Management</div>
+                <div class="card-body">
+                  <p><span id="request-count">5</span> new client inquiries.</p>
+                  <div id="requests-list" class="mt-3">
+                    <!-- Dynamic requests will load here -->
+                  </div>
+                  <a href="#" class="btn btn-primary" onclick="loadRequests()">View Requests</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+              <div class="card card-custom">
+                <div class="card-header">Performance Analytics</div>
+                <div class="card-body">
+                  <div class="stats-box">
+                    <h4>Conversion Rate: <span id="conversion-rate">6.7%</span></h4>
+                    <p>Inquiries to offers</p>
+                  </div>
+                  <a href="#" class="btn btn-primary" onclick="loadAnalytics()">See Insights</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Listings Tab -->
+        <div class="tab-pane fade" id="listings" role="tabpanel">
+          <div class="card card-custom" data-aos="fade-up">
+            <div class="card-header">Manage Listings</div>
+            <div class="card-body">
+              <p>Here you can add, edit, and remove property listings.</p>
+              <a href="/sell" class="btn btn-success mb-3">Add New Listing</a>
+              <!-- Listings Table -->
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Property</th>
+                      <th>Status</th>
+                      <th>Views</th>
+                      <th>Inquiries</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="listings-table">
+                    <!-- Dynamic listing rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agents Tab -->
+        <div class="tab-pane fade" id="agents" role="tabpanel">
+          <div class="card card-custom" data-aos="fade-up">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span>Manage Agents</span>
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAgentModal"><i class="fas fa-user-plus"></i> Add Agent</button>
+            </div>
+            <div class="card-body">
+              <p>View and manage agents connected to your agency account.</p>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Agent Name</th>
+                      <th>Email</th>
+                      <th>Photo</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="agents-table">
+                    <!-- Dynamic agents list -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div class="tab-pane fade" id="reports" role="tabpanel">
+          <div class="card card-custom" data-aos="fade-up">
+            <div class="card-header">Advanced Reports</div>
+            <div class="card-body">
+              <p>Analyze detailed performance metrics and trends.</p>
+              <!-- Chart Container -->
+              <canvas id="analyticsChart" height="100"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Membership Tab -->
+        <div class="tab-pane fade" id="membership" role="tabpanel">
+          <div class="card card-custom" data-aos="fade-up">
+            <div class="card-header">Membership Management</div>
+            <div class="card-body">
+              <p>Upgrade your agency's membership to access premium features such as enhanced listings and personalized marketing.</p>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="card card-custom">
+                    <div class="card-header">Basic</div>
+                    <div class="card-body">
+                      <p>Standard listings and limited features.</p>
+                      <button class="btn btn-outline-primary">Current Plan</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card card-custom">
+                    <div class="card-header">Premium</div>
+                    <div class="card-body">
+                      <p>Premium listings, advanced reports, and enhanced visibility.</p>
+                      <button class="btn btn-primary">Upgrade to Premium</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card card-custom">
+                    <div class="card-header">Enterprise</div>
+                    <div class="card-body">
+                      <p>All features including personalized marketing and dedicated support.</p>
+                      <button class="btn btn-primary">Contact Sales</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Tab -->
+        <div class="tab-pane fade" id="profile" role="tabpanel">
+          <div class="card card-custom" data-aos="fade-up">
+            <div class="card-header">Agency Profile</div>
+            <div class="card-body">
+              <p>Update your agency's profile information and upload a profile photo.</p>
+              <form id="agencyProfileForm">
+                <div class="mb-3">
+                  <label for="agencyName" class="form-label">Agency Name</label>
+                  <input type="text" class="form-control" id="agencyName" placeholder="Enter agency name" value="{{ user.agency_name }}">
+                </div>
+                <div class="mb-3">
+                  <label for="agencyEmail" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="agencyEmail" placeholder="Enter email" value="{{ user.email }}">
+                </div>
+                <div class="mb-3">
+                  <label for="agencyPhoto" class="form-label">Profile Photo</label>
+                  <input type="file" class="form-control" id="agencyPhoto">
+                </div>
+                <button type="submit" class="btn btn-success">Update Profile</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Add Agent Modal -->
+  <div class="modal fade" id="addAgentModal" tabindex="-1" aria-labelledby="addAgentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addAgentModalLabel">Add New Agent</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addAgentForm">
+            <div class="mb-3">
+              <label for="agentName" class="form-label">Agent Name</label>
+              <input type="text" class="form-control" id="agentName" placeholder="Enter agent's name" required>
+            </div>
+            <div class="mb-3">
+              <label for="agentEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="agentEmail" placeholder="Enter agent's email" required>
+            </div>
+            <div class="mb-3">
+              <label for="agentPhoto" class="form-label">Agent Photo</label>
+              <input type="file" class="form-control" id="agentPhoto">
+            </div>
+            <div class="mb-3">
+              <label for="agentRole" class="form-label">Role</label>
+              <select class="form-select" id="agentRole" required>
+                <option value="">Select Role</option>
+                <option value="agent">Agent</option>
+                <option value="manager">Manager</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Agent Account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <p>© 2025 Albania Properties. All Rights Reserved.</p>
+        </div>
+        <div class="col-md-4 text-center">
+          <p>
+            <a href="/about">About</a> |
+            <a href="/contact">Contact</a> |
+            <a href="/mortgage">Mortgage Tools</a> |
+            <a href="/sell">Sell Your Home</a> |
+            <a href="/market">Market Trends</a>
+          </p>
+        </div>
+        <div class="col-md-4 text-end">
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS and AOS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 1000, once: true });
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('header');
+      header.classList.toggle('scrolled', window.scrollY > 50);
+    });
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      try {
+        const response = await fetch('/logout', { method: 'POST' });
+        if (response.ok) { window.location.href = '/'; }
+      } catch (error) { console.error('Logout Error:', error); }
+    });
+
+    async function loadAgencyProperties() {
+      // Fetch and update listings count and stats
+      const response = await fetch('/api/agency/properties', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } });
+      const data = await response.json();
+      document.getElementById('agency-property-count').textContent = data.count;
+      document.getElementById('view-count').textContent = data.properties[0].views;
+      document.getElementById('inquiry-count').textContent = data.properties[0].inquiries;
+    }
+
+    async function loadRequests() {
+      const response = await fetch('/api/requests', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } });
+      const data = await response.json();
+      document.getElementById('request-count').textContent = data.count;
+      const requestsList = document.getElementById('requests-list');
+      requestsList.innerHTML = data.requests.map(req => `
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span>${req.client} - ${req.property}</span>
+          <a href="#" class="btn btn-sm btn-primary" onclick="respondRequest(${req.id})">Respond</a>
+        </div>
+      `).join('');
+    }
+
+    async function loadAnalytics() {
+      const response = await fetch('/api/analytics', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } });
+      const data = await response.json();
+      document.getElementById('conversion-rate').textContent = data.conversion_rate;
+
+      // Load chart data for advanced reports
+      const ctx = document.getElementById('analyticsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.chart.labels,
+          datasets: [{
+            label: 'Monthly Views',
+            data: data.chart.views,
+            fill: false,
+            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim(),
+            tension: 0.1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: true } }
+        }
+      });
+    }
+
+    async function respondRequest(requestId) { console.log(`Respond to request ${requestId}`); }
+
+    // Add Agent Form submission
+    document.getElementById('addAgentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const response = await fetch('/api/agents/add', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+        body: formData
+      });
+      if (response.ok) {
+        // Optionally refresh agents list and close modal
+        loadAgents();
+        var addAgentModal = bootstrap.Modal.getInstance(document.getElementById('addAgentModal'));
+        addAgentModal.hide();
+      }
+    });
+
+    async function loadAgents() {
+      const response = await fetch('/api/agents', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } });
+      const data = await response.json();
+      const agentsTable = document.getElementById('agents-table');
+      agentsTable.innerHTML = data.agents.map(agent => `
+        <tr>
+          <td>${agent.name}</td>
+          <td>${agent.email}</td>
+          <td><img src="${agent.photo}" alt="Agent Photo" style="width:40px;height:40px;border-radius:50%;"></td>
+          <td>${agent.status}</td>
+          <td>
+            <button class="btn btn-sm btn-warning" onclick="editAgent(${agent.id})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteAgent(${agent.id})">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function editAgent(agentId) {
+      // Implement agent edit functionality
+      console.log(`Edit agent ${agentId}`);
+    }
+
+    async function deleteAgent(agentId) {
+      // Implement agent delete functionality
+      console.log(`Delete agent ${agentId}`);
+    }
+
+    // Update Agency Profile Form submission
+    document.getElementById('agencyProfileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const response = await fetch('/api/agency/profile', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+        body: formData
+      });
+      if (response.ok) { alert('Profile updated successfully!'); }
+    });
+
+    // Initial Data Loads
+    loadAgencyProperties();
+    loadRequests();
+    loadAnalytics();
+    loadAgents();
+  </script>
+</body>
+</html>
