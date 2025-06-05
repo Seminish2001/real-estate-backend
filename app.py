@@ -394,7 +394,24 @@ def dashboard(role):
     template = templates.get(role)
     if not template:
         abort(404)
-    return render_template(template)
+
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user:
+        abort(404)
+
+    property_count = Property.query.filter_by(user_id=user_id).count()
+    saved_count = Favorite.query.filter_by(user_id=user_id).count()
+    alert_count = AlertPreference.query.filter_by(user_id=user_id).count()
+
+    return render_template(
+        template,
+        user=user,
+        property_count=property_count,
+        saved_count=saved_count,
+        alert_count=alert_count,
+        match_count=alert_count,
+    )
 
 # --- API Endpoints for Properties, Favorites, Evaluation, and Alerts ---
 @app.route("/api/properties", methods=["GET"])

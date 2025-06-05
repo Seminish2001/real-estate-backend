@@ -230,7 +230,7 @@
               <div class="card card-custom">
                 <div class="card-header">Favorites Overview</div>
                 <div class="card-body">
-                  <p>You have <span id="saved-count">4</span> saved properties.</p>
+                  <p>You have <span id="saved-count">{{ saved_count }}</span> saved properties.</p>
                   <div class="stats-box">
                     <h4>Recent Saves</h4>
                     <p>Check out your latest saved properties</p>
@@ -244,9 +244,9 @@
               <div class="card card-custom">
                 <div class="card-header">Alerts Overview</div>
                 <div class="card-body">
-                  <p>You have <span id="alert-count">2</span> active alerts.</p>
+                  <p>You have <span id="alert-count">{{ alert_count }}</span> active alerts.</p>
                   <div class="stats-box">
-                    <h4>Matches: <span id="match-count">2</span></h4>
+                    <h4>Matches: <span id="match-count">{{ match_count }}</span></h4>
                     <p>Properties matching your criteria</p>
                   </div>
                   <a href="/alerts" class="btn btn-primary">Manage Alerts</a>
