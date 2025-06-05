@@ -15,17 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <!-- AOS Animation Library -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-  <!-- Leaflet for Map -->
-  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
-  <!-- Leaflet MarkerCluster CSS -->
-  <link
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-    rel="stylesheet"
-  />
-  <link
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-    rel="stylesheet"
-  />
+  <!-- Google Maps -->
   <!-- Custom CSS -->
   <style>
     :root {
@@ -611,8 +601,8 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+  <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -678,24 +668,36 @@
         });
       });
 
-      // Initialize Leaflet Map
+      // Initialize Google Map
       let mapInitialized = false;
+      let markers = [];
+      let markerCluster;
       function initMap(properties = []) {
         if (!mapInitialized) {
-          map = L.map('map-view').setView([41.3275, 19.8187], 10);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          }).addTo(map);
-          markers = L.markerClusterGroup();
-          map.addLayer(markers);
+          map = new google.maps.Map(document.getElementById('map-view'), {
+            center: { lat: 41.3275, lng: 19.8187 },
+            zoom: 10
+          });
           mapInitialized = true;
         }
-        markers.clearLayers();
+        if (markerCluster) {
+          markerCluster.clearMarkers();
+        }
+        markers.forEach(m => m.setMap(null));
+        markers = [];
         properties.forEach(prop => {
           if (prop.lat && prop.lng) {
-            markers.addLayer(L.marker([prop.lat, prop.lng]).bindPopup(`${prop.title} - €${prop.price}`));
+            const marker = new google.maps.Marker({
+              position: { lat: prop.lat, lng: prop.lng },
+              title: prop.title,
+              map: map
+            });
+            const info = new google.maps.InfoWindow({ content: `${prop.title} - €${prop.price}` });
+            marker.addListener('click', () => info.open({ map, anchor: marker }));
+            markers.push(marker);
           }
         });
+        markerCluster = new markerClusterer.MarkerClusterer({ map, markers });
       }
 
       // Autocomplete for location filter
