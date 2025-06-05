@@ -644,6 +644,13 @@ def create_agent():
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
 
+@app.route("/api/agents/add", methods=["POST"])
+@jwt_required()
+def add_agent():
+    """Alias route to create a new agent."""
+    return create_agent()
+
+
 @app.route("/api/agents/<int:agent_id>", methods=["GET"])
 def get_agent(agent_id):
     try:
@@ -733,6 +740,69 @@ def user_properties():
             "count": len(properties),
             "properties": [{"id": p.id, "title": p.title, "status": p.status, "price": p.price} for p in properties]
         })
+    except Exception as e:
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+
+@app.route("/api/analytics", methods=["GET"])
+@jwt_required()
+def analytics():
+    """Return placeholder analytics data."""
+    try:
+        data = {
+            "conversion_rate": "2.5%",
+            "chart": {
+                "labels": ["Jan", "Feb", "Mar", "Apr"],
+                "views": [120, 150, 170, 160],
+            },
+        }
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+
+@app.route("/api/requests", methods=["GET"])
+@jwt_required()
+def agency_requests():
+    """List incoming requests for an agency."""
+    try:
+        requests_list = [
+            {"id": 1, "client": "John Doe", "property": "Apartment"},
+            {"id": 2, "client": "Jane Smith", "property": "Villa"},
+        ]
+        return jsonify({"count": len(requests_list), "requests": requests_list})
+    except Exception as e:
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+
+@app.route("/api/agency/profile", methods=["POST"])
+@jwt_required()
+def update_agency_profile():
+    """Update the authenticated agency's profile."""
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"message": "User not found"}), 404
+
+        data = request.form or request.json or {}
+        if "name" in data:
+            user.name = data["name"]
+        if "email" in data:
+            user.email = data["email"]
+        db.session.commit()
+        return jsonify({"message": "Profile updated"})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
+
+@app.route("/api/market-snapshot", methods=["GET"])
+@jwt_required()
+def market_snapshot():
+    """Return a simplified market snapshot."""
+    try:
+        return jsonify({"avg_price": "€1,350/m²", "trend": "up"})
     except Exception as e:
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
