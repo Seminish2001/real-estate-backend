@@ -406,9 +406,7 @@
     
     // Dynamic Data Loading Functions
     async function loadSavedProperties() {
-      const response = await fetch('/api/saved', { 
-        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } 
-      });
+      const response = await fetch('/api/saved');
       const data = await response.json();
       document.getElementById('saved-count').textContent = data.count || 4;
       const savedList = document.getElementById('saved-list');
@@ -431,9 +429,7 @@
     }
     
     async function loadAlerts() {
-      const response = await fetch('/api/alerts', { 
-        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } 
-      });
+      const response = await fetch('/api/alerts');
       const data = await response.json();
       document.getElementById('alert-count').textContent = data.count || 2;
       document.getElementById('match-count').textContent = data.alerts.length || 2;
@@ -446,9 +442,7 @@
     }
     
     async function loadMarketSnapshot() {
-      const response = await fetch('/api/market-snapshot', { 
-        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } 
-      });
+      const response = await fetch('/api/market-snapshot');
       const data = await response.json();
       document.getElementById('avg-price').textContent = data.avg_price || '€1,350/m²';
       // Optionally, update the second market snapshot in the Market tab
