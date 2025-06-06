@@ -424,6 +424,11 @@ def agents_page():
     """List real estate agents."""
     return render_template("agents.html")
 
+@app.route("/contact")
+def contact_page():
+    """Render the contact page."""
+    return render_template("contact.html")
+
 @app.route("/dashboard/<role>")
 @jwt_required()
 def dashboard(role):
