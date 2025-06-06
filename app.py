@@ -419,6 +419,11 @@ def privacy_page():
     """Display the privacy policy."""
     return render_template("privacy.html")
 
+@app.route("/blog")
+def blog_page():
+    """Render the blog page."""
+    return render_template("blog.html")
+
 @app.route("/about")
 def about_page():
     """Render the about page."""
