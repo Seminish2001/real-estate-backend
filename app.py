@@ -136,9 +136,6 @@ class Offer(db.Model):
     status = db.Column(db.String(20), default="pending")
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-with app.app_context():
-    db.create_all()
-
 # --- Authentication Endpoints ---
 @app.route("/signin", methods=["POST"])
 @limiter.limit("10 per minute")
