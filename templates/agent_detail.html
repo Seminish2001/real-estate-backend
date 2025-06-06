@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ agent.name }} | Albania Properties</title>
+</head>
+<body>
+  <h1>{{ agent.name }}</h1>
+  <p>Agency: {{ agent.agency }}</p>
+  <p>Email: {{ agent.email }}</p>
+  <p>Phone: {{ agent.phone }}</p>
+  {% if agent.photo_url %}
+  <img src="{{ agent.photo_url }}" alt="{{ agent.name }}" />
+  {% endif %}
+</body>
+</html>

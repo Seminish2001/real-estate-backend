@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ property.title }} | Albania Properties</title>
+</head>
+<body>
+  <h1>{{ property.title }}</h1>
+  <p>{{ property.location }}</p>
+  <p>Price: {{ property.price }}</p>
+  <p>{{ property.beds }} beds, {{ property.baths }} baths</p>
+  {% if property.image_url %}
+  <img src="{{ property.image_url }}" alt="{{ property.title }}" />
+  {% endif %}
+</body>
+</html>
