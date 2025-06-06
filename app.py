@@ -454,6 +454,12 @@ def join_as_agent_page():
     """Render the join as agent page."""
     return render_template("join-as-agent.html")
 
+
+@app.route("/list/private-agent")
+def private_agent_page():
+    """Render the private agent listing page."""
+    return render_template("private-agent.html")
+
 @app.route("/contact")
 def contact_page():
     """Render the contact page."""
