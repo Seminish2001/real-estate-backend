@@ -16,7 +16,7 @@ This project is a simple Flask backend for a real estate website. The applicatio
    - `GOOGLE_MAPS_API_KEY` – API key for Google Maps (required for map features).
    - `PORT` – Port for the development server (default: `5000`).
 
-You can create a `.env` file or export these variables in your shell before running the server.
+Copy `.env.example` to `.env` and update the values, or export these variables in your shell before running the server.
 
 ## Running the Server
 
