@@ -414,6 +414,11 @@ def privacy_page():
     """Display the privacy policy."""
     return render_template("privacy.html")
 
+@app.route("/about")
+def about_page():
+    """Render the about page."""
+    return render_template("about.html")
+
 @app.route("/agents")
 def agents_page():
     """List real estate agents."""
