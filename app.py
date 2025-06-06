@@ -53,21 +53,31 @@ app.logger.info("Application started")
 
 # --- Models ---
 class User(db.Model):
+    """Application user with authentication credentials."""
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
-    user_type = db.Column(db.String(50), nullable=False)  # "Landlord", "Agency", "Buyer/Renter"
+    user_type = db.Column(
+        db.String(50), nullable=False
+    )  # "Landlord", "Agency", "Buyer/Renter"
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     is_active = db.Column(db.Boolean, default=True)
 
     def set_password(self, password):
-        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+        """Hash and store the given password."""
+
+        self.password = bcrypt.generate_password_hash(password).decode("utf-8")
 
     def check_password(self, password):
+        """Return True if the password matches the stored hash."""
+
         return bcrypt.check_password_hash(self.password, password)
 
 class Property(db.Model):
+    """Real estate listing posted by a user."""
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     title = db.Column(db.String(100), nullable=False)
@@ -85,6 +95,8 @@ class Property(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
 class EvaluationRequest(db.Model):
+    """Request submitted to estimate a property's value."""
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     location = db.Column(db.String(100), nullable=False)
@@ -98,6 +110,8 @@ class EvaluationRequest(db.Model):
 
 # New Agent model to store real estate agents
 class Agent(db.Model):
+    """Real estate agent profile."""
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100))
@@ -111,6 +125,8 @@ class Agent(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
 class AlertPreference(db.Model):
+    """Saved search alert settings for a user."""
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     email = db.Column(db.String(100), nullable=False)
@@ -123,12 +139,16 @@ class AlertPreference(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
 class Favorite(db.Model):
+    """Mapping of users to properties they like."""
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
 class Offer(db.Model):
+    """Bid made by a user on a property."""
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False)
@@ -140,6 +160,7 @@ class Offer(db.Model):
 @app.route("/signin", methods=["POST"])
 @limiter.limit("10 per minute")
 def signin():
+    """Authenticate a user and return JWT cookies."""
     try:
         data = request.json
         if not all(key in data for key in ["email", "password"]):
@@ -165,6 +186,7 @@ def signin():
 @app.route("/signup", methods=["POST"])
 @limiter.limit("10 per minute")
 def signup():
+    """Register a new user and set authentication cookies."""
     try:
         data = request.json
         if not all(key in data for key in ["name", "email", "password", "user_type"]):
@@ -203,12 +225,14 @@ def signup():
 
 @app.route("/logout", methods=["POST"])
 def logout():
+    """Clear authentication cookies and end the session."""
     response = make_response(jsonify({"message": "Logged out successfully"}), 200)
     unset_jwt_cookies(response)
     return response
 
 @app.route("/auth/google", methods=["POST"])
 def google_auth():
+    """Authenticate or register a user using a Google OAuth token."""
     try:
         token = request.json.get("token")
         if not token:
@@ -241,6 +265,7 @@ def google_auth():
 
 @app.route("/auth/facebook", methods=["POST"])
 def facebook_auth():
+    """Authenticate or register a user using a Facebook token."""
     try:
         access_token = request.json.get("accessToken")
         if not access_token:
@@ -275,6 +300,7 @@ def facebook_auth():
 @app.route("/update-type", methods=["POST"])
 @jwt_required()
 def update_user_type():
+    """Change the authenticated user's type."""
     try:
         user_id = get_jwt_identity()
         data = request.json
@@ -299,6 +325,7 @@ def update_user_type():
 @app.route("/whoami", methods=["GET"])
 @jwt_required()
 def whoami():
+    """Return the currently authenticated user's info."""
     try:
         user_id = get_jwt_identity()
         user = User.query.get(user_id)
@@ -316,6 +343,7 @@ def whoami():
 @app.route("/api/auth/status", methods=["GET"])
 @jwt_required(optional=True)
 def auth_status():
+    """Return whether a user is authenticated and basic user info."""
     try:
         user_id = get_jwt_identity()
         if user_id:
@@ -338,51 +366,63 @@ def auth_status():
 # --- Template & Dashboard Routes ---
 @app.route("/")
 def home():
+    """Render the landing page."""
     return render_template("index.html", google_maps_api_key=app.config['GOOGLE_MAPS_API_KEY'])
 
 @app.route("/signin")
 def signin_page():
+    """Render the sign in HTML page."""
     return render_template("signin.html")
 
 @app.route("/for-owners")
 def for_owners():
+    """Return the page describing services for property owners."""
     return render_template("for-owners.html")
 
 @app.route("/properties")
 def properties_page():
+    """Serve the public properties listing page."""
     return render_template("properties.html", google_maps_api_key=app.config['GOOGLE_MAPS_API_KEY'])
 
 @app.route("/sell")
 def sell_page():
+    """Render the selling information page."""
     return render_template("sell.html")
 
 @app.route("/market")
 def market_page():
+    """Render the market statistics page."""
     return render_template("market.html")
 
 @app.route("/alerts")
 def alerts_page():
+    """Show the alerts management page."""
     return render_template("alerts.html")
 
 @app.route("/evaluation")
 def evaluation_page():
+    """Render the property evaluation page."""
     return render_template("evaluation.html")
 
 @app.route("/terms")
 def terms_page():
+    """Show the terms of service."""
     return render_template("terms.html")
 
 @app.route("/privacy")
 def privacy_page():
+    """Display the privacy policy."""
     return render_template("privacy.html")
 
 @app.route("/agents")
 def agents_page():
+    """List real estate agents."""
     return render_template("agents.html")
 
 @app.route("/dashboard/<role>")
 @jwt_required()
 def dashboard(role):
+    """Render the dashboard template for the given user role."""
     templates = {
         "agency": "dashboard-agency.html",
         "landlord": "dashboard-landlord.html",
@@ -415,6 +455,7 @@ def dashboard(role):
 @app.route("/api/properties", methods=["GET"])
 @jwt_required(optional=True)
 def api_properties():
+    """List active properties with optional filters."""
     try:
         purpose = request.args.get('purpose')
         location = request.args.get('location')
@@ -462,6 +503,7 @@ def api_properties():
 @app.route("/api/properties", methods=["POST"])
 @jwt_required()
 def create_property():
+    """Create a new property listing for the authenticated user."""
     try:
         user_id = get_jwt_identity()
         data = request.form
@@ -492,6 +534,7 @@ def create_property():
 @app.route("/api/favorites", methods=["POST"])
 @jwt_required()
 def add_favorite():
+    """Save a property to the authenticated user's favorites."""
     try:
         user_id = get_jwt_identity()
         property_id = request.json.get("property_id")
@@ -508,6 +551,7 @@ def add_favorite():
 @app.route("/api/favorites", methods=["GET"])
 @jwt_required()
 def get_favorites():
+    """Return the authenticated user's saved properties."""
     try:
         user_id = get_jwt_identity()
         favorites = Favorite.query.filter_by(user_id=user_id).all()
@@ -523,6 +567,7 @@ def get_favorites():
 
 @app.route("/evaluation", methods=["POST"])
 def process_evaluation():
+    """Estimate a property's value and store the request."""
     try:
         data = request.json
         required_fields = ['location', 'type', 'area', 'bedrooms', 'bathrooms', 'condition']
@@ -552,6 +597,7 @@ def process_evaluation():
 
 @app.route("/alerts", methods=["POST"])
 def save_alerts():
+    """Persist a new email alert configuration."""
     try:
         data = request.json
         required_fields = ['email', 'purpose', 'location', 'minPrice', 'maxPrice', 'type', 'frequency']
@@ -579,6 +625,7 @@ def save_alerts():
 @app.route("/api/alerts", methods=["GET"])
 @jwt_required()
 def api_alerts():
+    """Return alert preferences for the authenticated user."""
     try:
         user_id = get_jwt_identity()
         alerts = AlertPreference.query.filter_by(user_id=user_id).all()
@@ -594,6 +641,7 @@ def api_alerts():
 # --- Agent Endpoints ---
 @app.route("/api/agents", methods=["GET"])
 def get_agents():
+    """List all registered agents."""
     try:
         agents = Agent.query.all()
         return jsonify({
@@ -621,6 +669,7 @@ def get_agents():
 @app.route("/api/agents", methods=["POST"])
 @jwt_required()
 def create_agent():
+    """Create a new real estate agent record."""
     try:
         data = request.json
         agent = Agent(
@@ -651,6 +700,7 @@ def add_agent():
 
 @app.route("/api/agents/<int:agent_id>", methods=["GET"])
 def get_agent(agent_id):
+    """Retrieve a single agent by ID."""
     try:
         agent = Agent.query.get(agent_id)
         if not agent:
@@ -676,6 +726,7 @@ def get_agent(agent_id):
 @app.route("/api/agents/<int:agent_id>", methods=["PUT"])
 @jwt_required()
 def update_agent(agent_id):
+    """Modify an existing agent's information."""
     try:
         agent = Agent.query.get(agent_id)
         if not agent:
@@ -704,6 +755,7 @@ def update_agent(agent_id):
 @app.route("/api/agents/<int:agent_id>", methods=["DELETE"])
 @jwt_required()
 def delete_agent(agent_id):
+    """Remove an agent from the system."""
     try:
         agent = Agent.query.get(agent_id)
         if not agent:
@@ -718,6 +770,7 @@ def delete_agent(agent_id):
 @app.route("/api/agency/properties")
 @jwt_required()
 def agency_properties():
+    """Return basic stats for properties listed by the agency."""
     try:
         user_id = get_jwt_identity()
         properties = Property.query.filter_by(user_id=user_id).all()
@@ -731,6 +784,7 @@ def agency_properties():
 @app.route("/api/user/properties")
 @jwt_required()
 def user_properties():
+    """List properties created by the authenticated user."""
     try:
         user_id = get_jwt_identity()
         properties = Property.query.filter_by(user_id=user_id).all()
