@@ -374,6 +374,11 @@ def signin_page():
     """Render the sign in HTML page."""
     return render_template("signin.html")
 
+@app.route("/reset-password")
+def reset_password_page():
+    """Render the password reset form."""
+    return render_template("reset-password.html")
+
 @app.route("/for-owners")
 def for_owners():
     """Return the page describing services for property owners."""
