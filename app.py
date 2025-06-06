@@ -394,6 +394,11 @@ def market_page():
     """Render the market statistics page."""
     return render_template("market.html")
 
+@app.route("/market-trends")
+def market_trends_page():
+    """Show in-depth market trends."""
+    return render_template("market-trends.html")
+
 @app.route("/alerts")
 def alerts_page():
     """Show the alerts management page."""
