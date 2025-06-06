@@ -69,6 +69,8 @@ def test_property_creation_requires_auth(client):
     }
     resp = client.post("/api/properties", data=data)
     assert resp.status_code == 401
+    # flask-jwt-extended returns a default 'msg' key for missing auth header
+    assert resp.get_json()["msg"] == "Missing Authorization Header"
 
 
 def test_create_agent_and_retrieve(client):
