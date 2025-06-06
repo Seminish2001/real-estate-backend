@@ -1,8 +1,8 @@
 [project]
-name = "python-template"
+name = "real-estate-backend"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Real Estate Team <team@example.com>"]
 requires-python = ">=3.11"
 dependencies = [
     "flask-sqlalchemy>=3.1.1",
