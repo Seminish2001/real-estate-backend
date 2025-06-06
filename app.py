@@ -429,6 +429,11 @@ def contact_page():
     """Render the contact page."""
     return render_template("contact.html")
 
+@app.route("/mortgage")
+def mortgage_page():
+    """Render the mortgage calculator page."""
+    return render_template("mortgage.html")
+
 @app.route("/dashboard/<role>")
 @jwt_required()
 def dashboard(role):
