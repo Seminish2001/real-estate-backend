@@ -439,6 +439,11 @@ def agents_page():
     """List real estate agents."""
     return render_template("agents.html")
 
+@app.route("/join-as-agent")
+def join_as_agent_page():
+    """Render the join as agent page."""
+    return render_template("join-as-agent.html")
+
 @app.route("/contact")
 def contact_page():
     """Render the contact page."""
