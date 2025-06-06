@@ -807,8 +807,9 @@ def market_snapshot():
 # --- Global Error Handler ---
 @app.errorhandler(Exception)
 def handle_exception(e):
-    logging.error(f"Unhandled exception: {str(e)}")
-    return jsonify({"message": f"Server error: {str(e)}"}), 500
+    """Log unexpected exceptions and return a generic error message."""
+    logging.exception(f"Unhandled exception: {e}")
+    return jsonify({"message": "Internal server error"}), 500
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
