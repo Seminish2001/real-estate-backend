@@ -3,6 +3,7 @@ import logging
 from datetime import timedelta
 
 from flask import Flask, jsonify, request, render_template, make_response, abort
+import re
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import (
@@ -50,6 +51,11 @@ limiter = Limiter(get_remote_address, app=app, default_limits=["200 per day", "5
 
 logging.basicConfig(level=logging.INFO)
 app.logger.info("Application started")
+
+
+def slugify(text: str) -> str:
+    """Return a URL-friendly slug for the given text."""
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
 # --- Models ---
 class User(db.Model):
@@ -389,6 +395,26 @@ def properties_page():
     """Serve the public properties listing page."""
     return render_template("properties.html", google_maps_api_key=app.config['GOOGLE_MAPS_API_KEY'])
 
+
+@app.route("/property/<slug>")
+def property_detail(slug):
+    """Display a single property's details."""
+    prop = None
+    if slug.isdigit():
+        prop = Property.query.get(int(slug))
+    if not prop:
+        for p in Property.query.all():
+            if slugify(p.title) == slug:
+                prop = p
+                break
+    if not prop:
+        abort(404)
+    return render_template(
+        "property_detail.html",
+        property=prop,
+        google_maps_api_key=app.config['GOOGLE_MAPS_API_KEY'],
+    )
+
 @app.route("/sell")
 def sell_page():
     """Render the selling information page."""
@@ -448,6 +474,22 @@ def about_page():
 def agents_page():
     """List real estate agents."""
     return render_template("agents.html")
+
+
+@app.route("/agent/<slug>")
+def agent_detail(slug):
+    """Display a single agent's profile."""
+    ag = None
+    if slug.isdigit():
+        ag = Agent.query.get(int(slug))
+    if not ag:
+        for a in Agent.query.all():
+            if slugify(a.name) == slug:
+                ag = a
+                break
+    if not ag:
+        abort(404)
+    return render_template("agent_detail.html", agent=ag)
 
 @app.route("/join-as-agent")
 def join_as_agent_page():
