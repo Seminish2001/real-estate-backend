@@ -394,6 +394,16 @@ def sell_page():
     """Render the selling information page."""
     return render_template("sell.html")
 
+@app.route("/diy-sell")
+def diy_sell_page():
+    """Show resources for selling a property yourself."""
+    return render_template("diy-sell.html")
+
+@app.route("/instant-offer")
+def instant_offer_page():
+    """Provide a page for getting an instant offer."""
+    return render_template("instant-offer.html")
+
 @app.route("/market")
 def market_page():
     """Render the market statistics page."""
