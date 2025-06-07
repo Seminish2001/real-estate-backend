@@ -70,6 +70,7 @@ class User(db.Model):
     )  # "Landlord", "Agency", "Buyer/Renter"
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     is_active = db.Column(db.Boolean, default=True)
+    is_admin = db.Column(db.Boolean, default=False)
 
     def set_password(self, password):
         """Hash and store the given password."""
@@ -197,6 +198,9 @@ def signup():
         data = request.json
         if not all(key in data for key in ["name", "email", "password", "user_type"]):
             return jsonify({"message": "Missing required fields"}), 400
+
+        if data.get("is_admin"):
+            return jsonify({"message": "Cannot register as admin"}), 403
 
         if User.query.filter_by(email=data["email"]).first():
             return jsonify({"message": "Email already registered!"}), 409
@@ -530,6 +534,9 @@ def dashboard(role):
     user = User.query.get(user_id)
     if not user:
         abort(404)
+    expected_role = user.user_type.lower().replace("/", "-")
+    if expected_role != role:
+        abort(403)
 
     property_count = Property.query.filter_by(user_id=user_id).count()
     saved_count = Favorite.query.filter_by(user_id=user_id).count()
@@ -542,6 +549,23 @@ def dashboard(role):
         saved_count=saved_count,
         alert_count=alert_count,
         match_count=alert_count,
+    )
+
+@app.route("/admin")
+@jwt_required()
+def admin_panel():
+    """Admin dashboard showing basic statistics."""
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user or not user.is_admin:
+        abort(403)
+    users = User.query.all()
+    properties = Property.query.all()
+    return render_template(
+        "admin.html",
+        users=users,
+        properties=properties,
+        user=user,
     )
 
 # --- API Endpoints for Properties, Favorites, Evaluation, and Alerts ---
