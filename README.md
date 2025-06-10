@@ -7,7 +7,7 @@ This project is a simple Flask backend for a real estate website. The applicatio
 1. **Python version**: The project requires **Python 3.11+**.
 2. **Install dependencies**:
    ```bash
-   pip install -r requirements.txt
+   pip install -e .
    ```
 3. **Environment variables**:
    - `DATABASE_URL` – Database connection string (default: `sqlite:///properties.db`).
@@ -46,7 +46,7 @@ The application will start on `http://localhost:5000` unless a different `PORT` 
 
 ## Running Tests
 
-Tests are written with **pytest** and located in the `tests/` directory. Run them with:
+Tests are written with **pytest** and located in the `tests/` directory. Install dependencies and then run them with:
 
 ```bash
 pytest

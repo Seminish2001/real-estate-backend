@@ -13,6 +13,10 @@ dependencies = [
     "flask-limiter>=3.10.1",
     "cloudinary>=1.42.2",
     "python-decouple>=3.8",
+    "gunicorn>=23.0.0",
+    "marshmallow>=3.19.0",
+    "google-auth-oauthlib>=1.2.1",
+    "psycopg2-binary>=2.9.9",
     "google-auth>=2.29.0",
     "facebook-sdk>=3.1.0",
 ]
