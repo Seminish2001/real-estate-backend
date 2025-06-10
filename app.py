@@ -16,6 +16,8 @@ from flask_jwt_extended import (
     unset_jwt_cookies,
     jwt_required,
     get_jwt_identity,
+    verify_jwt_in_request,
+    get_csrf_token,
 )
 from flask_cors import CORS
 from flask_limiter import Limiter
@@ -179,9 +181,11 @@ def signin():
         if user and user.check_password(data["password"]):
             access_token = create_access_token(identity=str(user.id))
             refresh_token = create_refresh_token(identity=str(user.id))
+            csrf_token = get_csrf_token(access_token)
             response = make_response(jsonify({
                 "message": "Signed in successfully",
-                "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type}
+                "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type},
+                "csrf_token": csrf_token,
             }), 200)
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
@@ -222,9 +226,11 @@ def signup():
 
         access_token = create_access_token(identity=str(new_user.id))
         refresh_token = create_refresh_token(identity=str(new_user.id))
+        csrf_token = get_csrf_token(access_token)
         response = make_response(jsonify({
             "message": "Signed up successfully",
-            "user": {"id": new_user.id, "name": new_user.name, "email": new_user.email, "user_type": new_user.user_type}
+            "user": {"id": new_user.id, "name": new_user.name, "email": new_user.email, "user_type": new_user.user_type},
+            "csrf_token": csrf_token,
         }), 201)
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
@@ -238,6 +244,7 @@ def signup():
 @app.route("/logout", methods=["POST"])
 def logout():
     """Clear authentication cookies and end the session."""
+    verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
     response = make_response(jsonify({"message": "Logged out successfully"}), 200)
     unset_jwt_cookies(response)
     return response
@@ -262,9 +269,11 @@ def google_auth():
 
         access_token = create_access_token(identity=str(user.id))
         refresh_token = create_refresh_token(identity=str(user.id))
+        csrf_token = get_csrf_token(access_token)
         response = make_response(jsonify({
             "message": "Google auth successful",
-            "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type}
+            "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type},
+            "csrf_token": csrf_token,
         }), 200)
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
@@ -296,9 +305,11 @@ def facebook_auth():
 
         access_token = create_access_token(identity=str(user.id))
         refresh_token = create_refresh_token(identity=str(user.id))
+        csrf_token = get_csrf_token(access_token)
         response = make_response(jsonify({
             "message": "Facebook auth successful",
-            "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type}
+            "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type},
+            "csrf_token": csrf_token,
         }), 200)
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
@@ -314,6 +325,7 @@ def facebook_auth():
 def update_user_type():
     """Change the authenticated user's type."""
     try:
+        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
         user_id = get_jwt_identity()
         data = request.json
         user_type = data.get("user_type")
@@ -633,6 +645,7 @@ def api_properties():
 def create_property():
     """Create a new property listing for the authenticated user."""
     try:
+        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
         user_id = get_jwt_identity()
         data = request.form
         file = request.files.get('image')
@@ -664,6 +677,7 @@ def create_property():
 def add_favorite():
     """Save a property to the authenticated user's favorites."""
     try:
+        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
         user_id = get_jwt_identity()
         property_id = request.json.get("property_id")
         if not Property.query.get(property_id):
@@ -799,6 +813,7 @@ def get_agents():
 def create_agent():
     """Create a new real estate agent record."""
     try:
+        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
         data = request.json
         agent = Agent(
             name=data.get("name"),
@@ -823,6 +838,7 @@ def create_agent():
 @jwt_required()
 def add_agent():
     """Alias route to create a new agent."""
+    verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
     return create_agent()
 
 
@@ -856,6 +872,7 @@ def get_agent(agent_id):
 def update_agent(agent_id):
     """Modify an existing agent's information."""
     try:
+        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
         agent = Agent.query.get(agent_id)
         if not agent:
             return jsonify({"message": "Agent not found"}), 404
@@ -885,6 +902,7 @@ def update_agent(agent_id):
 def delete_agent(agent_id):
     """Remove an agent from the system."""
     try:
+        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
         agent = Agent.query.get(agent_id)
         if not agent:
             return jsonify({"message": "Agent not found"}), 404
@@ -960,6 +978,7 @@ def agency_requests():
 def update_agency_profile():
     """Update the authenticated agency's profile."""
     try:
+        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
         user_id = get_jwt_identity()
         user = User.query.get(user_id)
         if not user:
