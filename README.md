@@ -14,6 +14,7 @@ This project is a simple Flask backend for a real estate website. The applicatio
    - `JWT_SECRET_KEY` – Secret key used to sign JWT tokens.
    - `GOOGLE_CLIENT_ID` – Client ID for Google OAuth (optional).
    - `GOOGLE_MAPS_API_KEY` – API key for Google Maps (required for map features).
+   - `JWT_COOKIE_SECURE` – Set to `True` to transmit JWT cookies over HTTPS only (default `True`).
    - `PORT` – Port for the development server (default: `5000`).
 
 Copy `.env.example` to `.env` and update the values, or export these variables in your shell before running the server.
