@@ -1,0 +1,136 @@
+:root {
+  --primary-color: #1a73e8;
+  --background-light: #f9fafb;
+  --text-dark: #1f2a44;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--background-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 230px;
+  height: 100vh;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  padding: 20px 15px;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.sidebar a {
+  display: block;
+  padding: 10px 15px;
+  color: var(--text-dark);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  transition: background 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background: #e9ecef;
+  color: var(--primary-color);
+}
+
+.top-header {
+  position: fixed;
+  top: 0;
+  left: 230px;
+  right: 0;
+  height: 60px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+}
+
+.main-content {
+  margin-left: 230px;
+  padding: 80px 20px 40px;
+  background: #f4f7f9;
+  min-height: calc(100vh - 60px);
+}
+
+.panel {
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 32px rgba(31,38,135,0.1);
+}
+
+.dark-mode {
+  background: #1e1e2f;
+  color: #f0f0f0;
+}
+
+.dark-mode .sidebar {
+  background: linear-gradient(180deg, #14142b, #1e1e2f);
+  border-right: 1px solid #333;
+}
+
+.dark-mode .sidebar a {
+  color: #adb5bd;
+}
+
+.dark-mode .sidebar a:hover,
+.dark-mode .sidebar a.active {
+  background: rgba(52,58,64,0.8);
+  color: #fff;
+}
+
+.dark-mode .top-header {
+  background: #14142b;
+  border-bottom: 1px solid #333;
+}
+
+.dark-mode .main-content {
+  background: #1e1e2f;
+}
+
+.dark-mode .panel {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,0,0,0.3);
+}
+
+.toggle-dark {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #00bcd4;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  color: #1e1e2f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 1000;
+}

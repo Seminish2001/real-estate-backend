@@ -561,11 +561,20 @@ def admin_panel():
         abort(403)
     users = User.query.all()
     properties = Property.query.all()
+    user_count = len(users)
+    property_count = len(properties)
+    request_count = EvaluationRequest.query.count()
+    agent_count = Agent.query.count()
+
     return render_template(
         "admin.html",
         users=users,
         properties=properties,
         user=user,
+        user_count=user_count,
+        property_count=property_count,
+        request_count=request_count,
+        agent_count=agent_count,
     )
 
 # --- API Endpoints for Properties, Favorites, Evaluation, and Alerts ---

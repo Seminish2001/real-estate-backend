@@ -5,36 +5,99 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-      <a class="navbar-brand" href="/">Real Estate</a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" id="logout-btn">Logout</a></li>
+  <nav class="sidebar">
+    <h2>Admin</h2>
+    <a href="#users" class="sidebar-link">Users</a>
+    <a href="#properties" class="sidebar-link">Properties</a>
+    <a href="#requests" class="sidebar-link">Requests</a>
+    <a href="#agents" class="sidebar-link">Agents</a>
+    <a href="#analytics" class="sidebar-link">Analytics</a>
+    <a href="#settings" class="sidebar-link">Settings</a>
+  </nav>
+
+  <div class="top-header">
+    <div class="header-left">Real Estate Admin</div>
+    <div class="header-right">
+      <button class="btn btn-sm btn-outline-secondary me-3" id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+      </button>
+      <div class="dropdown d-inline">
+        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="fas fa-user-circle fa-lg me-1"></i> {{ user.name }}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" id="logout-btn">Logout</a></li>
         </ul>
       </div>
     </div>
-  </nav>
-  <div class="container py-5">
-    <h1 class="mb-4">Admin Dashboard</h1>
-    <h2 class="h4">Users</h2>
-    <ul class="list-group mb-4">
-      {% for u in users %}
-        <li class="list-group-item">{{ u.email }} - {{ u.user_type }}</li>
-      {% endfor %}
-    </ul>
-    <h2 class="h4">Properties</h2>
-    <ul class="list-group mb-4">
-      {% for p in properties %}
-        <li class="list-group-item">{{ p.title }} - {{ p.location }}</li>
-      {% endfor %}
-    </ul>
-    <h2 class="h4">Analytics</h2>
-    <p>Total users: {{ users|length }}</p>
-    <p>Total properties: {{ properties|length }}</p>
   </div>
+
+  <div class="main-content">
+    <div id="users" class="panel">
+      <h2 class="mb-3">Users</h2>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Type</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+            <tr>
+              <td>{{ u.email }}</td>
+              <td>{{ u.user_type }}</td>
+              <td>
+                <a href="#" class="text-primary"><i class="fas fa-edit"></i></a>
+                <a href="#" class="text-danger ms-2"><i class="fas fa-trash-alt"></i></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="properties" class="panel">
+      <h2 class="mb-3">Properties</h2>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Location</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in properties %}
+            <tr>
+              <td>{{ p.title }}</td>
+              <td>{{ p.location }}</td>
+              <td>
+                <a href="#" class="text-primary"><i class="fas fa-edit"></i></a>
+                <a href="#" class="text-danger ms-2"><i class="fas fa-trash-alt"></i></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="analytics" class="panel">
+      <h2 class="mb-3">Analytics</h2>
+      <canvas id="analyticsChart" height="80"></canvas>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     function getCsrfToken() {
@@ -42,8 +105,29 @@
       return match ? decodeURIComponent(match[1]) : '';
     }
     document.getElementById('logout-btn').addEventListener('click', async () => {
-      const resp = await fetch('/logout', {method: 'POST', credentials: 'include', headers: {'X-CSRF-TOKEN': getCsrfToken()}});
+      const resp = await fetch('/logout', {method:'POST',credentials:'include',headers:{'X-CSRF-TOKEN':getCsrfToken()}});
       if (resp.ok) window.location.href = '/';
+    });
+    document.getElementById('darkModeToggle').addEventListener('click', function() {
+      document.body.classList.toggle('dark-mode');
+      const icon = this.querySelector('i');
+      icon.classList.toggle('fa-moon');
+      icon.classList.toggle('fa-sun');
+    });
+    new Chart(document.getElementById('analyticsChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Users', 'Properties'],
+        datasets: [{
+          backgroundColor: ['#1a73e8', '#00c4b4'],
+          data: [{{ user_count }}, {{ property_count }}]
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
     });
   </script>
 </body>
