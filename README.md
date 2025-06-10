@@ -19,6 +19,21 @@ This project is a simple Flask backend for a real estate website. The applicatio
 
 Copy `.env.example` to `.env` and update the values, or export these variables in your shell before running the server.
 
+## Database Setup
+
+Initialize the database tables before starting the server. The scripts rely on
+the same environment variables described above (at minimum `DATABASE_URL` and
+`JWT_SECRET_KEY`). Use `init_db.py` to create the schema and `seed.py` to add
+sample records:
+
+```bash
+# Create tables (add --drop to delete existing ones)
+python init_db.py --drop
+
+# Populate demo users, properties and agents
+python seed.py
+```
+
 ## Running the Server
 
 Execute the following command:
