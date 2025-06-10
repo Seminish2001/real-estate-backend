@@ -99,6 +99,7 @@ class Property(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     title = db.Column(db.String(100), nullable=False)
+    slug = db.Column(db.String(120), unique=True, index=True)
     location = db.Column(db.String(100), nullable=False)
     purpose = db.Column(db.String(20), nullable=False)  # "buy" or "rent"
     property_type = db.Column(
@@ -136,6 +137,7 @@ class Agent(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    slug = db.Column(db.String(120), unique=True, index=True)
     email = db.Column(db.String(100))
     phone = db.Column(db.String(50))
     agency = db.Column(db.String(100))
@@ -555,14 +557,9 @@ def properties_page():
 @app.route("/property/<slug>")
 def property_detail(slug):
     """Display a single property's details."""
-    prop = None
-    if slug.isdigit():
+    prop = Property.query.filter_by(slug=slug).first()
+    if not prop and slug.isdigit():
         prop = Property.query.get(int(slug))
-    if not prop:
-        for p in Property.query.all():
-            if slugify(p.title) == slug:
-                prop = p
-                break
     if not prop:
         abort(404)
     return render_template(
@@ -647,14 +644,9 @@ def agents_page():
 @app.route("/agent/<slug>")
 def agent_detail(slug):
     """Display a single agent's profile."""
-    ag = None
-    if slug.isdigit():
+    ag = Agent.query.filter_by(slug=slug).first()
+    if not ag and slug.isdigit():
         ag = Agent.query.get(int(slug))
-    if not ag:
-        for a in Agent.query.all():
-            if slugify(a.name) == slug:
-                ag = a
-                break
     if not ag:
         abort(404)
     return render_template("agent_detail.html", agent=ag)
@@ -815,6 +807,7 @@ def create_property():
         new_property = Property(
             user_id=user_id,
             title=validated["title"],
+            slug=slugify(validated["title"]),
             location=validated["location"],
             purpose=validated["purpose"],
             property_type=validated["property_type"],
@@ -1022,7 +1015,7 @@ def create_agent():
         verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
         data = request.get_json() or {}
         validated = agent_schema.load(data)
-        agent = Agent(**validated)
+        agent = Agent(**validated, slug=slugify(validated["name"]))
         db.session.add(agent)
         db.session.commit()
         return jsonify({"message": "Agent created", "id": agent.id}), 201
