@@ -23,6 +23,7 @@ from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from cloudinary.uploader import upload
+from marshmallow import Schema, fields, ValidationError, pre_load
 
 # For OAuth
 from google.oauth2 import id_token
@@ -32,18 +33,20 @@ from decouple import config
 
 # --- App & Config ---
 app = Flask(__name__, template_folder="templates")
-app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL', default='sqlite:///properties.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = config('JWT_SECRET_KEY', default='default_secret_key')
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
-app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-jwt_cookie_secure = config('JWT_COOKIE_SECURE', default='True')
-app.config['JWT_COOKIE_SECURE'] = str(jwt_cookie_secure).lower() in ['true', '1', 'yes']
-app.config['JWT_COOKIE_CSRF_PROTECT'] = True
-app.config['GOOGLE_MAPS_API_KEY'] = config('GOOGLE_MAPS_API_KEY', default='')
+app.config["SQLALCHEMY_DATABASE_URI"] = config(
+    "DATABASE_URL", default="sqlite:///properties.db"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["JWT_SECRET_KEY"] = config("JWT_SECRET_KEY", default="default_secret_key")
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
+app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+jwt_cookie_secure = config("JWT_COOKIE_SECURE", default="True")
+app.config["JWT_COOKIE_SECURE"] = str(jwt_cookie_secure).lower() in ["true", "1", "yes"]
+app.config["JWT_COOKIE_CSRF_PROTECT"] = True
+app.config["GOOGLE_MAPS_API_KEY"] = config("GOOGLE_MAPS_API_KEY", default="")
 
-if app.config['JWT_SECRET_KEY'] == 'default_secret_key':
+if app.config["JWT_SECRET_KEY"] == "default_secret_key":
     print("WARNING: Using default JWT_SECRET_KEY. Set this in production!")
 
 # --- Extensions ---
@@ -51,7 +54,9 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 CORS(app)
-limiter = Limiter(get_remote_address, app=app, default_limits=["200 per day", "50 per hour"])
+limiter = Limiter(
+    get_remote_address, app=app, default_limits=["200 per day", "50 per hour"]
+)
 
 logging.basicConfig(level=logging.INFO)
 app.logger.info("Application started")
@@ -60,6 +65,7 @@ app.logger.info("Application started")
 def slugify(text: str) -> str:
     """Return a URL-friendly slug for the given text."""
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+
 
 # --- Models ---
 class User(db.Model):
@@ -86,15 +92,18 @@ class User(db.Model):
 
         return bcrypt.check_password_hash(self.password, password)
 
+
 class Property(db.Model):
     """Real estate listing posted by a user."""
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     title = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100), nullable=False)
     purpose = db.Column(db.String(20), nullable=False)  # "buy" or "rent"
-    property_type = db.Column(db.String(50), nullable=False)  # "apartment", "villa", etc.
+    property_type = db.Column(
+        db.String(50), nullable=False
+    )  # "apartment", "villa", etc.
     price = db.Column(db.Integer, nullable=False)
     beds = db.Column(db.Integer, nullable=False)
     baths = db.Column(db.Integer, nullable=False)
@@ -105,11 +114,12 @@ class Property(db.Model):
     status = db.Column(db.String(20), default="active")
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
+
 class EvaluationRequest(db.Model):
     """Request submitted to estimate a property's value."""
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
     location = db.Column(db.String(100), nullable=False)
     property_type = db.Column(db.String(50), nullable=False)
     area = db.Column(db.Integer, nullable=False)
@@ -118,6 +128,7 @@ class EvaluationRequest(db.Model):
     condition = db.Column(db.String(50), nullable=False)
     estimated_value = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
 
 # New Agent model to store real estate agents
 class Agent(db.Model):
@@ -135,11 +146,12 @@ class Agent(db.Model):
     photo_url = db.Column(db.String(200))
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
+
 class AlertPreference(db.Model):
     """Saved search alert settings for a user."""
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
     email = db.Column(db.String(100), nullable=False)
     purpose = db.Column(db.String(20), nullable=False)
     location = db.Column(db.String(100), nullable=False)
@@ -149,23 +161,66 @@ class AlertPreference(db.Model):
     frequency = db.Column(db.String(20), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
+
 class Favorite(db.Model):
     """Mapping of users to properties they like."""
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
 
 class Offer(db.Model):
     """Bid made by a user on a property."""
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
     amount = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(20), default="pending")
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+
+# --- Schemas ---
+
+
+class PropertySchema(Schema):
+    title = fields.Str(required=True)
+    location = fields.Str(required=True)
+    purpose = fields.Str(required=True)
+    property_type = fields.Str(required=True, data_key="type")
+    price = fields.Integer(required=True)
+    beds = fields.Integer(required=True)
+    baths = fields.Integer(required=True)
+    size = fields.Integer(required=True)
+    lat = fields.Float(load_default=0)
+    lng = fields.Float(load_default=0)
+
+    @pre_load
+    def normalize_fields(self, data, **kwargs):
+        if "bathrooms" in data and "baths" not in data:
+            data["baths"] = data["bathrooms"]
+        return data
+
+
+property_schema = PropertySchema()
+
+
+class AgentSchema(Schema):
+    name = fields.Str(required=True)
+    email = fields.Email(load_default=None)
+    phone = fields.Str(load_default=None)
+    agency = fields.Str(load_default=None)
+    specialty = fields.Str(load_default=None)
+    languages = fields.Str(load_default=None)
+    location = fields.Str(load_default=None)
+    bio = fields.Str(load_default=None)
+    photo_url = fields.Str(load_default=None)
+
+
+agent_schema = AgentSchema()
+
 
 # --- Authentication Endpoints ---
 @app.route("/signin", methods=["POST"])
@@ -182,11 +237,21 @@ def signin():
             access_token = create_access_token(identity=str(user.id))
             refresh_token = create_refresh_token(identity=str(user.id))
             csrf_token = get_csrf_token(access_token)
-            response = make_response(jsonify({
-                "message": "Signed in successfully",
-                "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type},
-                "csrf_token": csrf_token,
-            }), 200)
+            response = make_response(
+                jsonify(
+                    {
+                        "message": "Signed in successfully",
+                        "user": {
+                            "id": user.id,
+                            "name": user.name,
+                            "email": user.email,
+                            "user_type": user.user_type,
+                        },
+                        "csrf_token": csrf_token,
+                    }
+                ),
+                200,
+            )
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
             logging.info(f"User {user.email} signed in")
@@ -195,6 +260,7 @@ def signin():
     except Exception as e:
         logging.error(f"Signin error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
 
 @app.route("/signup", methods=["POST"])
 @limiter.limit("10 per minute")
@@ -218,7 +284,7 @@ def signup():
             name=data["name"],
             email=data["email"],
             user_type=data["user_type"],
-            password=""  # This will be set in the next line
+            password="",  # This will be set in the next line
         )
         new_user.set_password(data["password"])
         db.session.add(new_user)
@@ -227,11 +293,21 @@ def signup():
         access_token = create_access_token(identity=str(new_user.id))
         refresh_token = create_refresh_token(identity=str(new_user.id))
         csrf_token = get_csrf_token(access_token)
-        response = make_response(jsonify({
-            "message": "Signed up successfully",
-            "user": {"id": new_user.id, "name": new_user.name, "email": new_user.email, "user_type": new_user.user_type},
-            "csrf_token": csrf_token,
-        }), 201)
+        response = make_response(
+            jsonify(
+                {
+                    "message": "Signed up successfully",
+                    "user": {
+                        "id": new_user.id,
+                        "name": new_user.name,
+                        "email": new_user.email,
+                        "user_type": new_user.user_type,
+                    },
+                    "csrf_token": csrf_token,
+                }
+            ),
+            201,
+        )
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
         logging.info(f"User {new_user.email} signed up")
@@ -241,13 +317,15 @@ def signup():
         logging.error(f"Signup error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
+
 @app.route("/logout", methods=["POST"])
 def logout():
     """Clear authentication cookies and end the session."""
-    verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
+    verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
     response = make_response(jsonify({"message": "Logged out successfully"}), 200)
     unset_jwt_cookies(response)
     return response
+
 
 @app.route("/auth/google", methods=["POST"])
 def google_auth():
@@ -257,9 +335,13 @@ def google_auth():
         if not token:
             return jsonify({"message": "Missing Google token"}), 400
 
-        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), config("GOOGLE_CLIENT_ID", default="your-google-client-id"))
-        email = idinfo['email']
-        name = idinfo.get('name', 'Google User')
+        idinfo = id_token.verify_oauth2_token(
+            token,
+            google_requests.Request(),
+            config("GOOGLE_CLIENT_ID", default="your-google-client-id"),
+        )
+        email = idinfo["email"]
+        name = idinfo.get("name", "Google User")
 
         user = User.query.filter_by(email=email).first()
         if not user:
@@ -270,11 +352,21 @@ def google_auth():
         access_token = create_access_token(identity=str(user.id))
         refresh_token = create_refresh_token(identity=str(user.id))
         csrf_token = get_csrf_token(access_token)
-        response = make_response(jsonify({
-            "message": "Google auth successful",
-            "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type},
-            "csrf_token": csrf_token,
-        }), 200)
+        response = make_response(
+            jsonify(
+                {
+                    "message": "Google auth successful",
+                    "user": {
+                        "id": user.id,
+                        "name": user.name,
+                        "email": user.email,
+                        "user_type": user.user_type,
+                    },
+                    "csrf_token": csrf_token,
+                }
+            ),
+            200,
+        )
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
         return response
@@ -283,6 +375,7 @@ def google_auth():
     except Exception as e:
         logging.error(f"Google auth error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
 
 @app.route("/auth/facebook", methods=["POST"])
 def facebook_auth():
@@ -294,8 +387,8 @@ def facebook_auth():
 
         graph = facebook.GraphAPI(access_token)
         profile = graph.get_object("me", fields="id,name,email")
-        email = profile.get('email')
-        name = profile['name']
+        email = profile.get("email")
+        name = profile["name"]
 
         user = User.query.filter_by(email=email).first()
         if not user:
@@ -306,11 +399,21 @@ def facebook_auth():
         access_token = create_access_token(identity=str(user.id))
         refresh_token = create_refresh_token(identity=str(user.id))
         csrf_token = get_csrf_token(access_token)
-        response = make_response(jsonify({
-            "message": "Facebook auth successful",
-            "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type},
-            "csrf_token": csrf_token,
-        }), 200)
+        response = make_response(
+            jsonify(
+                {
+                    "message": "Facebook auth successful",
+                    "user": {
+                        "id": user.id,
+                        "name": user.name,
+                        "email": user.email,
+                        "user_type": user.user_type,
+                    },
+                    "csrf_token": csrf_token,
+                }
+            ),
+            200,
+        )
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
         return response
@@ -320,12 +423,13 @@ def facebook_auth():
         logging.error(f"Facebook auth error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
+
 @app.route("/update-type", methods=["POST"])
 @jwt_required()
 def update_user_type():
     """Change the authenticated user's type."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
+        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
         user_id = get_jwt_identity()
         data = request.json
         user_type = data.get("user_type")
@@ -340,11 +444,20 @@ def update_user_type():
         user.user_type = user_type
         db.session.commit()
         logging.info(f"User {user_id} updated type to {user_type}")
-        return jsonify({"message": "User type updated successfully", "user_type": user.user_type}), 200
+        return (
+            jsonify(
+                {
+                    "message": "User type updated successfully",
+                    "user_type": user.user_type,
+                }
+            ),
+            200,
+        )
     except Exception as e:
         db.session.rollback()
         logging.error(f"Update user type error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
 
 @app.route("/whoami", methods=["GET"])
 @jwt_required()
@@ -355,13 +468,24 @@ def whoami():
         user = User.query.get(user_id)
         if not user:
             return jsonify({"message": "User not found"}), 404
-        return jsonify({
-            "message": "User info retrieved",
-            "user": {"id": user.id, "name": user.name, "email": user.email, "user_type": user.user_type}
-        }), 200
+        return (
+            jsonify(
+                {
+                    "message": "User info retrieved",
+                    "user": {
+                        "id": user.id,
+                        "name": user.name,
+                        "email": user.email,
+                        "user_type": user.user_type,
+                    },
+                }
+            ),
+            200,
+        )
     except Exception as e:
         logging.error(f"Whoami error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
 
 # New route to check authentication status
 @app.route("/api/auth/status", methods=["GET"])
@@ -373,45 +497,59 @@ def auth_status():
         if user_id:
             user = User.query.get(user_id)
             if user:
-                return jsonify({
-                    "authenticated": True,
-                    "user": {
-                        "id": user.id,
-                        "name": user.name,
-                        "email": user.email,
-                        "user_type": user.user_type,
-                    },
-                }), 200
+                return (
+                    jsonify(
+                        {
+                            "authenticated": True,
+                            "user": {
+                                "id": user.id,
+                                "name": user.name,
+                                "email": user.email,
+                                "user_type": user.user_type,
+                            },
+                        }
+                    ),
+                    200,
+                )
         return jsonify({"authenticated": False}), 200
     except Exception as e:
         logging.error(f"Auth status error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
+
 # --- Template & Dashboard Routes ---
 @app.route("/")
 def home():
     """Render the landing page."""
-    return render_template("index.html", google_maps_api_key=app.config['GOOGLE_MAPS_API_KEY'])
+    return render_template(
+        "index.html", google_maps_api_key=app.config["GOOGLE_MAPS_API_KEY"]
+    )
+
 
 @app.route("/signin")
 def signin_page():
     """Render the sign in HTML page."""
     return render_template("signin.html")
 
+
 @app.route("/reset-password")
 def reset_password_page():
     """Render the password reset form."""
     return render_template("reset-password.html")
+
 
 @app.route("/for-owners")
 def for_owners():
     """Return the page describing services for property owners."""
     return render_template("for-owners.html")
 
+
 @app.route("/properties")
 def properties_page():
     """Serve the public properties listing page."""
-    return render_template("properties.html", google_maps_api_key=app.config['GOOGLE_MAPS_API_KEY'])
+    return render_template(
+        "properties.html", google_maps_api_key=app.config["GOOGLE_MAPS_API_KEY"]
+    )
 
 
 @app.route("/property/<slug>")
@@ -430,63 +568,75 @@ def property_detail(slug):
     return render_template(
         "property_detail.html",
         property=prop,
-        google_maps_api_key=app.config['GOOGLE_MAPS_API_KEY'],
+        google_maps_api_key=app.config["GOOGLE_MAPS_API_KEY"],
     )
+
 
 @app.route("/sell")
 def sell_page():
     """Render the selling information page."""
     return render_template("sell.html")
 
+
 @app.route("/diy-sell")
 def diy_sell_page():
     """Show resources for selling a property yourself."""
     return render_template("diy-sell.html")
+
 
 @app.route("/instant-offer")
 def instant_offer_page():
     """Provide a page for getting an instant offer."""
     return render_template("instant-offer.html")
 
+
 @app.route("/market")
 def market_page():
     """Render the market statistics page."""
     return render_template("market.html")
+
 
 @app.route("/market-trends")
 def market_trends_page():
     """Show in-depth market trends."""
     return render_template("market-trends.html")
 
+
 @app.route("/alerts")
 def alerts_page():
     """Show the alerts management page."""
     return render_template("alerts.html")
+
 
 @app.route("/evaluation")
 def evaluation_page():
     """Render the property evaluation page."""
     return render_template("evaluation.html")
 
+
 @app.route("/terms")
 def terms_page():
     """Show the terms of service."""
     return render_template("terms.html")
+
 
 @app.route("/privacy")
 def privacy_page():
     """Display the privacy policy."""
     return render_template("privacy.html")
 
+
 @app.route("/blog")
 def blog_page():
     """Render the blog page."""
     return render_template("blog.html")
 
+
 @app.route("/about")
 def about_page():
     """Render the about page."""
     return render_template("about.html")
+
 
 @app.route("/agents")
 def agents_page():
@@ -509,6 +659,7 @@ def agent_detail(slug):
         abort(404)
     return render_template("agent_detail.html", agent=ag)
 
+
 @app.route("/join-as-agent")
 def join_as_agent_page():
     """Render the join as agent page."""
@@ -520,15 +671,18 @@ def private_agent_page():
     """Render the private agent listing page."""
     return render_template("private-agent.html")
 
+
 @app.route("/contact")
 def contact_page():
     """Render the contact page."""
     return render_template("contact.html")
 
+
 @app.route("/mortgage")
 def mortgage_page():
     """Render the mortgage calculator page."""
     return render_template("mortgage.html")
+
 
 @app.route("/dashboard/<role>")
 @jwt_required()
@@ -565,6 +719,7 @@ def dashboard(role):
         match_count=alert_count,
     )
 
+
 @app.route("/admin")
 @jwt_required()
 def admin_panel():
@@ -591,18 +746,19 @@ def admin_panel():
         agent_count=agent_count,
     )
 
+
 # --- API Endpoints for Properties, Favorites, Evaluation, and Alerts ---
 @app.route("/api/properties", methods=["GET"])
 @jwt_required(optional=True)
 def api_properties():
     """List active properties with optional filters."""
     try:
-        purpose = request.args.get('purpose')
-        location = request.args.get('location')
-        property_type_filter = request.args.get('type')
-        price = request.args.get('price')
-        beds = request.args.get('beds')
-        baths = request.args.get('baths')
+        purpose = request.args.get("purpose")
+        location = request.args.get("location")
+        property_type_filter = request.args.get("type")
+        price = request.args.get("price")
+        beds = request.args.get("beds")
+        baths = request.args.get("baths")
         query = Property.query.filter_by(status="active")
         if purpose:
             query = query.filter_by(purpose=purpose.lower())
@@ -617,67 +773,79 @@ def api_properties():
         if baths:
             query = query.filter(Property.baths >= int(baths))
         properties = query.all()
-        return jsonify({
-            "properties": [
-                {
-                    "id": p.id,
-                    "title": p.title,
-                    "price": p.price,
-                    "beds": p.beds,
-                    "baths": p.baths,
-                    "size": p.size,
-                    "purpose": p.purpose,
-                    "location": p.location,
-                    "type": p.property_type,
-                    "image_url": p.image_url,
-                    "lat": p.lat,
-                    "lng": p.lng
-                } for p in properties
-            ],
-            "count": len(properties)
-        })
+        return jsonify(
+            {
+                "properties": [
+                    {
+                        "id": p.id,
+                        "title": p.title,
+                        "price": p.price,
+                        "beds": p.beds,
+                        "baths": p.baths,
+                        "size": p.size,
+                        "purpose": p.purpose,
+                        "location": p.location,
+                        "type": p.property_type,
+                        "image_url": p.image_url,
+                        "lat": p.lat,
+                        "lng": p.lng,
+                    }
+                    for p in properties
+                ],
+                "count": len(properties),
+            }
+        )
     except Exception as e:
         logging.error(f"Properties GET error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
 
 @app.route("/api/properties", methods=["POST"])
 @jwt_required()
 def create_property():
     """Create a new property listing for the authenticated user."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
+        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
         user_id = get_jwt_identity()
-        data = request.form
-        file = request.files.get('image')
-        image_url = upload(file)['url'] if file else None
+        data = request.form.to_dict()
+        file = request.files.get("image")
+        validated = property_schema.load(data)
+
+        image_url = upload(file)["url"] if file else None
         new_property = Property(
             user_id=user_id,
-            title=data["title"],
-            location=data["location"],
-            purpose=data["purpose"],
-            property_type=data["type"],
-            price=int(data["price"]),
-            beds=int(data["beds"]),
-            baths=int(data["bathrooms"]) if "bathrooms" in data else int(data["baths"]),
-            size=int(data["size"]),
+            title=validated["title"],
+            location=validated["location"],
+            purpose=validated["purpose"],
+            property_type=validated["property_type"],
+            price=validated["price"],
+            beds=validated["beds"],
+            baths=validated["baths"],
+            size=validated["size"],
             image_url=image_url,
-            lat=float(data.get("lat", 0)),
-            lng=float(data.get("lng", 0))
+            lat=validated.get("lat", 0),
+            lng=validated.get("lng", 0),
         )
         db.session.add(new_property)
         db.session.commit()
-        return jsonify({"message": "Property listed successfully", "id": new_property.id}), 201
+        return (
+            jsonify({"message": "Property listed successfully", "id": new_property.id}),
+            201,
+        )
+    except ValidationError as err:
+        return jsonify({"message": "Invalid input", "errors": err.messages}), 400
     except Exception as e:
         db.session.rollback()
         logging.error(f"Property creation error: {str(e)}")
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
 
 @app.route("/api/favorites", methods=["POST"])
 @jwt_required()
 def add_favorite():
     """Save a property to the authenticated user's favorites."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
+        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
         user_id = get_jwt_identity()
         property_id = request.json.get("property_id")
         if not Property.query.get(property_id):
@@ -690,6 +858,7 @@ def add_favorite():
         db.session.rollback()
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
+
 @app.route("/api/favorites", methods=["GET"])
 @jwt_required()
 def get_favorites():
@@ -698,37 +867,53 @@ def get_favorites():
         user_id = get_jwt_identity()
         favorites = Favorite.query.filter_by(user_id=user_id).all()
         properties = [Property.query.get(f.property_id) for f in favorites]
-        return jsonify({
-            "saved": [
-                {"id": p.id, "title": p.title, "price": p.price, "image_url": p.image_url} for p in properties
-            ],
-            "count": len(properties)
-        })
+        return jsonify(
+            {
+                "saved": [
+                    {
+                        "id": p.id,
+                        "title": p.title,
+                        "price": p.price,
+                        "image_url": p.image_url,
+                    }
+                    for p in properties
+                ],
+                "count": len(properties),
+            }
+        )
     except Exception as e:
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
 
 @app.route("/evaluation", methods=["POST"])
 def process_evaluation():
     """Estimate a property's value and store the request."""
     try:
         data = request.json
-        required_fields = ['location', 'type', 'area', 'bedrooms', 'bathrooms', 'condition']
+        required_fields = [
+            "location",
+            "type",
+            "area",
+            "bedrooms",
+            "bathrooms",
+            "condition",
+        ]
         if not all(field in data for field in required_fields):
             return jsonify({"message": "Missing required fields"}), 400
 
-        user_id = get_jwt_identity() if 'Authorization' in request.headers else None
-        base_value = int(data['area']) * 2000
+        user_id = get_jwt_identity() if "Authorization" in request.headers else None
+        base_value = int(data["area"]) * 2000
         estimated_value = f"€{base_value - 50000} - €{base_value + 50000}"
 
         evaluation = EvaluationRequest(
             user_id=user_id,
-            location=data['location'],
-            property_type=data['type'],
-            area=int(data['area']),
-            bedrooms=int(data['bedrooms']),
-            bathrooms=int(data['bathrooms']),
-            condition=data['condition'],
-            estimated_value=estimated_value
+            location=data["location"],
+            property_type=data["type"],
+            area=int(data["area"]),
+            bedrooms=int(data["bedrooms"]),
+            bathrooms=int(data["bathrooms"]),
+            condition=data["condition"],
+            estimated_value=estimated_value,
         )
         db.session.add(evaluation)
         db.session.commit()
@@ -737,25 +922,34 @@ def process_evaluation():
         db.session.rollback()
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
+
 @app.route("/alerts", methods=["POST"])
 def save_alerts():
     """Persist a new email alert configuration."""
     try:
         data = request.json
-        required_fields = ['email', 'purpose', 'location', 'minPrice', 'maxPrice', 'type', 'frequency']
+        required_fields = [
+            "email",
+            "purpose",
+            "location",
+            "minPrice",
+            "maxPrice",
+            "type",
+            "frequency",
+        ]
         if not all(field in data for field in required_fields):
             return jsonify({"message": "Missing required fields"}), 400
 
-        user_id = get_jwt_identity() if 'Authorization' in request.headers else None
+        user_id = get_jwt_identity() if "Authorization" in request.headers else None
         alert = AlertPreference(
             user_id=user_id,
-            email=data['email'],
-            purpose=data['purpose'],
-            location=data['location'],
-            min_price=int(data['minPrice']),
-            max_price=int(data['maxPrice']),
-            property_type=data['type'],
-            frequency=data['frequency']
+            email=data["email"],
+            purpose=data["purpose"],
+            location=data["location"],
+            min_price=int(data["minPrice"]),
+            max_price=int(data["maxPrice"]),
+            property_type=data["type"],
+            frequency=data["frequency"],
         )
         db.session.add(alert)
         db.session.commit()
@@ -764,6 +958,7 @@ def save_alerts():
         db.session.rollback()
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
+
 @app.route("/api/alerts", methods=["GET"])
 @jwt_required()
 def api_alerts():
@@ -771,14 +966,23 @@ def api_alerts():
     try:
         user_id = get_jwt_identity()
         alerts = AlertPreference.query.filter_by(user_id=user_id).all()
-        return jsonify({
-            "count": len(alerts),
-            "alerts": [
-                {"purpose": a.purpose, "location": a.location, "min_price": a.min_price, "max_price": a.max_price} for a in alerts
-            ]
-        })
+        return jsonify(
+            {
+                "count": len(alerts),
+                "alerts": [
+                    {
+                        "purpose": a.purpose,
+                        "location": a.location,
+                        "min_price": a.min_price,
+                        "max_price": a.max_price,
+                    }
+                    for a in alerts
+                ],
+            }
+        )
     except Exception as e:
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
 
 # --- Agent Endpoints ---
 @app.route("/api/agents", methods=["GET"])
@@ -786,24 +990,26 @@ def get_agents():
     """List all registered agents."""
     try:
         agents = Agent.query.all()
-        return jsonify({
-            "count": len(agents),
-            "agents": [
-                {
-                    "id": a.id,
-                    "name": a.name,
-                    "email": a.email,
-                    "phone": a.phone,
-                    "agency": a.agency,
-                    "specialty": a.specialty,
-                    "languages": a.languages,
-                    "location": a.location,
-                    "bio": a.bio,
-                    "photo_url": a.photo_url,
-                }
-                for a in agents
-            ],
-        })
+        return jsonify(
+            {
+                "count": len(agents),
+                "agents": [
+                    {
+                        "id": a.id,
+                        "name": a.name,
+                        "email": a.email,
+                        "phone": a.phone,
+                        "agency": a.agency,
+                        "specialty": a.specialty,
+                        "languages": a.languages,
+                        "location": a.location,
+                        "bio": a.bio,
+                        "photo_url": a.photo_url,
+                    }
+                    for a in agents
+                ],
+            }
+        )
     except Exception as e:
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
@@ -813,22 +1019,15 @@ def get_agents():
 def create_agent():
     """Create a new real estate agent record."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
-        data = request.json
-        agent = Agent(
-            name=data.get("name"),
-            email=data.get("email"),
-            phone=data.get("phone"),
-            agency=data.get("agency"),
-            specialty=data.get("specialty"),
-            languages=data.get("languages"),
-            location=data.get("location"),
-            bio=data.get("bio"),
-            photo_url=data.get("photo_url"),
-        )
+        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
+        data = request.get_json() or {}
+        validated = agent_schema.load(data)
+        agent = Agent(**validated)
         db.session.add(agent)
         db.session.commit()
         return jsonify({"message": "Agent created", "id": agent.id}), 201
+    except ValidationError as err:
+        return jsonify({"message": "Invalid input", "errors": err.messages}), 400
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
@@ -838,7 +1037,7 @@ def create_agent():
 @jwt_required()
 def add_agent():
     """Alias route to create a new agent."""
-    verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
+    verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
     return create_agent()
 
 
@@ -872,7 +1071,7 @@ def get_agent(agent_id):
 def update_agent(agent_id):
     """Modify an existing agent's information."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
+        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
         agent = Agent.query.get(agent_id)
         if not agent:
             return jsonify({"message": "Agent not found"}), 404
@@ -902,7 +1101,7 @@ def update_agent(agent_id):
 def delete_agent(agent_id):
     """Remove an agent from the system."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
+        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
         agent = Agent.query.get(agent_id)
         if not agent:
             return jsonify({"message": "Agent not found"}), 404
@@ -913,6 +1112,7 @@ def delete_agent(agent_id):
         db.session.rollback()
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
+
 @app.route("/api/agency/properties")
 @jwt_required()
 def agency_properties():
@@ -920,12 +1120,17 @@ def agency_properties():
     try:
         user_id = get_jwt_identity()
         properties = Property.query.filter_by(user_id=user_id).all()
-        return jsonify({
-            "count": len(properties),
-            "properties": [{"id": p.id, "views": 150, "inquiries": 10} for p in properties]  # Placeholder stats
-        })
+        return jsonify(
+            {
+                "count": len(properties),
+                "properties": [
+                    {"id": p.id, "views": 150, "inquiries": 10} for p in properties
+                ],  # Placeholder stats
+            }
+        )
     except Exception as e:
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+
 
 @app.route("/api/user/properties")
 @jwt_required()
@@ -934,10 +1139,15 @@ def user_properties():
     try:
         user_id = get_jwt_identity()
         properties = Property.query.filter_by(user_id=user_id).all()
-        return jsonify({
-            "count": len(properties),
-            "properties": [{"id": p.id, "title": p.title, "status": p.status, "price": p.price} for p in properties]
-        })
+        return jsonify(
+            {
+                "count": len(properties),
+                "properties": [
+                    {"id": p.id, "title": p.title, "status": p.status, "price": p.price}
+                    for p in properties
+                ],
+            }
+        )
     except Exception as e:
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
@@ -978,7 +1188,7 @@ def agency_requests():
 def update_agency_profile():
     """Update the authenticated agency's profile."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get('X-CSRF-TOKEN'))
+        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
         user_id = get_jwt_identity()
         user = User.query.get(user_id)
         if not user:
@@ -1005,6 +1215,7 @@ def market_snapshot():
     except Exception as e:
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
+
 # --- Global Error Handler ---
 @app.errorhandler(Exception)
 def handle_exception(e):
@@ -1013,6 +1224,7 @@ def handle_exception(e):
         return e
     logging.exception("Unhandled exception: %s", e)
     return jsonify({"message": "Internal server error"}), 500
+
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
