@@ -36,7 +36,8 @@ app.config['JWT_SECRET_KEY'] = config('JWT_SECRET_KEY', default='default_secret_
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-app.config['JWT_COOKIE_SECURE'] = True
+jwt_cookie_secure = config('JWT_COOKIE_SECURE', default='True')
+app.config['JWT_COOKIE_SECURE'] = str(jwt_cookie_secure).lower() in ['true', '1', 'yes']
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['GOOGLE_MAPS_API_KEY'] = config('GOOGLE_MAPS_API_KEY', default='')
 
