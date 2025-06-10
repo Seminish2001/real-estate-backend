@@ -1,4 +1,4 @@
-from app import app, db, User, Property, Agent
+from app import app, db, User, Property, Agent, slugify
 
 with app.app_context():
     # Clear existing data
@@ -13,6 +13,7 @@ with app.app_context():
     # Add test properties
     prop1 = Property(
         title='Cozy Apartment in Tirana',
+        slug=slugify('Cozy Apartment in Tirana'),
         price=75000,
         location='Tirana',
         beds=2,
@@ -25,6 +26,7 @@ with app.app_context():
     )
     prop2 = Property(
         title='Beachfront Villa in Vlorë',
+        slug=slugify('Beachfront Villa in Vlorë'),
         price=1500,
         location='Vlorë',
         beds=3,
@@ -41,6 +43,7 @@ with app.app_context():
     # Add sample agents
     agent1 = Agent(
         name='Ana Kovaçi',
+        slug=slugify('Ana Kovaçi'),
         email='ana@example.com',
         phone='123456789',
         agency='Elite Properties Albania',
@@ -52,6 +55,7 @@ with app.app_context():
     )
     agent2 = Agent(
         name='Besnik Rama',
+        slug=slugify('Besnik Rama'),
         email='besnik@example.com',
         phone='987654321',
         agency='Coastal Realty Group',
