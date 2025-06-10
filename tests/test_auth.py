@@ -40,6 +40,7 @@ def test_signup_and_signin(client):
     )
     assert resp.status_code == 201
     assert resp.get_json()["message"] == "Signed up successfully"
+    assert "csrf_token" in resp.get_json()
 
     resp = client.post(
         "/signin",
@@ -47,4 +48,5 @@ def test_signup_and_signin(client):
     )
     assert resp.status_code == 200
     assert resp.get_json()["message"] == "Signed in successfully"
+    assert "csrf_token" in resp.get_json()
 

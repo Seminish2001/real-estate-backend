@@ -31,10 +31,11 @@ def signup_and_login(client, email="user@example.com", password="password"):
     )
     resp = client.post("/signin", json={"email": email, "password": password})
     assert resp.status_code == 200
+    return resp.get_json()["csrf_token"]
 
 
 def test_create_and_get_property(client):
-    signup_and_login(client)
+    csrf = signup_and_login(client)
     data = {
         "title": "Test Home",
         "location": "Test City",
@@ -45,7 +46,7 @@ def test_create_and_get_property(client):
         "baths": "1",
         "size": "80",
     }
-    resp = client.post("/api/properties", data=data)
+    resp = client.post("/api/properties", data=data, headers={"X-CSRF-TOKEN": csrf})
     assert resp.status_code == 201
     prop_id = resp.get_json()["id"]
     assert prop_id is not None
@@ -74,9 +75,9 @@ def test_property_creation_requires_auth(client):
 
 
 def test_create_agent_and_retrieve(client):
-    signup_and_login(client)
+    csrf = signup_and_login(client)
     agent_data = {"name": "Agent Smith", "email": "a@example.com"}
-    resp = client.post("/api/agents", json=agent_data)
+    resp = client.post("/api/agents", json=agent_data, headers={"X-CSRF-TOKEN": csrf})
     assert resp.status_code == 201
     agent_id = resp.get_json()["id"]
     assert agent_id is not None
@@ -88,8 +89,8 @@ def test_create_agent_and_retrieve(client):
 
 
 def test_create_agent_missing_name(client):
-    signup_and_login(client)
-    resp = client.post("/api/agents", json={"email": "a@example.com"})
+    csrf = signup_and_login(client)
+    resp = client.post("/api/agents", json={"email": "a@example.com"}, headers={"X-CSRF-TOKEN": csrf})
     assert resp.status_code == 500
 
 
