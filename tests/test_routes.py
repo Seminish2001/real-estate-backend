@@ -14,6 +14,7 @@ spec.loader.exec_module(app_module)
 app = app_module.app
 db = app_module.db
 
+
 @pytest.fixture()
 def client():
     with app.app_context():
@@ -24,10 +25,16 @@ def client():
     with app.app_context():
         db.drop_all()
 
+
 def signup_and_login(client, email="user@example.com", password="password"):
     client.post(
         "/signup",
-        json={"name": "User", "email": email, "password": password, "user_type": "Landlord"},
+        json={
+            "name": "User",
+            "email": email,
+            "password": password,
+            "user_type": "Landlord",
+        },
     )
     resp = client.post("/signin", json={"email": email, "password": password})
     assert resp.status_code == 200
@@ -74,6 +81,13 @@ def test_property_creation_requires_auth(client):
     assert resp.get_json()["msg"] == "Missing Authorization Header"
 
 
+def test_property_missing_fields(client):
+    csrf = signup_and_login(client)
+    data = {"location": "City"}
+    resp = client.post("/api/properties", data=data, headers={"X-CSRF-TOKEN": csrf})
+    assert resp.status_code == 400
+
+
 def test_create_agent_and_retrieve(client):
     csrf = signup_and_login(client)
     agent_data = {"name": "Agent Smith", "email": "a@example.com"}
@@ -90,8 +104,10 @@ def test_create_agent_and_retrieve(client):
 
 def test_create_agent_missing_name(client):
     csrf = signup_and_login(client)
-    resp = client.post("/api/agents", json={"email": "a@example.com"}, headers={"X-CSRF-TOKEN": csrf})
-    assert resp.status_code == 500
+    resp = client.post(
+        "/api/agents", json={"email": "a@example.com"}, headers={"X-CSRF-TOKEN": csrf}
+    )
+    assert resp.status_code == 400
 
 
 def test_evaluation_success(client):
