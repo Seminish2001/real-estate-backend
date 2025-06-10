@@ -7,6 +7,11 @@ This project is a simple Flask backend for a real estate website. The applicatio
 1. **Python version**: The project requires **Python 3.11+**.
 2. **Install dependencies**:
    ```bash
+   pip install -r requirements.txt
+   ```
+   Alternatively, you can install directly from the project for local
+   development:
+   ```bash
    pip install -e .
    ```
 3. **Environment variables**:
