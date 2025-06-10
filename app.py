@@ -3,6 +3,7 @@ import logging
 from datetime import timedelta
 
 from flask import Flask, jsonify, request, render_template, make_response, abort
+from werkzeug.exceptions import HTTPException
 import re
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -988,7 +989,9 @@ def market_snapshot():
 @app.errorhandler(Exception)
 def handle_exception(e):
     """Log unexpected exceptions and return a generic error message."""
-    logging.exception(f"Unhandled exception: {e}")
+    if isinstance(e, HTTPException):
+        return e
+    logging.exception("Unhandled exception: %s", e)
     return jsonify({"message": "Internal server error"}), 500
 
 if __name__ == "__main__":
