@@ -2,560 +2,3371 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Independent Agent Dashboard for Real Estate Platform">
-  <title>Agent Dashboard | Real Estate Platform</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Dashboard | Albania Properties</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.css" rel="stylesheet">
   <style>
-    /* Base Styles */
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: #f4f7f9;
-      color: #333;
-      transition: background-color 0.4s, color 0.4s;
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #1557b0;
+      --secondary: #2d3748;
+      --accent: #00c4b4;
+      --danger: #e83f6f;
+      --warning: #ffc107;
+      --success: #28a745;
+      --light: #f9fafb;
+      --dark: #1f2a44;
+      --border-radius: 12px;
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 6px 25px rgba(0, 0, 0, 0.12);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
-    a { text-decoration: none; color: inherit; }
-    
-    /* Sidebar Navigation */
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: var(--dark);
+    }
+
+    /* Sidebar */
     .sidebar {
       position: fixed;
       top: 0;
       left: 0;
-      width: 240px;
       height: 100vh;
-      background: #fff;
-      border-right: 1px solid #ddd;
-      padding: 20px 10px;
+      width: 280px;
+      background: white;
+      box-shadow: var(--shadow-md);
+      z-index: 1000;
+      transition: var(--transition);
       overflow-y: auto;
-      transition: all 0.3s ease;
     }
-    .sidebar.collapsed {
-      width: 70px;
+
+    .sidebar-brand {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
     }
-    .sidebar.collapsed h2,
-    .sidebar.collapsed a span { display: none; }
-    .sidebar h2 {
-      color: #333;
-      font-size: 1.6rem;
+
+    .sidebar-brand img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .sidebar-menu {
+      padding: 1rem 0;
+    }
+
+    .menu-title {
+      padding: 0.5rem 1.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #718096;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: var(--secondary);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .menu-item:hover, .menu-item.active {
+      background: rgba(26, 115, 232, 0.05);
+      color: var(--primary);
+      border-left-color: var(--primary);
+    }
+
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
       text-align: center;
-      margin-bottom: 30px;
     }
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      padding: 12px 20px;
-      margin: 5px 0;
-      border-radius: 6px;
-      color: #333;
-      transition: background 0.3s, color 0.3s;
-      cursor: pointer;
-    }
-    .sidebar a i { width: 20px; }
-    .sidebar a:hover, .sidebar a.active {
-      background-color: #e9ecef;
-      color: #007bff;
-    }
-    
-    /* Top Header */
-    .top-header {
-      position: fixed;
-      top: 0;
-      left: 240px;
-      right: 0;
-      height: 60px;
-      background: #fff;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      transition: left 0.3s;
-      z-index: 100;
-    }
-    .sidebar.collapsed ~ .top-header {
-      left: 70px;
-    }
-    .top-header .header-left {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #007bff;
-    }
-    .top-header .header-right i {
-      font-size: 1.2rem;
-      margin-left: 20px;
-      cursor: pointer;
-      position: relative;
-    }
-    .top-header .header-right .badge {
-      position: absolute;
-      top: -5px;
-      right: 10px;
+
+    .menu-badge {
+      margin-left: auto;
+      background: var(--primary);
+      color: white;
       font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
     }
-    
+
     /* Main Content */
     .main-content {
-      margin-top: 60px;
-      margin-left: 240px;
-      padding: 20px 30px 40px;
-      background: #f4f7f9;
-      min-height: calc(100vh - 60px);
-      transition: margin-left 0.3s;
+      margin-left: 280px;
+      min-height: 100vh;
+      transition: var(--transition);
     }
-    .sidebar.collapsed ~ .main-content {
-      margin-left: 70px;
+
+    /* Topbar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: white;
+      box-shadow: var(--shadow-sm);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
     }
-    
-    /* Panels & Cards */
-    .panelContent { display: none; animation: fadeIn 0.5s; }
-    .panel, .card-custom {
-      background: rgba(255,255,255,0.6);
-      border: 1px solid rgba(255,255,255,0.3);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 30px;
-      margin-bottom: 30px;
-      box-shadow: 0 8px 32px rgba(31,38,135,0.1);
-      transition: transform 0.3s;
+
+    .search-bar {
+      position: relative;
+      max-width: 400px;
+      width: 100%;
     }
-    .panel h2, .card-custom h3 { color: #007bff; }
-    .card-custom { text-align: center; padding: 20px; cursor: pointer; }
-    .card-custom:hover { transform: translateY(-5px); }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    .search-bar input {
+      width: 100%;
+      padding: 0.7rem 1rem 0.7rem 2.5rem;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      transition: var(--transition);
     }
-    
-    /* Homepage Header */
-    .header-main {
-      text-align: center;
-      margin-bottom: 40px;
-      padding: 40px;
-      background: linear-gradient(90deg, #007bff, #17a2b8);
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      color: #fff;
+
+    .search-bar input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+      outline: none;
     }
-    .header-main h1 { font-size: 2.4rem; margin-bottom: 10px; }
-    .header-main p { font-size: 1.2rem; margin: 0; }
-    
-    /* KPI Animated Counters */
-    .counter {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #007bff;
+
+    .search-bar i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a0aec0;
     }
-    
-    /* Tables */
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: #e9ecef; }
-    thead th { padding: 10px; text-align: left; font-size: 0.95rem; color: #333; }
-    tbody tr { border-bottom: 1px solid #ddd; }
-    tbody td { padding: 10px; font-size: 0.9rem; color: #333; }
-    
-    /* Forms */
-    .form-label { font-weight: 500; }
-    .form-control:focus { box-shadow: none; border-color: #007bff; }
-    .form-error { color: #dc3545; font-size: 0.85rem; }
-    
-    /* Card Grid for Listings */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 15px;
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+      gap: 1rem;
     }
-    .card-grid .card img {
-      height: 200px;
-      object-fit: cover;
-      border-top-left-radius: 15px;
-      border-top-right-radius: 15px;
-    }
-    
-    /* Dark Mode Overrides */
-    body.dark-mode {
-      background-color: #1e1e2f;
-      color: #f0f0f0;
-    }
-    body.dark-mode .sidebar { background: linear-gradient(180deg, #14142b, #1e1e2f); border-right: 1px solid #333; }
-    body.dark-mode .sidebar h2 { color: #fff; }
-    body.dark-mode .sidebar a { color: #adb5bd; }
-    body.dark-mode .sidebar a:hover, body.dark-mode .sidebar a.active { background-color: rgba(52,58,64,0.8); color: #fff; }
-    body.dark-mode .top-header { background: #14142b; border-bottom: 1px solid #333; }
-    body.dark-mode .main-content { background: #1e1e2f; }
-    body.dark-mode .header-main { background: linear-gradient(90deg, #0056b3, #0090c8); }
-    body.dark-mode .panel, body.dark-mode .card-custom { background: rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.3); }
-    body.dark-mode .panel h2, body.dark-mode .card-custom h3 { color: #00bcd4; }
-    body.dark-mode thead { background: #333; }
-    body.dark-mode thead th, body.dark-mode tbody td { color: #ddd; }
-    body.dark-mode tbody tr { border-bottom: 1px solid #444; }
-    
-    /* Toggle Button */
-    .toggle-dark {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #00bcd4;
+
+    .notification-btn, .message-btn {
+      position: relative;
+      background: none;
       border: none;
+      font-size: 1.2rem;
+      color: var(--secondary);
+      cursor: pointer;
+    }
+
+    .notification-badge, .message-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 18px;
+      height: 18px;
+      background: var(--danger);
+      color: white;
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      color: #1e1e2f;
+      font-size: 0.6rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      z-index: 1000;
     }
-    
-    /* Back Button */
-    .back-btn { margin-bottom: 20px; }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+    }
+
+    .user-name {
+      font-weight: 500;
+      margin-right: 5px;
+    }
+
+    /* Dashboard Content */
+    .content-wrapper {
+      padding: 1.5rem;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .page-actions .btn {
+      margin-left: 0.5rem;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-title {
+      font-size: 0.9rem;
+      color: #718096;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-change {
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .stat-change.up {
+      color: var(--success);
+    }
+
+    .stat-change.down {
+      color: var(--danger);
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      position: absolute;
+      right: 1.5rem;
+      top: 1.5rem;
+      opacity: 0.1;
+    }
+
+    /* Main Content Grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1200px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Chart Cards */
+    .chart-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .chart-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .chart-actions select {
+      padding: 0.3rem 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      font-size: 0.85rem;
+    }
+
+    /* Properties Table */
+    .properties-table {
+      width: 100%;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .table-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .table-actions .btn {
+      margin-left: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      padding: 1rem 1.5rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--secondary);
+      background: #f9fafb;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    td {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: var(--secondary);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .property-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .property-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-right: 1rem;
+    }
+
+    .property-title {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .property-location {
+      font-size: 0.85rem;
+      color: #718096;
+    }
+
+    .status-badge {
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .status-active {
+      background: rgba(40, 167, 69, 0.1);
+      color: var(--success);
+    }
+
+    .status-pending {
+      background: rgba(255, 193, 7, 0.1);
+      color: var(--warning);
+    }
+
+    .status-sold {
+      background: rgba(232, 63, 111, 0.1);
+      color: var(--danger);
+    }
+
+    /* Activity Feed */
+    .activity-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .activity-item {
+      display: flex;
+      padding: 1rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(26, 115, 232, 0.1);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+
+    .activity-content {
+      flex-grow: 1;
+    }
+
+    .activity-message {
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .activity-time {
+      font-size: 0.8rem;
+      color: #718096;
+    }
+
+    /* Form Styles */
+    .form-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--dark);
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 0.5rem;
+    }
+
+    /* Property Gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .gallery-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      padding: 1rem;
+      color: white;
+    }
+
+    .gallery-actions {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Client Cards */
+    .client-card {
+      display: flex;
+      align-items: center;
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      margin-bottom: 1rem;
+    }
+
+    .client-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .client-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 1rem;
+    }
+
+    .client-info {
+      flex-grow: 1;
+    }
+
+    .client-name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .client-meta {
+      font-size: 0.85rem;
+      color: #718096;
+    }
+
+    /* Calendar */
+    .calendar-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+    }
+
+    .calendar-day-header {
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.5rem;
+      color: var(--secondary);
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      padding: 0.5rem;
+      border-radius: 8px;
+      background: #f9fafb;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .calendar-day.empty {
+      background: transparent;
+    }
+
+    .calendar-day.current {
+      background: rgba(26, 115, 232, 0.1);
+      font-weight: 600;
+    }
+
+    .calendar-day.has-events::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+      align-self: center;
+      margin-top: auto;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+      }
+      .menu-toggle {
+        display: block;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .topbar-actions {
+        display: none;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .page-actions {
+        margin-top: 1rem;
+        width: 100%;
+      }
+      .page-actions .btn {
+        width: 100%;
+        margin: 0.5rem 0;
+      }
+    }
+
+    /* Tab Content */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
-  <!-- Sidebar Navigation -->
-  <nav class="sidebar" id="sidebar">
-    <h2>Agent Dashboard</h2>
-    <a href="#" class="sidebar-link" data-target="dashboardPanel">
-      <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
-    </a>
-    <a href="#" class="sidebar-link" data-target="listingsPanel">
-      <i class="fas fa-building"></i> <span>My Listings</span>
-    </a>
-    <a href="#" class="sidebar-link" data-target="addPropertyPanel">
-      <i class="fas fa-plus"></i> <span>Add New Property</span>
-    </a>
-    <a href="#" class="sidebar-link" data-target="profilePanel">
-      <i class="fas fa-user"></i> <span>Profile Settings</span>
-    </a>
-    <a href="#" class="sidebar-link" data-target="leadsPanel">
-      <i class="fas fa-envelope"></i> <span>Leads</span>
-    </a>
-    <a href="#" class="sidebar-link" data-target="upgradePanel">
-      <i class="fas fa-star"></i> <span>Upgrade</span>
-    </a>
-  </nav>
-  
-  <!-- Top Header -->
-  <div class="top-header">
-    <div class="header-left">
-      Real Estate Command Center
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <img src="https://via.placeholder.com/40x40?text=AP" alt="Albania Properties">
+      <span>Albania Properties</span>
     </div>
-    <div class="header-right">
-      <i class="fas fa-bell" id="notificationsBtn"></i>
-      <i class="fas fa-user-circle" id="profileBtn"></i>
-      <i class="fas fa-bars" id="toggleSidebar"></i>
+    <div class="sidebar-menu">
+      <div class="menu-title">Main</div>
+      <a href="#" class="menu-item active" data-tab="dashboard">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="#" class="menu-item" data-tab="properties">
+        <i class="fas fa-home"></i>
+        <span>Properties</span>
+        <span class="menu-badge">12</span>
+      </a>
+      <a href="#" class="menu-item" data-tab="clients">
+        <i class="fas fa-users"></i>
+        <span>Clients</span>
+      </a>
+      <a href="#" class="menu-item" data-tab="appointments">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Appointments</span>
+        <span class="menu-badge">3</span>
+      </a>
+      <a href="#" class="menu-item" data-tab="contracts">
+        <i class="fas fa-file-signature"></i>
+        <span>Contracts</span>
+      </a>
+
+      <div class="menu-title">Marketing</div>
+      <a href="#" class="menu-item" data-tab="campaigns">
+        <i class="fas fa-bullhorn"></i>
+        <span>Campaigns</span>
+      </a>
+      <a href="#" class="menu-item" data-tab="email-blasts">
+        <i class="fas fa-envelope"></i>
+        <span>Email Blasts</span>
+      </a>
+      <a href="#" class="menu-item" data-tab="market-reports">
+        <i class="fas fa-chart-line"></i>
+        <span>Market Reports</span>
+      </a>
+
+      <div class="menu-title">Administrative</div>
+      <a href="#" class="menu-item" data-tab="commissions">
+        <i class="fas fa-file-invoice-dollar"></i>
+        <span>Commissions</span>
+      </a>
+      <a href="#" class="menu-item" data-tab="settings">
+        <i class="fas fa-cog"></i>
+        <span>Settings</span>
+      </a>
+      <a href="#" class="menu-item" data-tab="support">
+        <i class="fas fa-question-circle"></i>
+        <span>Support</span>
+      </a>
     </div>
   </div>
-  
-  <!-- Main Content Area -->
-  <div class="main-content" id="dashboardContent">
-    <!-- Dashboard Panel -->
-    <div id="dashboardPanel" class="panelContent">
-      <div class="header-main">
-        <h1 id="welcomeHeader">Welcome, {{ user.name }}</h1>
-        <p>Your command center for managing your real estate activities</p>
-      </div>
-      <!-- KPI Cards -->
-      <div class="row g-3 mb-4">
-        <div class="col-md-4">
-          <div class="card-custom p-4">
-            <div class="counter" data-target="{{ active_listings }}">{{ active_listings }}</div>
-            <p>Active Listings</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card-custom p-4">
-            <div class="counter" data-target="{{ new_inquiries }}">{{ new_inquiries }}</div>
-            <p>New Inquiries</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card-custom p-4">
-            <div class="counter" data-target="{{ pending_requests }}">{{ pending_requests }}</div>
-            <p>Pending Requests</p>
-          </div>
-        </div>
-      </div>
-      <!-- Recent Activity -->
-      <div class="panel">
-        <h2>Recent Activity</h2>
-        <ul class="list-unstyled">
-          {% for activity in recent_activity %}
-             <li>{{ activity }}</li>
-          {% else %}
-             <li>No recent activity</li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-    
-    <!-- My Listings Panel -->
-    <div id="listingsPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn" data-target="dashboardPanel">
-        <i class="fas fa-arrow-left"></i> Back
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Topbar -->
+    <div class="topbar">
+      <button class="btn btn-link menu-toggle d-lg-none" id="menuToggle">
+        <i class="fas fa-bars"></i>
       </button>
-      <div class="panel">
-        <h2>My Listings</h2>
-        <div class="card-grid">
-          {% for property in properties %}
-          <div class="card">
-            <img src="{{ property.image_url or url_for('static', filename='images/placeholder.png') }}" class="card-img-top" alt="{{ property.title }}">
-            <div class="card-body">
-              <h5 class="card-title">{{ property.title }}</h5>
-              <p class="card-text">Price: {% if property.currency == 'euro' %}€{% else %}Lek{% endif %}{{ property.price }}</p>
-              <a href="{{ url_for('edit_property', property_id=property.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-              <a href="{{ url_for('delete_property', property_id=property.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
-            </div>
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search properties, clients, etc...">
+      </div>
+      <div class="topbar-actions">
+        <button class="notification-btn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">5</span>
+        </button>
+        <button class="message-btn">
+          <i class="fas fa-envelope"></i>
+          <span class="message-badge">3</span>
+        </button>
+        <div class="user-profile dropdown">
+          <div data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="user-avatar">
+            <span class="user-name">Elena K.</span>
+            <i class="fas fa-chevron-down"></i>
           </div>
-          {% else %}
-          <p>You haven't listed any properties yet.</p>
-          {% endfor %}
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+          </ul>
         </div>
       </div>
     </div>
-    
-    <!-- Add New Property Panel -->
-    <div id="addPropertyPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn" data-target="dashboardPanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
-      <div class="panel">
-        <h2>Add New Property</h2>
-        <form id="addPropertyForm" action="{{ url_for('create_property') }}" method="POST" enctype="multipart/form-data">
-          <!-- Row 1: Title & Purpose -->
-          <div class="row mb-3">
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+      <!-- Dashboard Tab -->
+      <div class="tab-content active" id="dashboard-tab">
+        <!-- Page Header -->
+        <div class="page-header">
+          <h1 class="page-title">Agent Dashboard</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i> Add Property
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="fas fa-download me-2"></i> Export Report
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Total Listings</div>
+            <div class="stat-value">24</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 12% from last month
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-home"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Active Deals</div>
+            <div class="stat-value">8</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 2 new this week
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Commission This Month</div>
+            <div class="stat-value">€12,450</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 18% from last month
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-euro-sign"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Avg. Days on Market</div>
+            <div class="stat-value">42</div>
+            <div class="stat-change down">
+              <i class="fas fa-arrow-down me-1"></i> 5% longer
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+          <!-- Left Column -->
+          <div class="left-column">
+            <!-- Performance Chart -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Monthly Performance</h3>
+                <div class="chart-actions">
+                  <select class="form-select form-select-sm">
+                    <option>Last 6 Months</option>
+                    <option>Last 12 Months</option>
+                    <option>Year to Date</option>
+                  </select>
+                </div>
+              </div>
+              <div id="performanceChart" style="height: 300px;"></div>
+            </div>
+
+            <!-- Properties Table -->
+            <div class="chart-card">
+              <div class="table-header">
+                <h3 class="table-title">Recent Listings</h3>
+                <div class="table-actions">
+                  <button class="btn btn-sm btn-outline-secondary">View All</button>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="properties-table">
+                  <thead>
+                    <tr>
+                      <th>Property</th>
+                      <th>Price</th>
+                      <th>Status</th>
+                      <th>Last Activity</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="property-info">
+                          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                          <div>
+                            <div class="property-title">Tirana Skyline Penthouse</div>
+                            <div class="property-location">Blloku, Tirana</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>€450,000</td>
+                      <td><span class="status-badge status-active">Active</span></td>
+                      <td>2 hours ago</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="property-info">
+                          <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                          <div>
+                            <div class="property-title">Vlora Coastal Villa</div>
+                            <div class="property-location">Vlorë, Albania</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>€780,000</td>
+                      <td><span class="status-badge status-pending">Pending</span></td>
+                      <td>1 day ago</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="property-info">
+                          <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                          <div>
+                            <div class="property-title">Saranda Seafront Apartment</div>
+                            <div class="property-location">Sarandë, Albania</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>€220,000</td>
+                      <td><span class="status-badge status-sold">Sold</span></td>
+                      <td>3 days ago</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="right-column">
+            <!-- Market Trends -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Market Trends</h3>
+                <div class="chart-actions">
+                  <select class="form-select form-select-sm">
+                    <option>Tirana</option>
+                    <option>Vlorë</option>
+                    <option>All Regions</option>
+                  </select>
+                </div>
+              </div>
+              <div id="marketTrendsChart" style="height: 200px;"></div>
+            </div>
+
+            <!-- Activity Feed -->
+            <div class="activity-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Recent Activity</h3>
+                <div class="chart-actions">
+                  <button class="btn btn-sm btn-outline-secondary">View All</button>
+                </div>
+              </div>
+              <div class="activity-feed">
+                <div class="activity-item">
+                  <div class="activity-icon">
+                    <i class="fas fa-home"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">New listing added: "Tirana Skyline Penthouse"</div>
+                    <div class="activity-time">2 hours ago</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon">
+                    <i class="fas fa-handshake"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">Offer accepted for "Vlora Coastal Villa"</div>
+                    <div class="activity-time">1 day ago</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">New client registered: Mark Johnson</div>
+                    <div class="activity-time">2 days ago</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon">
+                    <i class="fas fa-file-signature"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">Contract signed for "Saranda Seafront Apartment"</div>
+                    <div class="activity-time">3 days ago</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Quick Actions</h3>
+              </div>
+              <div class="quick-actions">
+                <div class="row g-2">
+                  <div class="col-6">
+                    <button class="btn btn-outline-primary w-100">
+                      <i class="fas fa-plus me-2"></i> Add Listing
+                    </button>
+                  </div>
+                  <div class="col-6">
+                    <button class="btn btn-outline-secondary w-100">
+                      <i class="fas fa-calendar me-2"></i> Schedule Tour
+                    </button>
+                  </div>
+                  <div class="col-6">
+                    <button class="btn btn-outline-success w-100">
+                      <i class="fas fa-envelope me-2"></i> Email Client
+                    </button>
+                  </div>
+                  <div class="col-6">
+                    <button class="btn btn-outline-danger w-100">
+                      <i class="fas fa-file-pdf me-2"></i> Generate Report
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Properties Tab -->
+      <div class="tab-content" id="properties-tab">
+        <div class="page-header">
+          <h1 class="page-title">Property Management</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i> Add New Property
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="fas fa-filter me-2"></i> Filters
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Active Listings</div>
+            <div class="stat-value">18</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 3 new this month
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-home"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Pending Approval</div>
+            <div class="stat-value">4</div>
+            <div class="stat-change down">
+              <i class="fas fa-arrow-down me-1"></i> 2 approved
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Recently Sold</div>
+            <div class="stat-value">6</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 2 this week
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-euro-sign"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Total Value</div>
+            <div class="stat-value">€8.2M</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 12% from last quarter
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="table-header">
+            <h3 class="table-title">All Properties</h3>
+            <div class="table-actions">
+              <div class="input-group" style="max-width: 300px;">
+                <input type="text" class="form-control form-control-sm" placeholder="Search properties...">
+                <button class="btn btn-sm btn-outline-secondary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="properties-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Price</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="property-info">
+                      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                      <div>
+                        <div class="property-title">Tirana Skyline Penthouse</div>
+                        <div class="property-location">Blloku, Tirana</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Apartment</td>
+                  <td>€450,000</td>
+                  <td>Tirana</td>
+                  <td><span class="status-badge status-active">Active</span></td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="property-info">
+                      <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                      <div>
+                        <div class="property-title">Vlora Coastal Villa</div>
+                        <div class="property-location">Vlorë, Albania</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Villa</td>
+                  <td>€780,000</td>
+                  <td>Vlorë</td>
+                  <td><span class="status-badge status-pending">Pending</span></td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="property-info">
+                      <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                      <div>
+                        <div class="property-title">Saranda Seafront Apartment</div>
+                        <div class="property-location">Sarandë, Albania</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Apartment</td>
+                  <td>€220,000</td>
+                  <td>Sarandë</td>
+                  <td><span class="status-badge status-sold">Sold</span></td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="property-info">
+                      <img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                      <div>
+                        <div class="property-title">Durres Beach House</div>
+                        <div class="property-location">Durrës, Albania</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>House</td>
+                  <td>€320,000</td>
+                  <td>Durrës</td>
+                  <td><span class="status-badge status-active">Active</span></td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="property-info">
+                      <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                      <div>
+                        <div class="property-title">Shkodër Lake View</div>
+                        <div class="property-location">Shkodër, Albania</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Villa</td>
+                  <td>€410,000</td>
+                  <td>Shkodër</td>
+                  <td><span class="status-badge status-active">Active</span></td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <nav class="mt-3">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Clients Tab -->
+      <div class="tab-content" id="clients-tab">
+        <div class="page-header">
+          <h1 class="page-title">Client Management</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i> Add New Client
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="fas fa-download me-2"></i> Export
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Total Clients</div>
+            <div class="stat-value">48</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 5 new this month
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Active Buyers</div>
+            <div class="stat-value">22</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 3 new leads
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-search-dollar"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Active Sellers</div>
+            <div class="stat-value">14</div>
+            <div class="stat-change down">
+              <i class="fas fa-arrow-down me-1"></i> 2 completed
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-home"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">VIP Clients</div>
+            <div class="stat-value">12</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 1 new addition
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-crown"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="table-header">
+            <h3 class="table-title">Client Directory</h3>
+            <div class="table-actions">
+              <div class="input-group" style="max-width: 300px;">
+                <input type="text" class="form-control form-control-sm" placeholder="Search clients...">
+                <button class="btn btn-sm btn-outline-secondary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
             <div class="col-md-6">
-              <label for="propertyTitle" class="form-label">Property Title</label>
-              <input type="text" class="form-control" id="propertyTitle" name="title" placeholder="Enter property title" required>
+              <div class="client-card">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="client-avatar">
+                <div class="client-info">
+                  <div class="client-name">Mark Johnson</div>
+                  <div class="client-meta">
+                    <span><i class="fas fa-phone me-1"></i> +355 68 123 4567</span><br>
+                    <span><i class="fas fa-envelope me-1"></i> mark.johnson@example.com</span>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-ellipsis-h"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-envelope me-2"></i>Message</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                  </ul>
+                </div>
+              </div>
             </div>
             <div class="col-md-6">
-              <label for="propertyPurpose" class="form-label">Purpose</label>
-              <select class="form-select" id="propertyPurpose" name="purpose" required>
-                <option value="">Select Purpose</option>
-                <option value="buy">For Sale</option>
-                <option value="rent">For Rent</option>
+              <div class="client-card">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" class="client-avatar">
+                <div class="client-info">
+                  <div class="client-name">Sarah Williams</div>
+                  <div class="client-meta">
+                    <span><i class="fas fa-phone me-1"></i> +355 68 234 5678</span><br>
+                    <span><i class="fas fa-envelope me-1"></i> sarah.w@example.com</span>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-ellipsis-h"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-envelope me-2"></i>Message</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="client-card">
+                <img src="https://randomuser.me/api/portraits/men/67.jpg" class="client-avatar">
+                <div class="client-info">
+                  <div class="client-name">David Smith</div>
+                  <div class="client-meta">
+                    <span><i class="fas fa-phone me-1"></i> +355 68 345 6789</span><br>
+                    <span><i class="fas fa-envelope me-1"></i> david.smith@example.com</span>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-ellipsis-h"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-envelope me-2"></i>Message</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="client-card">
+                <img src="https://randomuser.me/api/portraits/women/28.jpg" class="client-avatar">
+                <div class="client-info">
+                  <div class="client-name">Emma Brown</div>
+                  <div class="client-meta">
+                    <span><i class="fas fa-phone me-1"></i> +355 68 456 7890</span><br>
+                    <span><i class="fas fa-envelope me-1"></i> emma.b@example.com</span>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-ellipsis-h"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-envelope me-2"></i>Message</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <nav class="mt-3">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Appointments Tab -->
+      <div class="tab-content" id="appointments-tab">
+        <div class="page-header">
+          <h1 class="page-title">Appointment Calendar</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i> New Appointment
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="fas fa-sync-alt me-2"></i> Refresh
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Today's Appointments</div>
+            <div class="stat-value">3</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 1 just added
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-calendar-day"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">This Week</div>
+            <div class="stat-value">8</div>
+            <div class="stat-change down">
+              <i class="fas fa-arrow-down me-1"></i> 2 completed
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-calendar-week"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Pending Confirmations</div>
+            <div class="stat-value">2</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 1 new request
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-question-circle"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Conversion Rate</div>
+            <div class="stat-value">42%</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 5% improvement
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="calendar-card">
+            <div class="calendar-header">
+              <h3 class="calendar-title">June 2023</h3>
+              <div class="calendar-nav">
+                <button class="btn btn-sm btn-outline-secondary">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary">
+                  Today
+                </button>
+                <button class="btn btn-sm btn-outline-secondary">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+            <div class="calendar-grid">
+              <div class="calendar-day-header">Sun</div>
+              <div class="calendar-day-header">Mon</div>
+              <div class="calendar-day-header">Tue</div>
+              <div class="calendar-day-header">Wed</div>
+              <div class="calendar-day-header">Thu</div>
+              <div class="calendar-day-header">Fri</div>
+              <div class="calendar-day-header">Sat</div>
+
+              <div class="calendar-day empty">28</div>
+              <div class="calendar-day empty">29</div>
+              <div class="calendar-day empty">30</div>
+              <div class="calendar-day empty">31</div>
+              <div class="calendar-day">1</div>
+              <div class="calendar-day">2</div>
+              <div class="calendar-day">3</div>
+
+              <div class="calendar-day">4</div>
+              <div class="calendar-day">5</div>
+              <div class="calendar-day">6</div>
+              <div class="calendar-day has-events">7</div>
+              <div class="calendar-day has-events current">8</div>
+              <div class="calendar-day">9</div>
+              <div class="calendar-day">10</div>
+
+              <div class="calendar-day">11</div>
+              <div class="calendar-day has-events">12</div>
+              <div class="calendar-day">13</div>
+              <div class="calendar-day">14</div>
+              <div class="calendar-day">15</div>
+              <div class="calendar-day">16</div>
+              <div class="calendar-day">17</div>
+
+              <div class="calendar-day">18</div>
+              <div class="calendar-day">19</div>
+              <div class="calendar-day has-events">20</div>
+              <div class="calendar-day">21</div>
+              <div class="calendar-day">22</div>
+              <div class="calendar-day">23</div>
+              <div class="calendar-day">24</div>
+
+              <div class="calendar-day">25</div>
+              <div class="calendar-day">26</div>
+              <div class="calendar-day">27</div>
+              <div class="calendar-day">28</div>
+              <div class="calendar-day">29</div>
+              <div class="calendar-day">30</div>
+              <div class="calendar-day empty">1</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <div class="left-column">
+            <div class="chart-card">
+              <div class="table-header">
+                <h3 class="table-title">Today's Schedule</h3>
+                <div class="table-actions">
+                  <button class="btn btn-sm btn-outline-secondary">View All</button>
+                </div>
+              </div>
+              <div class="activity-feed">
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(232, 63, 111, 0.1); color: var(--danger);">
+                    <i class="fas fa-home"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Property Viewing:</strong> Tirana Skyline Penthouse
+                      <span class="badge bg-primary ms-2">10:00 AM</span>
+                    </div>
+                    <div class="activity-time">With Mark Johnson</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(40, 167, 69, 0.1); color: var(--success);">
+                    <i class="fas fa-file-signature"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Contract Signing:</strong> Vlora Coastal Villa
+                      <span class="badge bg-primary ms-2">2:00 PM</span>
+                    </div>
+                    <div class="activity-time">With Sarah Williams</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(26, 115, 232, 0.1); color: var(--primary);">
+                    <i class="fas fa-users"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Client Meeting:</strong> New Buyer Consultation
+                      <span class="badge bg-primary ms-2">4:30 PM</span>
+                    </div>
+                    <div class="activity-time">With David Smith</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="right-column">
+            <div class="chart-card">
+              <div class="table-header">
+                <h3 class="table-title">Upcoming Appointments</h3>
+                <div class="table-actions">
+                  <button class="btn btn-sm btn-outline-secondary">View All</button>
+                </div>
+              </div>
+              <div class="activity-feed">
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(255, 193, 7, 0.1); color: var(--warning);">
+                    <i class="fas fa-home"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Property Viewing:</strong> Durres Beach House
+                      <span class="badge bg-primary ms-2">Jun 12, 10:00 AM</span>
+                    </div>
+                    <div class="activity-time">With Emma Brown</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(26, 115, 232, 0.1); color: var(--primary);">
+                    <i class="fas fa-search-dollar"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Buyer Consultation:</strong> Investment Properties
+                      <span class="badge bg-primary ms-2">Jun 15, 11:30 AM</span>
+                    </div>
+                    <div class="activity-time">With Michael Wilson</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(0, 196, 180, 0.1); color: var(--accent);">
+                    <i class="fas fa-home"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Property Viewing:</strong> Shkodër Lake View
+                      <span class="badge bg-primary ms-2">Jun 20, 3:00 PM</span>
+                    </div>
+                    <div class="activity-time">With Olivia Davis</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contracts Tab -->
+      <div class="tab-content" id="contracts-tab">
+        <div class="page-header">
+          <h1 class="page-title">Contract Management</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i> New Contract
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="fas fa-filter me-2"></i> Filters
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Active Contracts</div>
+            <div class="stat-value">14</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 2 new this month
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-file-signature"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Pending Signatures</div>
+            <div class="stat-value">3</div>
+            <div class="stat-change down">
+              <i class="fas fa-arrow-down me-1"></i> 1 signed
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-pen"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Completed This Month</div>
+            <div class="stat-value">5</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 2 more than last month
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Total Commission</div>
+            <div class="stat-value">€24,800</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 15% from last quarter
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-euro-sign"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="table-header">
+            <h3 class="table-title">All Contracts</h3>
+            <div class="table-actions">
+              <div class="input-group" style="max-width: 300px;">
+                <input type="text" class="form-control form-control-sm" placeholder="Search contracts...">
+                <button class="btn btn-sm btn-outline-secondary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="properties-table">
+              <thead>
+                <tr>
+                  <th>Contract #</th>
+                  <th>Property</th>
+                  <th>Client</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Amount</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>CT-2023-045</td>
+                  <td>
+                    <div class="property-info">
+                      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                      <div>
+                        <div class="property-title">Tirana Skyline Penthouse</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Mark Johnson</td>
+                  <td>Sale</td>
+                  <td><span class="status-badge status-active">Active</span></td>
+                  <td>€450,000</td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf me-2"></i>Download</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-envelope me-2"></i>Email</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Void</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>CT-2023-044</td>
+                  <td>
+                    <div class="property-info">
+                      <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                      <div>
+                        <div class="property-title">Vlora Coastal Villa</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Sarah Williams</td>
+                  <td>Sale</td>
+                  <td><span class="status-badge status-pending">Pending</span></td>
+                  <td>€780,000</td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf me-2"></i>Download</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-envelope me-2"></i>Email</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Void</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>CT-2023-043</td>
+                  <td>
+                    <div class="property-info">
+                      <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                      <div>
+                        <div class="property-title">Saranda Seafront Apartment</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>David Smith</td>
+                  <td>Sale</td>
+                  <td><span class="status-badge status-sold">Completed</span></td>
+                  <td>€220,000</td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf me-2"></i>Download</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-envelope me-2"></i>Email</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-file-archive me-2"></i>Archive</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>CT-2023-042</td>
+                  <td>
+                    <div class="property-info">
+                      <img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                      <div>
+                        <div class="property-title">Durres Beach House</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Emma Brown</td>
+                  <td>Rental</td>
+                  <td><span class="status-badge status-active">Active</span></td>
+                  <td>€1,200/mo</td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf me-2"></i>Download</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-envelope me-2"></i>Email</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Void</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>CT-2023-041</td>
+                  <td>
+                    <div class="property-info">
+                      <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
+                      <div>
+                        <div class="property-title">Shkodër Lake View</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Michael Wilson</td>
+                  <td>Sale</td>
+                  <td><span class="status-badge status-pending">Pending</span></td>
+                  <td>€410,000</td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf me-2"></i>Download</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-envelope me-2"></i>Email</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Void</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <nav class="mt-3">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Campaigns Tab -->
+      <div class="tab-content" id="campaigns-tab">
+        <div class="page-header">
+          <h1 class="page-title">Marketing Campaigns</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i> New Campaign
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="fas fa-chart-pie me-2"></i> Reports
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Active Campaigns</div>
+            <div class="stat-value">4</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 1 new this week
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-bullhorn"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Total Leads</div>
+            <div class="stat-value">87</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 12 new today
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Conversion Rate</div>
+            <div class="stat-value">18%</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 3% improvement
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-percentage"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">ROI</div>
+            <div class="stat-value">320%</div>
+            <div class="stat-change down">
+              <i class="fas fa-arrow-down me-1"></i> 5% decrease
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-euro-sign"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Campaign Performance</h3>
+            <div class="chart-actions">
+              <select class="form-select form-select-sm">
+                <option>Last 30 Days</option>
+                <option>Last 90 Days</option>
+                <option>This Year</option>
               </select>
             </div>
           </div>
-          <!-- Row 2: Property Type -->
-          <div class="mb-3">
-            <label for="propertyType" class="form-label">Property Type</label>
-            <select class="form-select" id="propertyType" name="type" required>
-              <option value="">Select Type</option>
-              <option value="apartment">Apartment</option>
-              <option value="house">House</option>
-              <option value="villa">Villa</option>
-              <option value="commercial">Commercial</option>
-            </select>
-          </div>
-          <!-- Row 3: Location -->
-          <div class="mb-3">
-            <label for="propertyLocation" class="form-label">Location</label>
-            <input type="text" class="form-control" id="propertyLocation" name="location" placeholder="Enter full address" required>
-          </div>
-          <!-- Row 4: Price, Currency, Area -->
-          <div class="row mb-3">
-            <div class="col-md-4">
-              <label for="propertyPrice" class="form-label">Price</label>
-              <input type="number" class="form-control" id="propertyPrice" name="price" placeholder="Enter price" required>
+          <div id="campaignPerformanceChart" style="height: 300px;"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="table-header">
+            <h3 class="table-title">Active Campaigns</h3>
+            <div class="table-actions">
+              <button class="btn btn-sm btn-outline-secondary">View All</button>
             </div>
-            <div class="col-md-4">
-              <label for="propertyCurrency" class="form-label">Currency</label>
-              <select class="form-select" id="propertyCurrency" name="currency" required>
-                <option value="lek">Lek</option>
-                <option value="euro">Euro</option>
+          </div>
+          <div class="gallery-grid">
+            <div class="gallery-item">
+              <img src="https://images.unsplash.com/photo-1560520031-3a4dc4e9de0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="gallery-img">
+              <div class="gallery-overlay">
+                <h5>Summer Property Showcase</h5>
+                <p class="mb-0">12 Properties • 45 Leads</p>
+              </div>
+              <div class="gallery-actions">
+                <button class="btn btn-sm btn-primary rounded-circle">
+                  <i class="fas fa-play"></i>
+                </button>
+                <button class="btn btn-sm btn-light rounded-circle">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+              </div>
+            </div>
+            <div class="gallery-item">
+              <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="gallery-img">
+              <div class="gallery-overlay">
+                <h5>Luxury Villas Promotion</h5>
+                <p class="mb-0">8 Properties • 22 Leads</p>
+              </div>
+              <div class="gallery-actions">
+                <button class="btn btn-sm btn-primary rounded-circle">
+                  <i class="fas fa-play"></i>
+                </button>
+                <button class="btn btn-sm btn-light rounded-circle">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+              </div>
+            </div>
+            <div class="gallery-item">
+              <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="gallery-img">
+              <div class="gallery-overlay">
+                <h5>Investor Webinar Series</h5>
+                <p class="mb-0">3 Events • 15 Registrations</p>
+              </div>
+              <div class="gallery-actions">
+                <button class="btn btn-sm btn-primary rounded-circle">
+                  <i class="fas fa-play"></i>
+                </button>
+                <button class="btn btn-sm btn-light rounded-circle">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+              </div>
+            </div>
+            <div class="gallery-item">
+              <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="gallery-img">
+              <div class="gallery-overlay">
+                <h5>Social Media Ad Campaign</h5>
+                <p class="mb-0">5 Properties • 32 Leads</p>
+              </div>
+              <div class="gallery-actions">
+                <button class="btn btn-sm btn-primary rounded-circle">
+                  <i class="fas fa-play"></i>
+                </button>
+                <button class="btn btn-sm btn-light rounded-circle">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Blasts Tab -->
+      <div class="tab-content" id="email-blasts-tab">
+        <div class="page-header">
+          <h1 class="page-title">Email Marketing</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i> New Email Blast
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="fas fa-sync-alt me-2"></i> Refresh
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Total Sent</div>
+            <div class="stat-value">24</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 3 this month
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-paper-plane"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Open Rate</div>
+            <div class="stat-value">42%</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 5% improvement
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-envelope-open"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Click Rate</div>
+            <div class="stat-value">18%</div>
+            <div class="stat-change down">
+              <i class="fas fa-arrow-down me-1"></i> 2% decrease
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-mouse-pointer"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">New Leads</div>
+            <div class="stat-value">12</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 4 from last campaign
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-user-plus"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Email Performance</h3>
+            <div class="chart-actions">
+              <select class="form-select form-select-sm">
+                <option>Last 6 Months</option>
+                <option>Last 12 Months</option>
+                <option>Year to Date</option>
               </select>
             </div>
-            <div class="col-md-4">
-              <label for="propertyArea" class="form-label">Area (m²)</label>
-              <input type="number" class="form-control" id="propertyArea" name="size" placeholder="e.g. 120" required>
+          </div>
+          <div id="emailPerformanceChart" style="height: 300px;"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="table-header">
+            <h3 class="table-title">Recent Email Campaigns</h3>
+            <div class="table-actions">
+              <button class="btn btn-sm btn-outline-secondary">View All</button>
             </div>
           </div>
-          <!-- Row 5: Bedrooms, Bathrooms -->
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="propertyBedrooms" class="form-label">Bedrooms</label>
-              <input type="number" class="form-control" id="propertyBedrooms" name="beds" placeholder="Number of bedrooms" required>
-            </div>
-            <div class="col-md-6">
-              <label for="propertyBathrooms" class="form-label">Bathrooms</label>
-              <input type="number" class="form-control" id="propertyBathrooms" name="bathrooms" placeholder="Number of bathrooms" required>
-            </div>
+          <div class="table-responsive">
+            <table class="properties-table">
+              <thead>
+                <tr>
+                  <th>Campaign</th>
+                  <th>Sent</th>
+                  <th>Recipients</th>
+                  <th>Open Rate</th>
+                  <th>Click Rate</th>
+                  <th>Leads</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="property-title">Summer Property Highlights</div>
+                    <div class="property-location">Sent to 450 contacts</div>
+                  </td>
+                  <td>Jun 5, 2023</td>
+                  <td>450</td>
+                  <td>48%</td>
+                  <td>22%</td>
+                  <td>8</td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-chart-bar me-2"></i>Stats</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-clone me-2"></i>Duplicate</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="property-title">Luxury Villa Showcase</div>
+                    <div class="property-location">Sent to 320 contacts</div>
+                  </td>
+                  <td>May 28, 2023</td>
+                  <td>320</td>
+                  <td>52%</td>
+                  <td>18%</td>
+                  <td>5</td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-chart-bar me-2"></i>Stats</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-clone me-2"></i>Duplicate</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="property-title">Investment Opportunity Alert</div>
+                    <div class="property-location">Sent to 280 contacts</div>
+                  </td>
+                  <td>May 15, 2023</td>
+                  <td>280</td>
+                  <td>45%</td>
+                  <td>15%</td>
+                  <td>4</td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-chart-bar me-2"></i>Stats</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-clone me-2"></i>Duplicate</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="property-title">New Listings Newsletter</div>
+                    <div class="property-location">Sent to 520 contacts</div>
+                  </td>
+                  <td>May 1, 2023</td>
+                  <td>520</td>
+                  <td>38%</td>
+                  <td>12%</td>
+                  <td>3</td>
+                  <td>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-chart-bar me-2"></i>Stats</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-clone me-2"></i>Duplicate</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <!-- Row 6: Image Upload -->
-          <div class="mb-3">
-            <label for="propertyImage" class="form-label">Upload Image</label>
-            <input type="file" class="form-control" id="propertyImage" name="image" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit Property</button>
-        </form>
+          <nav class="mt-3">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
-    </div>
-    
-    <!-- Profile Settings Panel -->
-    <div id="profilePanel" class="panelContent">
-      <button class="btn btn-secondary back-btn" data-target="dashboardPanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
-      <div class="panel">
-        <h2>Profile Settings</h2>
-        <form id="profileSettingsForm" action="{{ url_for('update_profile') }}" method="POST" enctype="multipart/form-data">
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="agentName" class="form-label">Name</label>
-              <input type="text" class="form-control" id="agentName" name="name" value="{{ user.name }}" required>
-            </div>
-            <div class="col-md-6">
-              <label for="agentEmail" class="form-label">Email</label>
-              <input type="email" class="form-control" id="agentEmail" name="email" value="{{ user.email }}" required>
-            </div>
+
+      <!-- Market Reports Tab -->
+      <div class="tab-content" id="market-reports-tab">
+        <div class="page-header">
+          <h1 class="page-title">Market Reports</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i> Generate Report
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="fas fa-download me-2"></i> Export Data
+            </button>
           </div>
-          <div class="mb-3">
-            <label for="agentLanguages" class="form-label">Languages Spoken</label>
-            <input type="text" class="form-control" id="agentLanguages" name="languages" placeholder="e.g. English, Albanian, Italian" value="{{ user.languages or '' }}">
-          </div>
-          <div class="mb-3">
-            <label for="agentBio" class="form-label">About You</label>
-            <textarea class="form-control" id="agentBio" name="bio" rows="4" placeholder="Write a short bio about yourself">{{ user.bio or '' }}</textarea>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="agentPhone" class="form-label">Phone Number</label>
-              <input type="tel" class="form-control" id="agentPhone" name="phone" value="{{ user.phone or '' }}">
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Avg. Price per m²</div>
+            <div class="stat-value">€1,450</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 5% from last quarter
             </div>
-            <div class="col-md-6">
-              <label for="agentLocation" class="form-label">Location</label>
-              <input type="text" class="form-control" id="agentLocation" name="location" value="{{ user.location or '' }}">
+            <div class="stat-icon">
+              <i class="fas fa-euro-sign"></i>
             </div>
           </div>
-          <div class="mb-3">
-            <label for="agentPhoto" class="form-label">Profile Photo</label>
-            <input type="file" class="form-control" id="agentPhoto" name="photo">
+          <div class="stat-card">
+            <div class="stat-title">Properties Listed</div>
+            <div class="stat-value">1,240</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 12% from last month
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-home"></i>
+            </div>
           </div>
-          <button type="submit" class="btn btn-primary">Update Profile</button>
-        </form>
+          <div class="stat-card">
+            <div class="stat-title">Avg. Days on Market</div>
+            <div class="stat-value">42</div>
+            <div class="stat-change down">
+              <i class="fas fa-arrow-down me-1"></i> 3 days faster
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Inventory</div>
+            <div class="stat-value">3.2 mo</div>
+            <div class="stat-change down">
+              <i class="fas fa-arrow-down me-1"></i> Seller's Market
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-warehouse"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Regional Price Trends</h3>
+            <div class="chart-actions">
+              <select class="form-select form-select-sm">
+                <option>Last 12 Months</option>
+                <option>Last 3 Years</option>
+                <option>Last 5 Years</option>
+              </select>
+            </div>
+          </div>
+          <div id="regionalTrendsChart" style="height: 300px;"></div>
+        </div>
+
+        <div class="content-grid">
+          <div class="left-column">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Property Type Analysis</h3>
+                <div class="chart-actions">
+                  <select class="form-select form-select-sm">
+                    <option>Tirana</option>
+                    <option>All Regions</option>
+                  </select>
+                </div>
+              </div>
+              <div id="propertyTypeChart" style="height: 300px;"></div>
+            </div>
+          </div>
+          <div class="right-column">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Recent Market Reports</h3>
+                <div class="chart-actions">
+                  <button class="btn btn-sm btn-outline-secondary">View All</button>
+                </div>
+              </div>
+              <div class="activity-feed">
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(26, 115, 232, 0.1); color: var(--primary);">
+                    <i class="fas fa-file-alt"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Tirana Q2 2023 Market Report</strong>
+                    </div>
+                    <div class="activity-time">Generated: Jun 1, 2023</div>
+                    <div class="mt-2">
+                      <button class="btn btn-sm btn-outline-primary me-2">
+                        <i class="fas fa-eye me-1"></i> View
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-download me-1"></i> Download
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(40, 167, 69, 0.1); color: var(--success);">
+                    <i class="fas fa-file-alt"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Coastal Properties May 2023 Analysis</strong>
+                    </div>
+                    <div class="activity-time">Generated: May 28, 2023</div>
+                    <div class="mt-2">
+                      <button class="btn btn-sm btn-outline-primary me-2">
+                        <i class="fas fa-eye me-1"></i> View
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-download me-1"></i> Download
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(255, 193, 7, 0.1); color: var(--warning);">
+                    <i class="fas fa-file-alt"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Luxury Market Q1 2023 Overview</strong>
+                    </div>
+                    <div class="activity-time">Generated: Apr 5, 2023</div>
+                    <div class="mt-2">
+                      <button class="btn btn-sm btn-outline-primary me-2">
+                        <i class="fas fa-eye me-1"></i> View
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-download me-1"></i> Download
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    
-    <!-- Leads Panel -->
-    <div id="leadsPanel" class="panelContent">
-      <button class="btn btn-secondary back-btn" data-target="dashboardPanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
-      <div class="panel">
-        <h2>Leads</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Inquiry</th>
-              <th>Client</th>
-              <th>Contact</th>
-              <th>Date</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for lead in leads %}
-            <tr>
-              <td>{{ lead.inquiry }}</td>
-              <td>{{ lead.client }}</td>
-              <td>{{ lead.contact }}</td>
-              <td>{{ lead.date }}</td>
-              <td><a href="{{ url_for('view_lead', lead_id=lead.id) }}" class="btn btn-sm btn-outline-primary">View</a></td>
-            </tr>
-            {% else %}
-            <tr>
-              <td colspan="5">No leads available</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+
+      <!-- Commissions Tab -->
+      <div class="tab-content" id="commissions-tab">
+        <div class="page-header">
+          <h1 class="page-title">Commission Tracking</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i> Record Payment
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="fas fa-download me-2"></i> Export
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Earned This Month</div>
+            <div class="stat-value">€12,450</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 18% from last month
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-euro-sign"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Pending Commissions</div>
+            <div class="stat-value">€8,200</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 3 new deals
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">YTD Earnings</div>
+            <div class="stat-value">€58,750</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 22% from last year
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Avg. Commission</div>
+            <div class="stat-value">€4,890</div>
+            <div class="stat-change up">
+              <i class="fas fa-arrow-up me-1"></i> 8% increase
+            </div>
+            <div class="stat-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Commission History</h3>
+            <div class="chart-actions">
+              <select class="form-select form-select-sm">
+                <option>Last 6 Months</option>
+                <option>Last 12 Months</option>
+                <option>Year to Date</option>
+              </select>
+            </div>
+          </div>
+          <div id="commissionHistoryChart" style="height: 300px;"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="table-header">
+            <h3 class="table-title">Recent Transactions</h3>
+            <div class="table-actions">
+              <div class="input-group" style="max-width: 300px;">
+                <input type="text" class="form-control form-control-sm" placeholder="Search transactions...">
+                <button class="btn btn-sm btn-outline-secondary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="properties-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Property</th>
+                  <th>Client</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Jun 8, 2023</td>
+                  <td>
+                    <div class="property-title">Tirana Skyline Penthouse</div>
+                  </td>
+                  <td>Mark Johnson</td>
+                  <td>Sale</td>
+                  <td>€13,500</td>
+                  <td><span class="status-badge status-active">Paid</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-receipt"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>May 28, 2023</td>
+                  <td>
+                    <div class="property-title">Vlora Coastal Villa</div>
+                  </td>
+                  <td>Sarah Williams</td>
+                  <td>Sale</td>
+                  <td>€23,400</td>
+                  <td><span class="status-badge status-pending">Pending</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-receipt"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>May 15, 2023</td>
+                  <td>
+                    <div class="property-title">Saranda Seafront Apartment</div>
+                  </td>
+                  <td>David Smith</td>
+                  <td>Sale</td>
+                  <td>€6,600</td>
+                  <td><span class="status-badge status-active">Paid</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-receipt"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Apr 30, 2023</td>
+                  <td>
+                    <div class="property-title">Durres Beach House</div>
+                  </td>
+                  <td>Emma Brown</td>
+                  <td>Rental</td>
+                  <td>€1,200</td>
+                  <td><span class="status-badge status-active">Paid</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-receipt"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Apr 22, 2023</td>
+                  <td>
+                    <div class="property-title">Shkodër Lake View</div>
+                  </td>
+                  <td>Michael Wilson</td>
+                  <td>Sale</td>
+                  <td>€12,300</td>
+                  <td><span class="status-badge status-pending">Pending</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-receipt"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <nav class="mt-3">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
-    </div>
-    
-    <!-- Upgrade Panel -->
-    <div id="upgradePanel" class="panelContent">
-      <button class="btn btn-secondary back-btn" data-target="dashboardPanel">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
-      <div class="panel">
-        <h2>Upgrade to Premium</h2>
-        <p>Enhance your profile to be featured and gain access to premium analytics and higher visibility.</p>
-        <a href="{{ url_for('upgrade') }}" class="btn btn-warning">Upgrade Now</a>
+
+      <!-- Settings Tab -->
+      <div class="tab-content" id="settings-tab">
+        <div class="page-header">
+          <h1 class="page-title">Account Settings</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-save me-2"></i> Save Changes
+            </button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Profile Information</h3>
+              </div>
+              <div class="form-section">
+                <div class="text-center mb-3">
+                  <img src="https://randomuser.me/api/portraits/women/44.jpg" class="rounded-circle" width="120" height="120">
+                  <div class="mt-2">
+                    <button class="btn btn-sm btn-outline-primary">Change Photo</button>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" class="form-control" value="Elena K.">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" value="elena.k@albaniaproperties.com">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Phone</label>
+                  <input type="tel" class="form-control" value="+355 68 123 4567">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Account Settings</h3>
+              </div>
+              <div class="form-section">
+                <div class="form-section-title">Notification Preferences</div>
+                <div class="mb-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                    <label class="form-check-label" for="emailNotifications">Email Notifications</label>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="smsNotifications">
+                    <label class="form-check-label" for="smsNotifications">SMS Notifications</label>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="pushNotifications" checked>
+                    <label class="form-check-label" for="pushNotifications">Push Notifications</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <div class="form-section-title">Change Password</div>
+                <div class="mb-3">
+                  <label class="form-label">Current Password</label>
+                  <input type="password" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">New Password</label>
+                  <input type="password" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Confirm New Password</label>
+                  <input type="password" class="form-control">
+                </div>
+                <button class="btn btn-outline-primary">Update Password</button>
+              </div>
+
+              <div class="form-section">
+                <div class="form-section-title">Linked Accounts</div>
+                <div class="mb-3">
+                  <button class="btn btn-outline-secondary w-100 mb-2">
+                    <i class="fab fa-google me-2"></i> Connect Google Account
+                  </button>
+                  <button class="btn btn-outline-secondary w-100">
+                    <i class="fab fa-facebook me-2"></i> Connect Facebook Account
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Support Tab -->
+      <div class="tab-content" id="support-tab">
+        <div class="page-header">
+          <h1 class="page-title">Help & Support</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <i class="fas fa-ticket-alt me-2"></i> New Support Ticket
+            </button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-8">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Frequently Asked Questions</h3>
+              </div>
+              <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                      How do I add a new property listing?
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      To add a new property listing, navigate to the Properties tab and click the "Add New Property" button. Fill out all required information in the form, upload photos, and set the listing status. Once complete, click "Save" to publish your listing.
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                      How can I track my commission payments?
+                    </button>
+                  </h2>
+                  <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      All commission payments can be tracked in the Commissions tab. You'll see a history of earned commissions, pending payments, and detailed information about each transaction. You can also generate reports for specific time periods.
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                      What marketing tools are available?
+                    </button>
+                  </h2>
+                  <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      Our platform offers several marketing tools including email campaigns, social media integration, printable flyers, and market reports. These can be accessed through the Marketing section in the main menu.
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingFour">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                      How do I schedule property viewings?
+                    </button>
+                  </h2>
+                  <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      You can schedule viewings through the Appointments tab. Click "New Appointment", select the property and client, then choose a date and time. The system will send automatic reminders to both you and the client.
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingFive">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive">
+                      Where can I find market data and trends?
+                    </button>
+                  </h2>
+                  <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      Comprehensive market data is available in the Market Reports section. You can view trends by region, property type, and time period. Custom reports can also be generated for specific client needs.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-card mt-3">
+              <div class="chart-header">
+                <h3 class="chart-title">Submit a Support Ticket</h3>
+              </div>
+              <div class="form-section">
+                <div class="mb-3">
+                  <label class="form-label">Subject</label>
+                  <input type="text" class="form-control" placeholder="Briefly describe your issue">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Category</label>
+                  <select class="form-select">
+                    <option>General Inquiry</option>
+                    <option>Technical Issue</option>
+                    <option>Account Help</option>
+                    <option>Feature Request</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-control" rows="5" placeholder="Please provide detailed information about your issue"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Attachments</label>
+                  <input type="file" class="form-control">
+                  <div class="form-text">Upload screenshots or documents that might help us understand your issue</div>
+                </div>
+                <button class="btn btn-primary">Submit Ticket</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Contact Support</h3>
+              </div>
+              <div class="activity-feed">
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(26, 115, 232, 0.1); color: var(--primary);">
+                    <i class="fas fa-phone"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Phone Support</strong>
+                    </div>
+                    <div class="activity-time">+355 4 123 4567</div>
+                    <div class="mt-2">
+                      <small>Available Mon-Fri, 9AM-5PM</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(40, 167, 69, 0.1); color: var(--success);">
+                    <i class="fas fa-envelope"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Email Support</strong>
+                    </div>
+                    <div class="activity-time">support@albaniaproperties.com</div>
+                    <div class="mt-2">
+                      <small>Typically responds within 24 hours</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(255, 193, 7, 0.1); color: var(--warning);">
+                    <i class="fas fa-comments"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>Live Chat</strong>
+                    </div>
+                    <div class="activity-time">Click to start chat</div>
+                    <div class="mt-2">
+                      <button class="btn btn-sm btn-outline-primary">Start Chat</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-card mt-3">
+              <div class="chart-header">
+                <h3 class="chart-title">System Status</h3>
+              </div>
+              <div class="activity-feed">
+                <div class="activity-item">
+                  <div class="activity-icon" style="background: rgba(40, 167, 69, 0.1); color: var(--success);">
+                    <i class="fas fa-check-circle"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <strong>All Systems Operational</strong>
+                    </div>
+                    <div class="activity-time">Last updated: Just now</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <i class="fas fa-circle text-success me-2" style="font-size: 0.5rem;"></i>
+                      Dashboard Service
+                      <span class="badge bg-success ms-2">Normal</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <i class="fas fa-circle text-success me-2" style="font-size: 0.5rem;"></i>
+                      Property Management
+                      <span class="badge bg-success ms-2">Normal</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <i class="fas fa-circle text-success me-2" style="font-size: 0.5rem;"></i>
+                      Email Service
+                      <span class="badge bg-success ms-2">Normal</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-content">
+                    <div class="activity-message">
+                      <i class="fas fa-circle text-success me-2" style="font-size: 0.5rem;"></i>
+                      Mobile App
+                      <span class="badge bg-success ms-2">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  
-  <!-- Dark Mode Toggle Button -->
-  <button class="toggle-dark" id="darkModeToggle">
-    <i class="fas fa-moon"></i>
-  </button>
-  
-  <!-- JavaScript -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.js"></script>
   <script>
-    // Panel navigation
-    function showPanel(panelId) {
-      document.querySelectorAll('.panelContent').forEach(panel => {
-        panel.style.display = 'none';
+    document.addEventListener('DOMContentLoaded', function() {
+      // Toggle sidebar on mobile
+      const menuToggle = document.getElementById('menuToggle');
+      const sidebar = document.getElementById('sidebar');
+      
+      menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
       });
-      document.getElementById(panelId).style.display = 'block';
-      document.querySelectorAll('.sidebar-link').forEach(link => {
-        link.classList.toggle('active', link.getAttribute('data-target') === panelId);
+
+      // Tab switching functionality
+      const menuItems = document.querySelectorAll('.menu-item');
+      menuItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Remove active class from all menu items
+          menuItems.forEach(i => i.classList.remove('active'));
+          
+          // Add active class to clicked menu item
+          this.classList.add('active');
+          
+          // Hide all tab content
+          document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+          });
+          
+          // Show the selected tab content
+          const tabId = this.getAttribute('data-tab') + '-tab';
+          document.getElementById(tabId).classList.add('active');
+        });
       });
-    }
-  
-    document.querySelectorAll('.sidebar-link').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        showPanel(this.getAttribute('data-target'));
-      });
-    });
-  
-    document.querySelectorAll('.back-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        showPanel('dashboardPanel');
-      });
-    });
-  
-    // Initialize default panel
-    showPanel('dashboardPanel');
-  
-    // Animate counters based on provided real numbers
-    document.querySelectorAll('.counter').forEach(counter => {
-      const updateCount = () => {
-        const target = +counter.getAttribute('data-target');
-        const count = +counter.innerText;
-        const increment = target / 100;
-        if (count < target) {
-          counter.innerText = Math.ceil(count + increment);
-          setTimeout(updateCount, 20);
-        } else {
-          counter.innerText = target;
+
+      // Initialize Performance Chart
+      const performanceChart = new ApexCharts(document.querySelector("#performanceChart"), {
+        series: [{
+          name: 'Listings',
+          data: [12, 15, 18, 20, 22, 24]
+        }, {
+          name: 'Sales',
+          data: [4, 5, 6, 8, 7, 9]
+        }, {
+          name: 'Commission (€)',
+          data: [4500, 6200, 7800, 9500, 11000, 12450]
+        }],
+        chart: {
+          type: 'area',
+          height: '100%',
+          toolbar: {
+            show: false
+          },
+          zoom: {
+            enabled: false
+          }
+        },
+        colors: ['var(--primary)', 'var(--success)', 'var(--accent)'],
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth',
+          width: 2
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shadeIntensity: 1,
+            opacityFrom: 0.7,
+            opacityTo: 0.2,
+          }
+        },
+        xaxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        },
+        tooltip: {
+          shared: true,
+          intersect: false,
+          y: {
+            formatter: function (value, { seriesIndex }) {
+              if (seriesIndex === 2) {
+                return '€' + value.toLocaleString();
+              }
+              return value;
+            }
+          }
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'right'
         }
-      };
-      updateCount();
-    });
-  
-    // Dark Mode Toggle
-    document.getElementById('darkModeToggle').addEventListener('click', function() {
-      document.body.classList.toggle('dark-mode');
-      const icon = this.querySelector('i');
-      icon.classList.toggle('fa-moon');
-      icon.classList.toggle('fa-sun');
-    });
-  
-    // Optional: Toggle sidebar collapse
-    document.getElementById('toggleSidebar').addEventListener('click', function() {
-      document.getElementById('sidebar').classList.toggle('collapsed');
+      });
+      performanceChart.render();
+
+      // Initialize Market Trends Chart
+      const marketTrendsChart = new ApexCharts(document.querySelector("#marketTrendsChart"), {
+        series: [{
+          name: 'Price per m²',
+          data: [1200, 1250, 1300, 1350, 1400, 1450, 1500]
+        }],
+        chart: {
+          type: 'line',
+          height: '100%',
+          toolbar: {
+            show: false
+          },
+          zoom: {
+            enabled: false
+          }
+        },
+        colors: ['var(--primary)'],
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth',
+          width: 3
+        },
+        xaxis: {
+          categories: ['2017', '2018', '2019', '2020', '2021', '2022', '2023'],
+        },
+        tooltip: {
+          y: {
+            formatter: function (value) {
+              return '€' + value.toLocaleString();
+            }
+          }
+        },
+        markers: {
+          size: 5,
+          hover: {
+            size: 7
+          }
+        }
+      });
+      marketTrendsChart.render();
+
+      // Initialize Campaign Performance Chart
+      const campaignPerformanceChart = new ApexCharts(document.querySelector("#campaignPerformanceChart"), {
+        series: [{
+          name: 'Leads',
+          data: [15, 22, 18, 25, 30, 28, 35]
+        }, {
+          name: 'Conversions',
+          data: [3, 5, 4, 6, 8, 7, 9]
+        }],
+        chart: {
+          type: 'bar',
+          height: '100%',
+          stacked: false,
+          toolbar: {
+            show: false
+          }
+        },
+        colors: ['var(--primary)', 'var(--success)'],
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '55%',
+          },
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent']
+        },
+        xaxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        },
+        yaxis: {
+          title: {
+            text: 'Number'
+          }
+        },
+        fill: {
+          opacity: 1
+        },
+        tooltip: {
+          y: {
+            formatter: function (val) {
+              return val
+            }
+          }
+        }
+      });
+      campaignPerformanceChart.render();
+
+      // Initialize Email Performance Chart
+      const emailPerformanceChart = new ApexCharts(document.querySelector("#emailPerformanceChart"), {
+        series: [{
+          name: 'Open Rate',
+          data: [35, 40, 38, 45, 42, 48]
+        }, {
+          name: 'Click Rate',
+          data: [15, 18, 16, 20, 18, 22]
+        }],
+        chart: {
+          type: 'line',
+          height: '100%',
+          toolbar: {
+            show: false
+          },
+          zoom: {
+            enabled: false
+          }
+        },
+        colors: ['var(--primary)', 'var(--accent)'],
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth',
+          width: 3
+        },
+        markers: {
+          size: 5
+        },
+        xaxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        },
+        yaxis: {
+          min: 0,
+          max: 100,
+          labels: {
+            formatter: function(val) {
+              return val + '%';
+            }
+          }
+        },
+        tooltip: {
+          y: {
+            formatter: function(val) {
+              return val + '%';
+            }
+          }
+        }
+      });
+      emailPerformanceChart.render();
+
+      // Initialize Regional Trends Chart
+      const regionalTrendsChart = new ApexCharts(document.querySelector("#regionalTrendsChart"), {
+        series: [{
+          name: 'Tirana',
+          data: [1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550, 1600, 1650]
+        }, {
+          name: 'Vlorë',
+          data: [1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550]
+        }, {
+          name: 'Durrës',
+          data: [900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450]
+        }],
+        chart: {
+          type: 'line',
+          height: '100%',
+          toolbar: {
+            show: false
+          },
+          zoom: {
+            enabled: false
+          }
+        },
+        colors: ['var(--primary)', 'var(--success)', 'var(--warning)'],
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth',
+          width: 3
+        },
+        markers: {
+          size: 5
+        },
+        xaxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        },
+        yaxis: {
+          labels: {
+            formatter: function(val) {
+              return '€' + val;
+            }
+          }
+        },
+        tooltip: {
+          y: {
+            formatter: function(val) {
+              return '€' + val;
+            }
+          }
+        }
+      });
+      regionalTrendsChart.render();
+
+      // Initialize Property Type Chart
+      const propertyTypeChart = new ApexCharts(document.querySelector("#propertyTypeChart"), {
+        series: [44, 55, 41, 17, 15],
+        chart: {
+          type: 'donut',
+          height: '100%',
+          toolbar: {
+            show: false
+          }
+        },
+        colors: ['var(--primary)', 'var(--success)', 'var(--warning)', 'var(--danger)', 'var(--accent)'],
+        labels: ['Apartments', 'Houses', 'Villas', 'Land', 'Commercial'],
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }],
+        plotOptions: {
+          pie: {
+            donut: {
+              labels: {
+                show: true,
+                total: {
+                  show: true,
+                  label: 'Total Properties',
+                  formatter: function (w) {
+                    return w.globals.seriesTotals.reduce((a, b) => {
+                      return a + b
+                    }, 0)
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
+      propertyTypeChart.render();
+
+      // Initialize Commission History Chart
+      const commissionHistoryChart = new ApexCharts(document.querySelector("#commissionHistoryChart"), {
+        series: [{
+          name: 'Commission',
+          data: [4500, 6200, 7800, 9500, 11000, 12450, 9800, 11500]
+        }],
+        chart: {
+          type: 'bar',
+          height: '100%',
+          toolbar: {
+            show: false
+          }
+        },
+        colors: ['var(--primary)'],
+        plotOptions: {
+          bar: {
+            borderRadius: 4,
+            horizontal: false,
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        xaxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+        },
+        yaxis: {
+          labels: {
+            formatter: function(val) {
+              return '€' + val.toLocaleString();
+            }
+          }
+        },
+        tooltip: {
+          y: {
+            formatter: function(val) {
+              return '€' + val.toLocaleString();
+            }
+          }
+        }
+      });
+      commissionHistoryChart.render();
+
+      // Notification dropdown
+      const notificationBtn = document.querySelector('.notification-btn');
+      notificationBtn.addEventListener('click', function() {
+        // In a real app, this would show a dropdown with notifications
+        alert('You have 5 new notifications');
+      });
+
+      // Message dropdown
+      const messageBtn = document.querySelector('.message-btn');
+      messageBtn.addEventListener('click', function() {
+        // In a real app, this would show a dropdown with messages
+        alert('You have 3 new messages');
+      });
     });
   </script>
 </body>
