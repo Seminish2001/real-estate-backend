@@ -51,11 +51,13 @@ The application will start on `http://localhost:5000` unless a different `PORT` 
 
 ## Running Tests
 
-Tests are written with **pytest** and located in the `tests/` directory. Install dependencies and then run them with:
+Tests are written with **pytest** and located in the `tests/` directory. Install **all** packages from `requirements.txt` before running the suite:
 
 ```bash
 pytest
 ```
+
+If dependencies are missing, pytest may exit with errors such as `ModuleNotFoundError: No module named 'flask'`. Installing the full `requirements.txt` resolves this issue.
 
 The tests use an in-memory SQLite database and cover basic authentication endpoints (signup and signin).
 
