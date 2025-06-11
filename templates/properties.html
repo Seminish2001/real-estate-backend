@@ -2321,10 +2321,58 @@
       });
     });
     
-    // Mock function for fetching properties
+    // Fetch properties from the API and update the listings
     function fetchProperties() {
-      console.log('Fetching properties with current filters...');
-      // In a real app, this would make an API call
+      const gridView = document.getElementById('grid-view');
+      const propertyCount = document.getElementById('property-count');
+      const searchLocation = document.getElementById('search-location');
+
+      const params = new URLSearchParams(window.location.search);
+      const location = params.get('location') || 'All Albania';
+
+      // Build request URL
+      const url = '/api/properties' + (params.toString() ? `?${params.toString()}` : '');
+
+      fetch(url, { credentials: 'include' })
+        .then(resp => resp.json())
+        .then(data => {
+          // Update summary info
+          propertyCount.textContent = data.count;
+          searchLocation.textContent = location || 'All Albania';
+
+          // Clear existing cards
+          gridView.innerHTML = '';
+
+          data.properties.forEach(prop => {
+            const col = document.createElement('div');
+            col.className = 'col-md-4';
+            col.innerHTML = `
+              <div class="property-card">
+                <div class="card-img-container">
+                  <img src="${prop.image_url || ''}" alt="${prop.title}" loading="lazy" />
+                </div>
+                <div class="card-body">
+                  <h5>${prop.title}</h5>
+                  <p class="price">€${Number(prop.price).toLocaleString()}</p>
+                  <div class="details">
+                    <div class="detail-item"><i class="fas fa-bed"></i> ${prop.beds} Beds</div>
+                    <div class="detail-item"><i class="fas fa-bath"></i> ${prop.baths} Baths</div>
+                    <div class="detail-item"><i class="fas fa-ruler-combined"></i> ${prop.size} sqft</div>
+                  </div>
+                  <p class="address"><i class="fas fa-map-marker-alt"></i> ${prop.location}</p>
+                  <div class="btn-container">
+                    <a href="/property/${prop.id}" class="btn btn-outline">Contact Agent</a>
+                    <a href="/property/${prop.id}" class="btn">View Details</a>
+                  </div>
+                </div>
+              </div>`;
+            gridView.appendChild(col);
+          });
+
+          // Update map markers with new properties
+          initMap(data.properties);
+        })
+        .catch(err => console.error('Error fetching properties:', err));
     }
   </script>
 </body>
