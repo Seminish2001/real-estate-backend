@@ -765,7 +765,7 @@
       <div class="topbar-actions">
         <button class="notification-btn">
           <i class="fas fa-bell"></i>
-          <span class="notification-badge">5</span>
+          <span class="notification-badge">{{ alert_count }}</span>
         </button>
         <button class="message-btn">
           <i class="fas fa-envelope"></i>
@@ -773,8 +773,8 @@
         </button>
         <div class="user-profile dropdown">
           <div data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="user-avatar">
-            <span class="user-name">Elena K.</span>
+            <img src="{{ user.photo_url }}" alt="{{ user.name }}" class="user-avatar">
+            <span class="user-name">{{ user.name }}</span>
             <i class="fas fa-chevron-down"></i>
           </div>
           <ul class="dropdown-menu dropdown-menu-end">
@@ -807,8 +807,8 @@
         <!-- Stats Grid -->
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-title">Total Listings</div>
-            <div class="stat-value">24</div>
+          <div class="stat-title">Total Listings</div>
+          <div class="stat-value">{{ property_count }}</div>
             <div class="stat-change up">
               <i class="fas fa-arrow-up me-1"></i> 12% from last month
             </div>
@@ -817,8 +817,8 @@
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-title">Active Deals</div>
-            <div class="stat-value">8</div>
+          <div class="stat-title">Active Deals</div>
+          <div class="stat-value">{{ saved_count }}</div>
             <div class="stat-change up">
               <i class="fas fa-arrow-up me-1"></i> 2 new this week
             </div>
@@ -2666,22 +2666,22 @@
               </div>
               <div class="form-section">
                 <div class="text-center mb-3">
-                  <img src="https://randomuser.me/api/portraits/women/44.jpg" class="rounded-circle" width="120" height="120">
+                  <img src="{{ user.photo_url }}" class="rounded-circle" width="120" height="120">
                   <div class="mt-2">
                     <button class="btn btn-sm btn-outline-primary">Change Photo</button>
                   </div>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Full Name</label>
-                  <input type="text" class="form-control" value="Elena K.">
+                  <input type="text" class="form-control" value="{{ user.name }}">
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Email</label>
-                  <input type="email" class="form-control" value="elena.k@albaniaproperties.com">
+                  <input type="email" class="form-control" value="{{ user.email }}">
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Phone</label>
-                  <input type="tel" class="form-control" value="+355 68 123 4567">
+                  <input type="tel" class="form-control" value="{{ user.phone }}">
                 </div>
               </div>
             </div>
