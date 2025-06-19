@@ -26,10 +26,10 @@ Copy `.env.example` to `.env` and update the values, or export these variables i
 
 ## Database Setup
 
-Initialize the database tables before starting the server. The scripts rely on
-the same environment variables described above (at minimum `DATABASE_URL` and
-`JWT_SECRET_KEY`). Use `init_db.py` to create the schema and `seed.py` to add
-sample records:
+On first run the application will automatically create the required tables.
+If you need to reset the database or load sample data, use `init_db.py` and
+`seed.py`. They rely on the same environment variables described above (at
+minimum `DATABASE_URL` and `JWT_SECRET_KEY`):
 
 ```bash
 # Create tables (add --drop to delete existing ones)
