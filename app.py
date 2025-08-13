@@ -751,15 +751,19 @@ def admin_panel():
     current_user = User.query.get(get_jwt_identity())
     users = User.query.all()
     properties = Property.query.all()
+    requests = EvaluationRequest.query.all()
+    agents = Agent.query.all()
     user_count = len(users)
     property_count = len(properties)
-    request_count = EvaluationRequest.query.count()
-    agent_count = Agent.query.count()
+    request_count = len(requests)
+    agent_count = len(agents)
 
     return render_template(
         "admin.html",
         users=users,
         properties=properties,
+        requests=requests,
+        agents=agents,
         user=current_user,
         user_count=user_count,
         property_count=property_count,
