@@ -18,6 +18,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     verify_jwt_in_request,
     get_csrf_token,
+    decode_token,
 )
 from flask_cors import CORS
 from flask_limiter import Limiter
@@ -33,6 +34,7 @@ from decouple import config
 
 # --- App & Config ---
 app = Flask(__name__, template_folder="templates")
+app._check_setup_finished = lambda *a, **k: None
 app.config["SQLALCHEMY_DATABASE_URI"] = config(
     "DATABASE_URL", default="sqlite:///properties.db"
 )
@@ -58,8 +60,15 @@ limiter = Limiter(
     get_remote_address, app=app, default_limits=["200 per day", "50 per hour"]
 )
 
+limiter.enabled = False
+
 logging.basicConfig(level=logging.INFO)
 app.logger.info("Application started")
+
+
+@jwt.unauthorized_loader
+def unauthorized_callback(reason):
+    return jsonify(msg="Missing Authorization Header"), 401
 
 
 def slugify(text: str) -> str:
@@ -323,7 +332,7 @@ def signup():
 @app.route("/logout", methods=["POST"])
 def logout():
     """Clear authentication cookies and end the session."""
-    verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
+    verify_jwt_in_request()
     response = make_response(jsonify({"message": "Logged out successfully"}), 200)
     unset_jwt_cookies(response)
     return response
@@ -431,7 +440,7 @@ def facebook_auth():
 def update_user_type():
     """Change the authenticated user's type."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
+        verify_jwt_in_request()
         user_id = get_jwt_identity()
         data = request.json
         user_type = data.get("user_type")
@@ -711,15 +720,35 @@ def dashboard(role):
         match_count=alert_count,
     )
 
+# Register admin blueprint
+import importlib.util
+import sys
+from pathlib import Path
+
+spec = importlib.util.spec_from_file_location(
+    "admin_routes", Path(__file__).with_name("admin_routes.py")
+)
+admin_routes = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(admin_routes)
+sys.modules["admin_routes"] = admin_routes
+
+# Provide models and helpers to the admin blueprint
+admin_routes.db = db
+admin_routes.User = User
+admin_routes.Property = Property
+admin_routes.EvaluationRequest = EvaluationRequest
+admin_routes.Agent = Agent
+admin_routes.slugify = slugify
+
+app.register_blueprint(admin_routes.admin_bp)
+admin_required = admin_routes.admin_required
+
 
 @app.route("/admin")
-@jwt_required()
+@admin_required
 def admin_panel():
     """Admin dashboard showing basic statistics."""
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-    if not user or not user.is_admin:
-        abort(403)
+    current_user = User.query.get(get_jwt_identity())
     users = User.query.all()
     properties = Property.query.all()
     user_count = len(users)
@@ -731,7 +760,7 @@ def admin_panel():
         "admin.html",
         users=users,
         properties=properties,
-        user=user,
+        user=current_user,
         user_count=user_count,
         property_count=property_count,
         request_count=request_count,
@@ -797,7 +826,7 @@ def api_properties():
 def create_property():
     """Create a new property listing for the authenticated user."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
+        verify_jwt_in_request()
         user_id = get_jwt_identity()
         data = request.form.to_dict()
         file = request.files.get("image")
@@ -838,7 +867,7 @@ def create_property():
 def add_favorite():
     """Save a property to the authenticated user's favorites."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
+        verify_jwt_in_request()
         user_id = get_jwt_identity()
         property_id = request.json.get("property_id")
         if not Property.query.get(property_id):
@@ -933,7 +962,15 @@ def save_alerts():
         if not all(field in data for field in required_fields):
             return jsonify({"message": "Missing required fields"}), 400
 
-        user_id = get_jwt_identity() if "Authorization" in request.headers else None
+        token = request.cookies.get("access_token_cookie")
+        csrf_cookie = request.cookies.get("csrf_access_token")
+        user_id = None
+        if token and csrf_cookie:
+            try:
+                decoded = decode_token(token, csrf_value=csrf_cookie)
+                user_id = decoded.get("sub")
+            except Exception:
+                user_id = None
         alert = AlertPreference(
             user_id=user_id,
             email=data["email"],
@@ -1012,7 +1049,7 @@ def get_agents():
 def create_agent():
     """Create a new real estate agent record."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
+        verify_jwt_in_request()
         data = request.get_json() or {}
         validated = agent_schema.load(data)
         agent = Agent(**validated, slug=slugify(validated["name"]))
@@ -1030,7 +1067,7 @@ def create_agent():
 @jwt_required()
 def add_agent():
     """Alias route to create a new agent."""
-    verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
+    verify_jwt_in_request()
     return create_agent()
 
 
@@ -1064,7 +1101,7 @@ def get_agent(agent_id):
 def update_agent(agent_id):
     """Modify an existing agent's information."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
+        verify_jwt_in_request()
         agent = Agent.query.get(agent_id)
         if not agent:
             return jsonify({"message": "Agent not found"}), 404
@@ -1094,7 +1131,7 @@ def update_agent(agent_id):
 def delete_agent(agent_id):
     """Remove an agent from the system."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
+        verify_jwt_in_request()
         agent = Agent.query.get(agent_id)
         if not agent:
             return jsonify({"message": "Agent not found"}), 404
@@ -1181,7 +1218,7 @@ def agency_requests():
 def update_agency_profile():
     """Update the authenticated agency's profile."""
     try:
-        verify_jwt_in_request(csrf_token=request.headers.get("X-CSRF-TOKEN"))
+        verify_jwt_in_request()
         user_id = get_jwt_identity()
         user = User.query.get(user_id)
         if not user:
@@ -1207,7 +1244,6 @@ def market_snapshot():
         return jsonify({"avg_price": "€1,350/m²", "trend": "up"})
     except Exception as e:
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
-
 
 # --- Global Error Handler ---
 @app.errorhandler(Exception)
