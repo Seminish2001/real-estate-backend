@@ -39,7 +39,10 @@
 
   <div class="main-content">
     <div id="users" class="panel">
-      <h2 class="mb-3">Users</h2>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Users</h2>
+        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#createUserModal">Add User</button>
+      </div>
       <div class="table-responsive">
         <table class="table table-hover align-middle">
           <thead>
@@ -51,12 +54,12 @@
           </thead>
           <tbody>
             {% for u in users %}
-            <tr>
+            <tr data-id="{{ u.id }}">
               <td>{{ u.email }}</td>
               <td>{{ u.user_type }}</td>
               <td>
-                <a href="#" class="text-primary"><i class="fas fa-edit"></i></a>
-                <a href="#" class="text-danger ms-2"><i class="fas fa-trash-alt"></i></a>
+                <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editUserModal" data-id="{{ u.id }}"><i class="fas fa-edit"></i></a>
+                <a href="#" class="text-danger ms-2" data-id="{{ u.id }}"><i class="fas fa-trash-alt"></i></a>
               </td>
             </tr>
             {% endfor %}
@@ -66,7 +69,10 @@
     </div>
 
     <div id="properties" class="panel">
-      <h2 class="mb-3">Properties</h2>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Properties</h2>
+        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#createPropertyModal">Add Property</button>
+      </div>
       <div class="table-responsive">
         <table class="table table-hover align-middle">
           <thead>
@@ -78,12 +84,74 @@
           </thead>
           <tbody>
             {% for p in properties %}
-            <tr>
+            <tr data-id="{{ p.id }}">
               <td>{{ p.title }}</td>
               <td>{{ p.location }}</td>
               <td>
-                <a href="#" class="text-primary"><i class="fas fa-edit"></i></a>
-                <a href="#" class="text-danger ms-2"><i class="fas fa-trash-alt"></i></a>
+                <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editPropertyModal" data-id="{{ p.id }}"><i class="fas fa-edit"></i></a>
+                <a href="#" class="text-danger ms-2" data-id="{{ p.id }}"><i class="fas fa-trash-alt"></i></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="requests" class="panel">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Requests</h2>
+        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#createRequestModal">Add Request</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Location</th>
+              <th>Type</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in requests %}
+            <tr data-id="{{ r.id }}">
+              <td>{{ r.user_id }}</td>
+              <td>{{ r.location }}</td>
+              <td>{{ r.property_type }}</td>
+              <td>
+                <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editRequestModal" data-id="{{ r.id }}"><i class="fas fa-edit"></i></a>
+                <a href="#" class="text-danger ms-2" data-id="{{ r.id }}"><i class="fas fa-trash-alt"></i></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="agents" class="panel">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Agents</h2>
+        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#createAgentModal">Add Agent</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in agents %}
+            <tr data-id="{{ a.id }}">
+              <td>{{ a.name }}</td>
+              <td>{{ a.email }}</td>
+              <td>
+                <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editAgentModal" data-id="{{ a.id }}"><i class="fas fa-edit"></i></a>
+                <a href="#" class="text-danger ms-2" data-id="{{ a.id }}"><i class="fas fa-trash-alt"></i></a>
               </td>
             </tr>
             {% endfor %}
@@ -95,6 +163,175 @@
     <div id="analytics" class="panel">
       <h2 class="mb-3">Analytics</h2>
       <canvas id="analyticsChart" height="80"></canvas>
+    </div>
+  </div>
+
+  <!-- User Modals -->
+  <div class="modal fade" id="createUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3"><label class="form-label">Name</label><input type="text" class="form-control" name="name"></div>
+          <div class="mb-3"><label class="form-label">Email</label><input type="email" class="form-control" name="email"></div>
+          <div class="mb-3"><label class="form-label">User Type</label><input type="text" class="form-control" name="user_type"></div>
+          <div class="mb-3"><label class="form-label">Password</label><input type="password" class="form-control" name="password"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <div class="mb-3"><label class="form-label">Name</label><input type="text" class="form-control" name="name"></div>
+          <div class="mb-3"><label class="form-label">Email</label><input type="email" class="form-control" name="email"></div>
+          <div class="mb-3"><label class="form-label">User Type</label><input type="text" class="form-control" name="user_type"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Property Modals -->
+  <div class="modal fade" id="createPropertyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create Property</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3"><label class="form-label">Title</label><input type="text" class="form-control" name="title"></div>
+          <div class="mb-3"><label class="form-label">Location</label><input type="text" class="form-control" name="location"></div>
+          <div class="mb-3"><label class="form-label">Price</label><input type="number" class="form-control" name="price"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editPropertyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Property</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <div class="mb-3"><label class="form-label">Title</label><input type="text" class="form-control" name="title"></div>
+          <div class="mb-3"><label class="form-label">Location</label><input type="text" class="form-control" name="location"></div>
+          <div class="mb-3"><label class="form-label">Price</label><input type="number" class="form-control" name="price"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Evaluation Request Modals -->
+  <div class="modal fade" id="createRequestModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create Request</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3"><label class="form-label">User ID</label><input type="number" class="form-control" name="user_id"></div>
+          <div class="mb-3"><label class="form-label">Location</label><input type="text" class="form-control" name="location"></div>
+          <div class="mb-3"><label class="form-label">Property Type</label><input type="text" class="form-control" name="property_type"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editRequestModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Request</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <div class="mb-3"><label class="form-label">User ID</label><input type="number" class="form-control" name="user_id"></div>
+          <div class="mb-3"><label class="form-label">Location</label><input type="text" class="form-control" name="location"></div>
+          <div class="mb-3"><label class="form-label">Property Type</label><input type="text" class="form-control" name="property_type"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Agent Modals -->
+  <div class="modal fade" id="createAgentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create Agent</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3"><label class="form-label">Name</label><input type="text" class="form-control" name="name"></div>
+          <div class="mb-3"><label class="form-label">Email</label><input type="email" class="form-control" name="email"></div>
+          <div class="mb-3"><label class="form-label">Agency</label><input type="text" class="form-control" name="agency"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editAgentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Agent</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <div class="mb-3"><label class="form-label">Name</label><input type="text" class="form-control" name="name"></div>
+          <div class="mb-3"><label class="form-label">Email</label><input type="email" class="form-control" name="email"></div>
+          <div class="mb-3"><label class="form-label">Agency</label><input type="text" class="form-control" name="agency"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
     </div>
   </div>
 
