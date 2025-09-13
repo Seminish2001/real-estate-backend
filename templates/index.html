@@ -19,7 +19,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <!-- AOS Animation Library -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-  <!-- Google Maps -->
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <!-- Custom CSS -->
   <style>
     :root {
@@ -90,7 +91,7 @@
       z-index: 1000;
       background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(12px);
-      padding: 20px 0;
+      padding: 15px 0;
       box-shadow: var(--shadow-sm);
       transition: padding 0.3s ease, background 0.3s ease;
     }
@@ -150,22 +151,17 @@
       display: none !important;
     }
 
-    /* Hero Section */
+    /* New Hero Section Styles */
     .hero-section {
-      height: 80vh;
-      min-height: 600px;
-      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+      height: 85vh;
+      min-height: 650px;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                   url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
       position: relative;
       display: flex;
       align-items: center;
       color: var(--text-light);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      padding-top: 120px;
+      margin-top: 80px;
     }
 
     .search-card {
@@ -175,31 +171,34 @@
       padding: 2rem;
     }
 
+    .search-card h2 {
+      color: var(--text-dark);
+    }
+
     .search-card .nav-pills .nav-link {
       color: var(--text-dark);
-      padding: 10px 20px;
-      font-weight: 600;
-      border-radius: 8px;
+      margin-left: 0;
+      padding: 0.5rem 1rem;
     }
 
     .search-card .nav-pills .nav-link.active {
-      background: var(--primary-color);
-      color: var(--text-light);
+      background-color: var(--primary-color);
+      color: white;
     }
 
     .search-card .form-control,
     .search-card .form-select {
-      padding: 12px 15px;
+      padding: 0.75rem;
       border-radius: 8px;
       border: 1px solid #e2e8f0;
     }
 
     .search-card .btn {
       background: var(--primary-color);
-      color: var(--text-light);
+      color: white;
+      padding: 0.75rem;
       border-radius: 8px;
       font-weight: 600;
-      padding: 12px;
       transition: var(--transition);
     }
 
@@ -207,28 +206,77 @@
       background: var(--primary-dark);
     }
 
+    /* Quick Stats */
+    .quick-stats {
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-top: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
     /* Featured Listings */
     .featured-listings {
       padding: 5rem 0;
+      background: var(--background-light);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
     }
 
     .section-title {
       font-size: 2.5rem;
       color: var(--text-dark);
       position: relative;
-      margin-bottom: 3rem;
-      text-align: center;
+      padding-bottom: 15px;
     }
 
     .section-title::after {
       content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
       width: 60px;
       height: 4px;
       background: var(--accent-color);
-      position: absolute;
-      bottom: -15px;
-      left: 50%;
-      transform: translateX(-50%);
+    }
+
+    .view-all {
+      color: var(--primary-color);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .view-all i {
+      margin-left: 8px;
+      transition: var(--transition);
+    }
+
+    .view-all:hover i {
+      transform: translateX(5px);
     }
 
     .property-card {
@@ -247,19 +295,22 @@
       box-shadow: var(--shadow-md);
     }
 
-    .property-card-img {
-      height: 220px;
+    .property-image {
+      height: 240px;
       width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .property-image img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       transition: transform 0.6s ease;
     }
 
-    .property-card:hover .property-card-img {
+    .property-card:hover .property-image img {
       transform: scale(1.05);
-    }
-
-    .property-card .card-body {
-      padding: 1.5rem;
     }
 
     .property-badge {
@@ -270,58 +321,25 @@
       padding: 6px 12px;
       border-radius: 20px;
       z-index: 1;
-    }
-
-    .property-card h5 {
-      font-size: 1.4rem;
-      color: var(--text-dark);
-      margin-bottom: 0.5rem;
-    }
-
-    .property-price {
-      font-size: 1.3rem;
-      color: var(--primary-color);
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .property-details {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-    }
-
-    .property-card .btn {
       background: var(--primary-color);
-      border: none;
-      border-radius: 8px;
-      padding: 10px 25px;
-      color: var(--text-light);
-      font-weight: 600;
-      transition: var(--transition);
-    }
-
-    .property-card .btn:hover {
-      background: var(--primary-dark);
-      transform: scale(1.05);
+      color: white;
     }
 
     .property-favorite {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 1.3rem;
-      color: #e2e8f0;
-      cursor: pointer;
-      transition: var(--transition);
-      z-index: 1;
-      background: rgba(255, 255, 255, 0.8);
+      top: 15px;
+      right: 15px;
       width: 36px;
       height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
+      color: #ccc;
+      cursor: pointer;
+      transition: var(--transition);
+      z-index: 1;
     }
 
     .property-favorite:hover,
@@ -329,347 +347,287 @@
       color: #ff4757;
     }
 
-    .carousel-control-prev,
-    .carousel-control-next {
-      width: 5%;
-      opacity: 0.8;
+    .property-details {
+      padding: 1.5rem;
     }
 
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-      background-color: var(--primary-color);
-      border-radius: 50%;
-      padding: 20px;
-    }
-
-    /* Testimonials Section */
-    .testimonials-section {
-      padding: 5rem 0;
-      background-color: #f1f5f9;
-    }
-
-    .testimonial-card {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 2rem;
-      box-shadow: var(--shadow-sm);
-      height: 100%;
-    }
-
-    .testimonial-text {
-      font-style: italic;
-      margin-bottom: 1.5rem;
-    }
-
-    .testimonial-author {
-      display: flex;
-      align-items: center;
-    }
-
-    .testimonial-author-img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 1rem;
-    }
-
-    .testimonial-author-name {
-      font-weight: 600;
-    }
-
-    .testimonial-author-role {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    /* List Your Property Section */
-    .list-property-section {
-      padding: 5rem 0;
-      background: var(--background-light);
-    }
-
-    .role-card {
-      display: block;
-      text-decoration: none;
-      height: 100%;
-    }
-
-    .role-card .card {
-      transition: var(--transition);
-      height: 100%;
-      text-align: center;
-      border: 1px solid #e2e8f0;
-    }
-
-    .role-card .card:hover {
-      transform: translateY(-10px) scale(1.03);
-      box-shadow: var(--shadow-md);
-      border-color: var(--primary-color);
-    }
-
-    .role-icon {
+    .property-price {
+      font-size: 1.5rem;
+      font-weight: 700;
       color: var(--primary-color);
-      transition: transform 0.3s ease;
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .role-card:hover .role-icon {
-      transform: scale(1.2);
-    }
-
-    .role-card h5 {
-      font-size: 1.3rem;
-      color: var(--text-dark);
       margin-bottom: 0.5rem;
     }
 
-    .role-card p {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-    }
-
-    /* Map + Listings Section */
-    .map-listings-section {
-      padding: 5rem 0;
-      background: #f1f5f9;
-    }
-
-    #map {
-      height: 500px;
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .property-list {
-      height: 500px;
-      overflow-y: auto;
-      padding-right: 1rem;
-    }
-
-    .property-list::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .property-list::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-
-    .property-list::-webkit-scrollbar-thumb {
-      background: var(--primary-color);
-      border-radius: 10px;
-    }
-
-    .property-item {
-      transition: var(--transition);
-      background: #fff;
-      border-radius: var(--border-radius);
-      margin-bottom: 1rem;
-      padding: 1.25rem;
-      display: flex;
-      align-items: center;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .property-item:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .property-item-img {
-      width: 100px;
-      height: 70px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-right: 1rem;
-    }
-
-    .property-item-info {
-      flex: 1;
-    }
-
-    .property-item-title {
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-
-    .property-item-price {
-      font-size: 1.1rem;
-      color: var(--primary-color);
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-
-    .property-item-details {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .property-item-btn {
-      background: var(--primary-color);
-      color: var(--text-light);
-      padding: 8px 20px;
-      font-size: 0.95rem;
-      border-radius: 8px;
-      white-space: nowrap;
-    }
-
-    .property-item-btn:hover {
-      background: var(--primary-dark);
-      color: var(--text-light);
-    }
-
-    /* Filter Section */
-    .filter-section {
-      background: white;
-      padding: 1.5rem;
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 2rem;
-    }
-
-    .filter-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      color: var(--text-dark);
-    }
-
-    .filter-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .filter-group-title {
-      font-size: 0.95rem;
+    .property-title {
+      font-size: 1.2rem;
       font-weight: 600;
       margin-bottom: 0.75rem;
       color: var(--text-dark);
     }
 
-    .filter-option {
+    .property-address {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .property-features {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .property-feature {
       display: flex;
       align-items: center;
-      margin-bottom: 0.5rem;
     }
 
-    .filter-option input {
-      margin-right: 0.75rem;
+    .property-feature i {
+      margin-right: 5px;
     }
 
-    .filter-option label {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      cursor: pointer;
+    /* How It Works Section */
+    .how-it-works {
+      padding: 5rem 0;
+      background: white;
     }
 
-    .filter-apply {
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: 600;
-      width: 100%;
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 3rem;
+    }
+
+    .step-card {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-radius: var(--border-radius);
+      background: var(--background-light);
       transition: var(--transition);
     }
 
-    .filter-apply:hover {
-      background: var(--primary-dark);
+    .step-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .step-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 1.5rem;
+    }
+
+    .step-title {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--text-dark);
+    }
+
+    .step-description {
+      color: var(--text-muted);
+    }
+
+    /* Popular Locations */
+    .popular-locations {
+      padding: 5rem 0;
+      background: var(--background-light);
+    }
+
+    .location-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 3rem;
+    }
+
+    .location-card {
+      position: relative;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      height: 200px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .location-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .location-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .location-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+      padding: 1.5rem;
+      color: white;
+    }
+
+    .location-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .location-count {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    /* Agents Section */
+    .agents-section {
+      padding: 5rem 0;
+      background: white;
+    }
+
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 3rem;
+    }
+
+    .agent-card {
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      background: white;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .agent-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .agent-image {
+      height: 200px;
+      width: 100%;
+    }
+
+    .agent-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .agent-details {
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .agent-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .agent-company {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .agent-contact {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .agent-contact a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--background-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dark);
+      transition: var(--transition);
+    }
+
+    .agent-contact a:hover {
+      background: var(--primary-color);
+      color: white;
     }
 
     /* CTA Section */
     .cta-section {
       padding: 5rem 0;
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      background: var(--background-light);
       text-align: center;
-      color: white;
+    }
+
+    .cta-content {
+      max-width: 700px;
+      margin: 0 auto;
     }
 
     .cta-title {
       font-size: 2.5rem;
       margin-bottom: 1.5rem;
+      color: var(--text-dark);
     }
 
     .cta-description {
       font-size: 1.2rem;
-      margin-bottom: 2rem;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .btn-cta {
-      background: white;
-      color: var(--primary-color);
-      padding: 15px 40px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 1.2rem;
-      transition: var(--transition);
-      display: inline-block;
-    }
-
-    .btn-cta:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
-      color: var(--primary-dark);
-    }
-
-    /* Newsletter Section */
-    .newsletter-section {
-      padding: 4rem 0;
-      background: var(--background-light);
-    }
-
-    .newsletter-card {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 3rem;
-      box-shadow: var(--shadow-sm);
-      text-align: center;
-    }
-
-    .newsletter-title {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .newsletter-description {
+      margin-bottom: 2.5rem;
       color: var(--text-muted);
-      margin-bottom: 2rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
     }
 
-    .newsletter-form {
-      max-width: 500px;
-      margin: 0 auto;
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
     }
 
-    .newsletter-input {
-      padding: 12px 20px;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
-      width: 100%;
-      margin-bottom: 1rem;
-    }
-
-    .newsletter-submit {
+    .btn-primary {
       background: var(--primary-color);
       color: white;
-      border: none;
       padding: 12px 30px;
       border-radius: 8px;
       font-weight: 600;
       transition: var(--transition);
-      width: 100%;
+      border: none;
     }
 
-    .newsletter-submit:hover {
+    .btn-primary:hover {
       background: var(--primary-dark);
+      transform: translateY(-3px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--primary-color);
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: var(--transition);
+      border: 2px solid var(--primary-color);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary-color);
+      color: white;
+      transform: translateY(-3px);
     }
 
     /* Footer */
@@ -777,8 +735,13 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    [data-aos="fade-up"] {
-      animation: fadeInUp 0.8s ease-out forwards;
+    [data-aos] {
+      opacity: 0;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    [data-aos].aos-animate {
+      opacity: 1;
     }
 
     /* Loading spinner */
@@ -858,19 +821,69 @@
       top: 0;
     }
 
+    /* Swiper customization */
+    .swiper-pagination-bullet {
+      width: 12px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 1;
+    }
+
+    .swiper-pagination-bullet-active {
+      background: white;
+    }
+
+    .swiper-button-next, .swiper-button-prev {
+      color: var(--text-dark);
+      background: rgba(255, 255, 255, 0.9);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      transition: var(--transition);
+      box-shadow: var(--shadow-md);
+    }
+
+    .swiper-button-next:after, .swiper-button-prev:after {
+      font-size: 1.5rem;
+    }
+
+    .swiper-button-next:hover, .swiper-button-prev:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+
     /* Responsive adjustments */
+    @media (max-width: 1200px) {
+      .search-form {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .search-btn {
+        grid-column: span 2;
+      }
+    }
+
     @media (max-width: 992px) {
       .hero-section {
         height: auto;
-        padding: 120px 0 60px;
+        padding: 100px 0 60px;
       }
       
-      .hero-content .col-lg-6 {
-        margin-bottom: 2rem;
+      .hero-title {
+        font-size: 2.8rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.2rem;
       }
       
       .section-title {
         font-size: 2rem;
+      }
+      
+      .quick-stats {
+        flex-wrap: wrap;
+        gap: 20px;
       }
     }
 
@@ -880,21 +893,24 @@
         padding: 10px 0;
       }
       
-      .property-card {
-        margin-bottom: 1.5rem;
+      .hero-title {
+        font-size: 2.3rem;
       }
       
-      .map-listings-section .row > div {
-        margin-bottom: 2rem;
+      .search-form {
+        grid-template-columns: 1fr;
       }
       
-      #map {
-        height: 350px;
+      .search-btn {
+        grid-column: span 1;
       }
       
-      .property-list {
-        height: auto;
-        max-height: 350px;
+      .property-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
       }
     }
 
@@ -903,12 +919,13 @@
         font-size: 1.8rem;
       }
       
-      .search-card {
+      .search-container {
         padding: 1.5rem;
       }
       
-      .newsletter-card {
-        padding: 2rem 1.5rem;
+      .search-tab {
+        padding: 10px 15px;
+        font-size: 1rem;
       }
     }
   </style>
@@ -932,7 +949,8 @@
             <li class="nav-item"><a class="nav-link" href="/properties?purpose=buy">Buy</a></li>
             <li class="nav-item"><a class="nav-link" href="/properties?purpose=rent">Rent</a></li>
             <li class="nav-item"><a class="nav-link" href="/sell">Sell</a></li>
-            <li class="nav-item"><a class="nav-link" href="/agents">Find an Agent</a></li>
+            <li class="nav-item"><a class="nav-link" href="/agents">Agents</a></li>
+            <li class="nav-item"><a class="nav-link" href="/news">News</a></li>
             <li class="nav-item" id="auth-link">
               <a class="nav-link" href="/signin" aria-label="Sign In">
                 <i class="fas fa-user" aria-hidden="true"></i> Sign In
@@ -991,17 +1009,14 @@
                       <option value="house">House</option>
                       <option value="apartment">Apartment</option>
                       <option value="villa">Villa</option>
+                      <option value="duplex">Duplex</option>
+                      <option value="penthouse">Penthouse</option>
                       <option value="land">Land</option>
                       <option value="commercial">Commercial</option>
+                      <option value="office">Office Space</option>
+                      <option value="hotel">Hotel</option>
+                      <option value="bungalow">Bungalow</option>
                     </select>
-                  </div>
-                  <div class="col-md-6">
-                    <label for="min-price-buy" class="visually-hidden">Min Price</label>
-                    <input type="number" class="form-control" id="min-price-buy" placeholder="Min Price (€)" name="min-price-buy" aria-label="Minimum price" />
-                  </div>
-                  <div class="col-md-6">
-                    <label for="max-price-buy" class="visually-hidden">Max Price</label>
-                    <input type="number" class="form-control" id="max-price-buy" placeholder="Max Price (€)" name="max-price-buy" aria-label="Maximum price" />
                   </div>
                   <div class="col-12">
                     <button type="submit" class="btn w-100" id="search-buy-btn">
@@ -1025,15 +1040,12 @@
                       <option value="apartment">Apartment</option>
                       <option value="villa">Villa</option>
                       <option value="studio">Studio</option>
+                      <option value="duplex">Duplex</option>
+                      <option value="penthouse">Penthouse</option>
+                      <option value="room">Single Room</option>
+                      <option value="office">Office Space</option>
+                      <option value="commercial">Commercial</option>
                     </select>
-                  </div>
-                  <div class="col-md-6">
-                    <label for="min-rent" class="visually-hidden">Min Rent</label>
-                    <input type="number" class="form-control" id="min-rent" placeholder="Min Rent (€/mo)" name="min-rent" aria-label="Minimum rent" />
-                  </div>
-                  <div class="col-md-6">
-                    <label for="max-rent" class="visually-hidden">Max Rent</label>
-                    <input type="number" class="form-control" id="max-rent" placeholder="Max Rent (€/mo)" name="max-rent" aria-label="Maximum rent" />
                   </div>
                   <div class="col-12">
                     <button type="submit" class="btn w-100" id="search-rent-btn">
@@ -1050,282 +1062,294 @@
     </div>
   </section>
 
-  <!-- Featured Listings: Carousel Style -->
-  <section class="featured-listings" id="featured-properties" data-aos="fade-up" data-aos-delay="200">
+  <!-- Featured Listings -->
+  <section class="featured-listings" id="featured-properties">
     <div class="container">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="section-title mb-0">Explore Top Properties</h2>
-        <a href="/properties" class="btn btn-outline-primary">View All Listings</a>
+      <div class="section-header">
+        <h2 class="section-title">Featured Properties</h2>
+        <a href="/properties" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
       </div>
-      <div id="propertyCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <div class="row g-4">
-              <div class="col-md-4">
-                <div class="property-card">
-                  <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Modern penthouse in Tirana with city views" class="property-card-img" loading="lazy" />
-                  <div class="card-body">
-                    <span class="property-badge bg-success">New Listing</span>
-                    <h5>Tirana Skyline Penthouse</h5>
-                    <p class="property-price">€450,000</p>
-                    <p class="property-details">3 Beds • 2 Baths • 1500 sqft • Central Tirana</p>
-                    <a href="/property/tirana-penthouse" class="btn">View Details</a>
-                    <button class="property-favorite" aria-label="Add to favorites">
-                      <i class="fas fa-heart"></i>
-                    </button>
-                  </div>
+
+      <div class="swiper featured-properties-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <div class="property-card" data-aos="fade-up">
+              <div class="property-image">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Modern penthouse in Tirana with city views" loading="lazy">
+                <div class="property-badge">New</div>
+                <div class="property-favorite">
+                  <i class="far fa-heart"></i>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="property-card">
-                  <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Luxury villa in Vlora with sea views" class="property-card-img" loading="lazy" />
-                  <div class="card-body">
-                    <h5>Vlora Coastal Villa</h5>
-                    <p class="property-price">€780,000</p>
-                    <p class="property-details">4 Beds • 3 Baths • 2200 sqft • Vlora Beach</p>
-                    <a href="/property/vlora-villa" class="btn">View Details</a>
-                    <button class="property-favorite" aria-label="Add to favorites">
-                      <i class="fas fa-heart"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="property-card">
-                  <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Seafront apartment in Saranda with balcony" class="property-card-img" loading="lazy" />
-                  <div class="card-body">
-                    <span class="property-badge bg-info">Open House</span>
-                    <h5>Saranda Seafront Apartment</h5>
-                    <p class="property-price">€220,000</p>
-                    <p class="property-details">2 Beds • 1 Bath • 900 sqft • Saranda Center</p>
-                    <a href="/property/saranda-apartment" class="btn">View Details</a>
-                    <button class="property-favorite" aria-label="Add to favorites">
-                      <i class="fas fa-heart"></i>
-                    </button>
-                  </div>
+              <div class="property-details">
+                <div class="property-price">€450,000</div>
+                <h3 class="property-title">Tirana Skyline Penthouse</h3>
+                <p class="property-address">Central Tirana, Tirana</p>
+                <div class="property-features">
+                  <div class="property-feature"><i class="fas fa-bed"></i> 3 Beds</div>
+                  <div class="property-feature"><i class="fas fa-bath"></i> 2 Baths</div>
+                  <div class="property-feature"><i class="fas fa-ruler-combined"></i> 1500 sqft</div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="carousel-item">
-            <div class="row g-4">
-              <div class="col-md-4">
-                <div class="property-card">
-                  <img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Traditional house in Berat with historic charm" class="property-card-img" loading="lazy" />
-                  <div class="card-body">
-                    <h5>Berat Historic Home</h5>
-                    <p class="property-price">€195,000</p>
-                    <p class="property-details">3 Beds • 2 Baths • 1200 sqft • Berat Castle</p>
-                    <a href="/property/berat-house" class="btn">View Details</a>
-                    <button class="property-favorite" aria-label="Add to favorites">
-                      <i class="fas fa-heart"></i>
-                    </button>
-                  </div>
+
+          <div class="swiper-slide">
+            <div class="property-card" data-aos="fade-up" data-aos-delay="100">
+              <div class="property-image">
+                <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Luxury villa in Vlora with sea views" loading="lazy">
+                <div class="property-favorite">
+                  <i class="far fa-heart"></i>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="property-card">
-                  <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Modern apartment in Durres with amenities" class="property-card-img" loading="lazy" />
-                  <div class="card-body">
-                    <span class="property-badge bg-warning text-dark">Reduced Price</span>
-                    <h5>Durres Luxury Apartment</h5>
-                    <p class="property-price">€275,000</p>
-                    <p class="property-details">3 Beds • 2 Baths • 1400 sqft • Durres Marina</p>
-                    <a href="/property/durres-apartment" class="btn">View Details</a>
-                    <button class="property-favorite" aria-label="Add to favorites">
-                      <i class="fas fa-heart"></i>
-                    </button>
-                  </div>
+              <div class="property-details">
+                <div class="property-price">€780,000</div>
+                <h3 class="property-title">Vlora Coastal Villa</h3>
+                <p class="property-address">Vlora Beach, Vlora</p>
+                <div class="property-features">
+                  <div class="property-feature"><i class="fas fa-bed"></i> 4 Beds</div>
+                  <div class="property-feature"><i class="fas fa-bath"></i> 3 Baths</div>
+                  <div class="property-feature"><i class="fas fa-ruler-combined"></i> 2200 sqft</div>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="property-card">
-                  <img src="https://images.unsplash.com/photo-1600566752225-220db9ecc8b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Mountain retreat in Theth with stunning views" class="property-card-img" loading="lazy" />
-                  <div class="card-body">
-                    <h5>Theth Mountain Retreat</h5>
-                    <p class="property-price">€320,000</p>
-                    <p class="property-details">4 Beds • 3 Baths • 1800 sqft • Theth National Park</p>
-                    <a href="/property/theth-retreat" class="btn">View Details</a>
-                    <button class="property-favorite" aria-label="Add to favorites">
-                      <i class="fas fa-heart"></i>
-                    </button>
-                  </div>
+            </div>
+          </div>
+
+          <div class="swiper-slide">
+            <div class="property-card" data-aos="fade-up" data-aos-delay="200">
+              <div class="property-image">
+                <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Seafront apartment in Saranda with balcony" loading="lazy">
+                <div class="property-badge">Open House</div>
+                <div class="property-favorite">
+                  <i class="far fa-heart"></i>
+                </div>
+              </div>
+              <div class="property-details">
+                <div class="property-price">€220,000</div>
+                <h3 class="property-title">Saranda Seafront Apartment</h3>
+                <p class="property-address">Saranda Center, Saranda</p>
+                <div class="property-features">
+                  <div class="property-feature"><i class="fas fa-bed"></i> 2 Beds</div>
+                  <div class="property-feature"><i class="fas fa-bath"></i> 1 Bath</div>
+                  <div class="property-feature"><i class="fas fa-ruler-combined"></i> 900 sqft</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="swiper-slide">
+            <div class="property-card" data-aos="fade-up" data-aos-delay="300">
+              <div class="property-image">
+                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Luxury apartment in Durres" loading="lazy">
+                <div class="property-badge">Popular</div>
+                <div class="property-favorite">
+                  <i class="far fa-heart"></i>
+                </div>
+              </div>
+              <div class="property-details">
+                <div class="property-price">€320,000</div>
+                <h3 class="property-title">Durres Luxury Apartment</h3>
+                <p class="property-address">Durres Beachfront, Durres</p>
+                <div class="property-features">
+                  <div class="property-feature"><i class="fas fa-bed"></i> 3 Beds</div>
+                  <div class="property-feature"><i class="fas fa-bath"></i> 2 Baths</div>
+                  <div class="property-feature"><i class="fas fa-ruler-combined"></i> 1200 sqft</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="swiper-slide">
+            <div class="property-card" data-aos="fade-up" data-aos-delay="400">
+              <div class="property-image">
+                <img src="https://images.unsplash.com/photo-1574362848149-11496d93a7c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Mountain house in Theth" loading="lazy">
+                <div class="property-badge">Nature</div>
+                <div class="property-favorite">
+                  <i class="far fa-heart"></i>
+                </div>
+              </div>
+              <div class="property-details">
+                <div class="property-price">€180,000</div>
+                <h3 class="property-title">Theth Mountain Retreat</h3>
+                <p class="property-address">Theth National Park, Shkodër</p>
+                <div class="property-features">
+                  <div class="property-feature"><i class="fas fa-bed"></i> 2 Beds</div>
+                  <div class="property-feature"><i class="fas fa-bath"></i> 1 Bath</div>
+                  <div class="property-feature"><i class="fas fa-ruler-combined"></i> 950 sqft</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="swiper-slide">
+            <div class="property-card" data-aos="fade-up" data-aos-delay="500">
+              <div class="property-image">
+                <img src="https://images.unsplash.com/photo-1600566753052-d04bc2ed496d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Modern villa in Dhermi" loading="lazy">
+                <div class="property-badge">Luxury</div>
+                <div class="property-favorite">
+                  <i class="far fa-heart"></i>
+                </div>
+              </div>
+              <div class="property-details">
+                <div class="property-price">€950,000</div>
+                <h3 class="property-title">Dhermi Beach Villa</h3>
+                <p class="property-address">Dhermi Beach, Vlora</p>
+                <div class="property-features">
+                  <div class="property-feature"><i class="fas fa-bed"></i> 5 Beds</div>
+                  <div class="property-feature"><i class="fas fa-bath"></i> 4 Baths</div>
+                  <div class="property-feature"><i class="fas fa-ruler-combined"></i> 2800 sqft</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev" aria-label="Previous properties">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next" aria-label="Next properties">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+        <!-- Add navigation buttons -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <!-- Add pagination -->
+        <div class="swiper-pagination"></div>
       </div>
     </div>
   </section>
 
-  <!-- List Your Property Section -->
-  <section class="list-property-section" data-aos="fade-up" data-aos-delay="300">
-    <div class="container text-center">
-      <h2 class="section-title mb-4">Want to Showcase Your Property?</h2>
-      <p class="lead mb-5 text-muted">Reach thousands of buyers and renters effortlessly—list with us today!</p>
-      <div class="row justify-content-center g-4">
-        <div class="col-md-4">
-          <a href="/list/agency" class="role-card">
-            <div class="card">
-              <div class="card-body">
-                <i class="fas fa-building role-icon"></i>
-                <h5 class="mb-2">Agency</h5>
-                <p>Scale your business with premium tools and extensive exposure.</p>
-              </div>
-            </div>
-          </a>
+  <!-- How It Works Section -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">How It Works</h2>
+        <p>Simple process to find your perfect property</p>
+      </div>
+
+      <div class="steps">
+        <div class="step-card" data-aos="fade-up">
+          <div class="step-icon">
+            <i class="fas fa-search"></i>
+          </div>
+          <h3 class="step-title">Search</h3>
+          <p class="step-description">Browse thousands of properties with detailed filters to find exactly what you're looking for.</p>
         </div>
-        <div class="col-md-4">
-          <a href="/list/private-agent" class="role-card">
-            <div class="card">
-              <div class="card-body">
-                <i class="fas fa-user-tie role-icon"></i>
-                <h5 class="mb-2">Private Agent</h5>
-                <p>Maximize exposure for your listings with our professional platform.</p>
-              </div>
-            </div>
-          </a>
+
+        <div class="step-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="step-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <h3 class="step-title">Visit</h3>
+          <p class="step-description">Schedule viewings of your favorite properties with our network of trusted agents.</p>
         </div>
-        <div class="col-md-4">
-          <a href="/list/landlord" class="role-card">
-            <div class="card">
-              <div class="card-body">
-                <i class="fas fa-house-user role-icon"></i>
-                <h5 class="mb-2">Landlord</h5>
-                <p>Rent or sell your property quickly to qualified buyers and tenants.</p>
-              </div>
-            </div>
-          </a>
+
+        <div class="step-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="step-icon">
+            <i class="fas fa-file-contract"></i>
+          </div>
+          <h3 class="step-title">Make it Yours</h3>
+          <p class="step-description">Get assistance with paperwork, financing, and legal processes to complete your purchase.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Map + Listings Combo Section -->
-  <section class="map-listings-section" data-aos="fade-up" data-aos-delay="400">
+  <!-- Popular Locations Section -->
+  <section class="popular-locations">
     <div class="container">
-      <h2 class="section-title text-center mb-5">Browse Featured Rentals</h2>
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="filter-section">
-            <h3 class="filter-title">Filter Properties</h3>
-            <div class="filter-group">
-              <h4 class="filter-group-title">Property Type</h4>
-              <div class="filter-option">
-                <input type="checkbox" id="type-house" name="property-type" value="house" checked>
-                <label for="type-house">House</label>
-              </div>
-              <div class="filter-option">
-                <input type="checkbox" id="type-apartment" name="property-type" value="apartment" checked>
-                <label for="type-apartment">Apartment</label>
-              </div>
-              <div class="filter-option">
-                <input type="checkbox" id="type-villa" name="property-type" value="villa" checked>
-                <label for="type-villa">Villa</label>
-              </div>
-              <div class="filter-option">
-                <input type="checkbox" id="type-land" name="property-type" value="land">
-                <label for="type-land">Land</label>
-              </div>
-            </div>
-            <div class="filter-group">
-              <h4 class="filter-group-title">Price Range (€)</h4>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="min-price" class="form-label">Min</label>
-                  <input type="number" class="form-control" id="min-price">
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="max-price" class="form-label">Max</label>
-                  <input type="number" class="form-control" id="max-price">
-                </div>
-              </div>
-            </div>
-            <button class="filter-apply">Apply Filters</button>
+      <div class="section-header">
+        <h2 class="section-title">Popular Locations</h2>
+        <a href="/locations" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <div class="location-grid">
+        <div class="location-card" data-aos="fade-up">
+          <img src="https://images.unsplash.com/photo-1591123129750-0e4ce1c9fd6a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Tirana city view" loading="lazy">
+          <div class="location-overlay">
+            <h3 class="location-name">Tirana</h3>
+            <p class="location-count">1,250 properties</p>
           </div>
-          <div id="map" aria-label="Interactive map of property locations"></div>
         </div>
-        <div class="col-lg-6">
-          <div class="property-list">
-            <div class="property-item">
-              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Tirana Penthouse" class="property-item-img" loading="lazy" />
-              <div class="property-item-info">
-                <h6 class="property-item-title">Tirana Skyline Penthouse</h6>
-                <p class="property-item-price">€450,000</p>
-                <p class="property-item-details">3 Beds • 2 Baths • Central Tirana</p>
-              </div>
-              <a href="/property/tirana-penthouse" class="property-item-btn">Details</a>
-            </div>
-            <div class="property-item">
-              <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Vlora Villa" class="property-item-img" loading="lazy" />
-              <div class="property-item-info">
-                <h6 class="property-item-title">Vlora Coastal Villa</h6>
-                <p class="property-item-price">€780,000</p>
-                <p class="property-item-details">4 Beds • 3 Baths • Vlora Beach</p>
-              </div>
-              <a href="/property/vlora-villa" class="property-item-btn">Details</a>
-            </div>
-            <div class="property-item">
-              <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Saranda Apartment" class="property-item-img" loading="lazy" />
-              <div class="property-item-info">
-                <h6 class="property-item-title">Saranda Seafront Apartment</h6>
-                <p class="property-item-price">€220,000</p>
-                <p class="property-item-details">2 Beds • 1 Bath • Saranda Center</p>
-              </div>
-              <a href="/property/saranda-apartment" class="property-item-btn">Details</a>
-            </div>
-            <div class="property-item">
-              <img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Berat House" class="property-item-img" loading="lazy" />
-              <div class="property-item-info">
-                <h6 class="property-item-title">Berat Historic Home</h6>
-                <p class="property-item-price">€195,000</p>
-                <p class="property-item-details">3 Beds • 2 Baths • Berat Castle</p>
-              </div>
-              <a href="/property/berat-house" class="property-item-btn">Details</a>
-            </div>
-            <div class="property-item">
-              <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Durres Apartment" class="property-item-img" loading="lazy" />
-              <div class="property-item-info">
-                <h6 class="property-item-title">Durres Luxury Apartment</h6>
-                <p class="property-item-price">€275,000</p>
-                <p class="property-item-details">3 Beds • 2 Baths • Durres Marina</p>
-              </div>
-              <a href="/property/durres-apartment" class="property-item-btn">Details</a>
-            </div>
+
+        <div class="location-card" data-aos="fade-up" data-aos-delay="100">
+          <img src="https://images.unsplash.com/photo-1590408330360-44d89ac38a38?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Durres beach" loading="lazy">
+          <div class="location-overlay">
+            <h3 class="location-name">Durres</h3>
+            <p class="location-count">850 properties</p>
+          </div>
+        </div>
+
+        <div class="location-card" data-aos="fade-up" data-aos-delay="200">
+          <img src="https://images.unsplash.com/photo-1580502304784-8985b7eb7260?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vlora coastline" loading="lazy">
+          <div class="location-overlay">
+            <h3 class="location-name">Vlora</h3>
+            <p class="location-count">620 properties</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Call-to-Action Section -->
-  <section class="cta-section" data-aos="fade-up" data-aos-delay="600">
+  <!-- Agents Section -->
+  <section class="agents-section">
     <div class="container">
-      <h2 class="cta-title">Ready to Find Your Perfect Property?</h2>
-      <p class="cta-description">Join thousands of buyers and renters discovering Albania's best homes with our expert guidance and comprehensive listings.</p>
-      <a href="/properties" class="btn-cta">Browse All Properties</a>
+      <div class="section-header">
+        <h2 class="section-title">Top Agents</h2>
+        <a href="/agents" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <div class="agents-grid">
+        <div class="agent-card" data-aos="fade-up">
+          <div class="agent-image">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Real estate agent" loading="lazy">
+          </div>
+          <div class="agent-details">
+            <h3 class="agent-name">Anisa Hoxha</h3>
+            <p class="agent-company">Elite Properties Albania</p>
+            <div class="agent-contact">
+              <a href="#" aria-label="Call agent"><i class="fas fa-phone"></i></a>
+              <a href="#" aria-label="Email agent"><i class="fas fa-envelope"></i></a>
+              <a href="#" aria-label="View profile"><i class="fas fa-user"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="agent-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="agent-image">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Real estate agent" loading="lazy">
+          </div>
+          <div class="agent-details">
+            <h3 class="agent-name">Elton Shehu</h3>
+            <p class="agent-company">Coastal Living Realty</p>
+            <div class="agent-contact">
+              <a href="#" aria-label="Call agent"><i class="fas fa-phone"></i></a>
+              <a href="#" aria-label="Email agent"><i class="fas fa-envelope"></i></a>
+              <a href="#" aria-label="View profile"><i class="fas fa-user"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="agent-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="agent-image">
+            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Real estate agent" loading="lazy">
+          </div>
+          <div class="agent-details">
+            <h3 class="agent-name">Klajdi Dervishi</h3>
+            <p class="agent-company">Albanian Homes Network</p>
+            <div class="agent-contact">
+              <a href="#" aria-label="Call agent"><i class="fas fa-phone"></i></a>
+              <a href="#" aria-label="Email agent"><i class="fas fa-envelope"></i></a>
+              <a href="#" aria-label="View profile"><i class="fas fa-user"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Newsletter Section -->
-  <section class="newsletter-section" data-aos="fade-up" data-aos-delay="700">
+  <!-- CTA Section -->
+  <section class="cta-section">
     <div class="container">
-      <div class="newsletter-card">
-        <h2 class="newsletter-title">Stay Updated</h2>
-        <p class="newsletter-description">Get personalized property alerts based on your search criteria.</p>
-        <div class="d-grid">
-          <a href="/newsletter" class="btn btn-primary btn-lg newsletter-submit">
-            Subscribe to Personalized Alerts
-          </a>
+      <div class="cta-content">
+        <h2 class="cta-title">Ready to Find Your Perfect Property?</h2>
+        <p class="cta-description">Join thousands of buyers and renters discovering Albania's best homes with our expert guidance and comprehensive listings.</p>
+        <div class="cta-buttons">
+          <a href="/properties" class="btn-primary">Browse Properties</a>
+          <a href="/list-property" class="btn-outline">List Your Property</a>
         </div>
       </div>
     </div>
@@ -1385,7 +1409,7 @@
             <i class="fas fa-clock footer-contact-icon"></i>
             <div>Mon-Fri: 9AM-6PM<br>Sat: 10AM-4PM</div>
           </div>
-        </div>
+          </div>
       </div>
       <div class="footer-bottom">
         <p>&copy; 2025 Albania Properties. All Rights Reserved. | <a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a></p>
@@ -1397,8 +1421,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}"></script>
-  <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
   <script>
     // Initialize AOS animations
@@ -1406,6 +1429,34 @@
       duration: 1000, 
       once: true,
       offset: 120
+    });
+
+    // Initialize Featured Properties Swiper
+    const featuredPropertiesSwiper = new Swiper('.featured-properties-swiper', {
+      slidesPerView: 1,
+      spaceBetween: 20,
+      loop: true,
+      autoplay: {
+        delay: 5000,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        992: {
+          slidesPerView: 3,
+          spaceBetween: 30,
+        },
+      },
     });
 
     // Sticky header
@@ -1450,50 +1501,24 @@
       }
     }
 
-    // Search form submissions with loading states
+    // Search form submission
     document.getElementById('search-buy').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const btn = document.getElementById('search-buy-btn');
-      const btnText = btn.querySelector('.search-btn-text');
-      const spinner = btn.querySelector('.loading-spinner');
-      
-      btnText.classList.add('d-none');
-      spinner.classList.remove('d-none');
-      btn.disabled = true;
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
       const location = document.getElementById('location-buy').value;
       const type = document.getElementById('property-type-buy').value;
-      const minPrice = document.getElementById('min-price-buy').value;
-      const maxPrice = document.getElementById('max-price-buy').value;
       
-      window.location.href = `/properties?purpose=buy&location=${encodeURIComponent(location)}&type=${type}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+      window.location.href = `/properties?purpose=buy&location=${encodeURIComponent(location)}&type=${type}`;
     });
 
     document.getElementById('search-rent').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const btn = document.getElementById('search-rent-btn');
-      const btnText = btn.querySelector('.search-btn-text');
-      const spinner = btn.querySelector('.loading-spinner');
-      
-      btnText.classList.add('d-none');
-      spinner.classList.remove('d-none');
-      btn.disabled = true;
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
       const location = document.getElementById('location-rent').value;
       const type = document.getElementById('property-type-rent').value;
-      const minRent = document.getElementById('min-rent').value;
-      const maxRent = document.getElementById('max-rent').value;
       
-      window.location.href = `/properties?purpose=rent&location=${encodeURIComponent(location)}&type=${type}&minRent=${minRent}&maxRent=${maxRent}`;
+      window.location.href = `/properties?purpose=rent&location=${encodeURIComponent(location)}&type=${type}`;
     });
 
-    // Autocomplete for search inputs with more locations
+    // Autocomplete for search inputs
     $(document).ready(function() {
       const locations = [
         "Tirana", "Durres", "Vlora", "Saranda", "Shkodra", "Berat", "Korca", "Elbasan", 
@@ -1505,7 +1530,8 @@
         "Shijak", "Ura Vajgurore", "Ballsh", "Belsh", "Bulqiza", "Cermenika", "Dhermi",
         "Dajti", "Dhermi", "Fushe-Arrez", "Golem", "Jale", "Ksamil", "Lac", "Lin", "Livadhi",
         "Milot", "Osumi Canyon", "Qeparo", "Qafe Thana", "Radhima", "Shengjin", "Theth",
-        "Valbona", "Zvernec"
+        "Valbona", "Zvernec", "Blloku", "21 Dhjetori", "Don Bosko", "Yzberisht", "Lapraka",
+        "Selita", "Kombinat", "5 Maji", "4 Shkurti", "Jubilari", "Rinia", "Aeroporti"
       ];
       
       const substringMatcher = function(strs) {
@@ -1546,7 +1572,8 @@
     // Favorite toggle with local storage
     document.querySelectorAll('.property-favorite').forEach(heart => {
       heart.addEventListener('click', function() {
-        const propertyId = this.closest('.property-card, .property-item').querySelector('a').getAttribute('href').split('/').pop();
+        const propertyCard = this.closest('.property-card');
+        const propertyId = propertyCard.querySelector('.property-title').textContent.replace(/\s+/g, '-').toLowerCase();
         const isActive = this.classList.toggle('active');
         
         // Update icon
@@ -1589,178 +1616,15 @@
       });
     });
 
-    // Initialize Google Map with more markers
-    let map;
-    let markers = [];
-    let markerCluster;
-
-    // Sample properties data
-    const properties = [
-      {
-        id: 'tirana-penthouse',
-        title: 'Tirana Skyline Penthouse',
-        price: '€450,000',
-        type: 'apartment',
-        coords: [41.3275, 19.8187],
-        beds: 3,
-        baths: 2,
-        area: '1500 sqft',
-        location: 'Central Tirana'
-      },
-      {
-        id: 'vlora-villa',
-        title: 'Vlora Coastal Villa',
-        price: '€780,000',
-        type: 'villa',
-        coords: [40.4664, 19.4914],
-        beds: 4,
-        baths: 3,
-        area: '2200 sqft',
-        location: 'Vlora Beach'
-      },
-      {
-        id: 'saranda-apartment',
-        title: 'Saranda Seafront Apartment',
-        price: '€220,000',
-        type: 'apartment',
-        coords: [39.8760, 20.0050],
-        beds: 2,
-        baths: 1,
-        area: '900 sqft',
-        location: 'Saranda Center'
-      },
-      {
-        id: 'berat-house',
-        title: 'Berat Historic Home',
-        price: '€195,000',
-        type: 'house',
-        coords: [40.7048, 19.9497],
-        beds: 3,
-        baths: 2,
-        area: '1200 sqft',
-        location: 'Berat Castle'
-      },
-      {
-        id: 'durres-apartment',
-        title: 'Durres Luxury Apartment',
-        price: '€275,000',
-        type: 'apartment',
-        coords: [41.3236, 19.4547],
-        beds: 3,
-        baths: 2,
-        area: '1400 sqft',
-        location: 'Durres Marina'
-      },
-      {
-        id: 'theth-retreat',
-        title: 'Theth Mountain Retreat',
-        price: '€320,000',
-        type: 'house',
-        coords: [42.3969, 19.7744],
-        beds: 4,
-        baths: 3,
-        area: '1800 sqft',
-        location: 'Theth National Park'
-      }
-    ];
-    
-    function addMarkers(props) {
-      if (markerCluster) {
-        markerCluster.clearMarkers();
-      }
-      markers.forEach(m => m.setMap(null));
-      markers = props.map(p => {
-        const marker = new google.maps.Marker({
-          position: { lat: p.coords[0], lng: p.coords[1] },
-          title: p.title,
-          map: map
-        });
-        const info = new google.maps.InfoWindow({
-          content: `
-            <div class="map-popup">
-              <h5>${p.title}</h5>
-              <p class="price">${p.price}</p>
-              <p>${p.beds} Beds • ${p.baths} Baths • ${p.area}</p>
-              <p><small>${p.location}</small></p>
-              <a href="/property/${p.id}" class="btn btn-sm btn-primary w-100">View Details</a>
-            </div>`
-        });
-        marker.addListener('click', () => info.open({ map, anchor: marker }));
-        return marker;
-      });
-      markerCluster = new markerClusterer.MarkerClusterer({ map, markers });
-    }
-
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: 41.3275, lng: 19.8187 },
-        zoom: 7
-      });
-      addMarkers(properties);
-    }
-
-    initMap();
-    
-    // Filter functionality for map/listings
-    document.querySelector('.filter-apply').addEventListener('click', function() {
-      const selectedTypes = Array.from(document.querySelectorAll('input[name="property-type"]:checked'))
-        .map(input => input.value);
-      
-      const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
-      const maxPrice = parseFloat(document.getElementById('max-price').value) || Infinity;
-      
-      // Filter property items
-      document.querySelectorAll('.property-item').forEach(item => {
-        const priceText = item.querySelector('.property-item-price').textContent;
-        const price = parseFloat(priceText.replace(/[^\d.]/g, ''));
-        const type = item.querySelector('a').getAttribute('href').includes('apartment') ? 'apartment' : 
-                   item.querySelector('a').getAttribute('href').includes('villa') ? 'villa' : 'house';
-        
-        const priceMatch = price >= minPrice && price <= maxPrice;
-        const typeMatch = selectedTypes.includes(type);
-        
-        if (priceMatch && typeMatch) {
-          item.style.display = 'flex';
-        } else {
-          item.style.display = 'none';
-        }
-      });
-      
-      const filtered = properties.filter(p => {
-        const price = parseFloat(p.price.replace(/[^\d.]/g, ''));
-        const priceMatch = price >= minPrice && price <= maxPrice;
-        const typeMatch = selectedTypes.includes(p.type);
-        return priceMatch && typeMatch;
-      });
-      addMarkers(filtered);
-    });
-
-    // Newsletter form submission
-    document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const email = this.querySelector('input[type="email"]').value;
-      
-      // Simple validation
-      if (!email.includes('@')) {
-        alert('Please enter a valid email address');
-        return;
-      }
-      
-      // In a real app, you would send this to your backend
-      console.log('Subscribed email:', email);
-      alert('Thank you for subscribing to our newsletter!');
-      this.reset();
-    });
-
     // Initialize favorite buttons from local storage
     document.addEventListener('DOMContentLoaded', () => {
       checkLoginStatus();
       
       const favorites = JSON.parse(localStorage.getItem('propertyFavorites')) || [];
       
-      document.querySelectorAll('.property-favorite').forEach(heart => {
-        const propertyId = heart.closest('.property-card, .property-item')
-          .querySelector('a').getAttribute('href').split('/').pop();
+      document.querySelectorAll('.property-card').forEach(card => {
+        const propertyId = card.querySelector('.property-title').textContent.replace(/\s+/g, '-').toLowerCase();
+        const heart = card.querySelector('.property-favorite');
         
         if (favorites.includes(propertyId)) {
           heart.classList.add('active');
