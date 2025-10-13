@@ -1,0 +1,35 @@
+/*
+ * This file adds minor adjustments beyond Bootstrap to ensure
+ * proper layout and spacing.
+ */
+
+/* 1. Ensure the layout takes up the full viewport height */
+html, body {
+    height: 100%;
+}
+
+/* 2. Flexbox container for sticky footer */
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 3. Main content area takes up remaining space */
+main {
+    flex: 1 0 auto;
+}
+
+/* 4. Basic utility styles */
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}
+
+/* 5. Placeholder for Agent Photos or Listing Images */
+.rounded-circle {
+    object-fit: cover;
+}
+
+/* 6. Fix for sticky top navbar pushing content too far down */
+.sticky-top {
+    z-index: 1020;
+}
