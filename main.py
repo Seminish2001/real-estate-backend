@@ -1,33 +1,42 @@
 import os
-from app import app, db, socketio # Import the core app and socketio instances
+# NEW: Import eventlet and monkey_patch
+import eventlet
+from app import app, db, socketio
 
-# Import models to ensure they are registered with SQLAlchemy before db.create_all()
+# CRITICAL: Monkey-patch standard Python libraries to be cooperative.
+# This must happen before any imports that use standard networking.
+eventlet.monkey_patch()
+
+# Import models/events/routes to ensure they are registered
+# The mere act of importing registers the blueprints and event handlers.
 import models
-# Import chat events to register the websocket handlers
 import chat_events
-# Import route blueprints to register the HTTP endpoints
 import auth_routes
 import property_routes
 import agent_routes
+from template_routes import template_bp # Don't forget the new template routes!
 
 if __name__ == "__main__":
     
     with app.app_context():
         print("Ensuring database tables exist...")
-        # This will create all tables defined in models.py
         db.create_all() 
         print("Database setup complete.")
         
     port = int(os.getenv("PORT", 5000))
-    print(f"Starting server on port {port}...")
+    print(f"Starting server on port {port} using Eventlet...")
     
-    # Run the application using socketio.run, NOT app.run
-    # This is required to host the WebSockets server
+    # When deployed on Render using the gunicorn start command:
+    # gunicorn --worker-class eventlet -w 1 main:app
+    # The code below only runs when you execute 'python main.py' locally.
+    
+    # Run the application using socketio.run, which will use Eventlet
     socketio.run(
         app, 
         host="0.0.0.0", 
         port=port, 
-        debug=True, 
-        # allow_unsafe_werkzeug is often needed for modern Flask development
+        # Debug should be False on production environments like Render
+        debug=False, 
         allow_unsafe_werkzeug=True 
     )
+
