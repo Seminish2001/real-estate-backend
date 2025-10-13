@@ -1,16 +1,310 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>{{ property.title }} | Albania Properties</title>
-</head>
-<body>
-  <h1>{{ property.title }}</h1>
-  <p>{{ property.location }}</p>
-  <p>Price: {{ property.price }}</p>
-  <p>{{ property.beds }} beds, {{ property.baths }} baths</p>
-  {% if property.image_url %}
-  <img src="{{ property.image_url }}" alt="{{ property.title }}" />
-  {% endif %}
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Property Detail{% endblock %}
+
+{% block content %}
+<div id="propertyDetailContent" class="d-none">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 id="propertyTitle" class="mb-3"></h1>
+            <p class="lead text-muted" id="propertyLocation"></p>
+            
+            <div id="propertyImageCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#propertyImageCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#propertyImageCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+            
+            <h2 class="text-primary mb-4" id="propertyPriceDisplay"></h2>
+
+            <div class="d-flex mb-4 border-bottom pb-3">
+                <div class="me-4"><strong>Beds:</strong> <span id="propertyBeds"></span></div>
+                <div class="me-4"><strong>Baths:</strong> <span id="propertyBaths"></span></div>
+                <div class="me-4"><strong>Size:</strong> <span id="propertySize"></span> sqft</div>
+                <div class="me-4"><strong>Type:</strong> <span id="propertyType"></span></div>
+            </div>
+
+            <h3>Description</h3>
+            <p id="propertyDescription"></p>
+
+            <div class="mt-5">
+                <h3>Additional Information</h3>
+                <p id="propertyAVM" class="text-success fw-bold"></p>
+                <p id="propertyTour" class="d-none"><a href="#" id="virtualTourLink" target="_blank" class="btn btn-outline-secondary">Take Virtual Tour</a></p>
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm p-4 sticky-top" style="top: 20px;">
+                <h4 class="mb-3">Contact Agent</h4>
+                
+                <div id="agentInfo" class="text-center mb-3">
+                    <img id="agentPhoto" src="/static/images/default-agent.png" alt="Agent Photo" class="rounded-circle mb-2" style="width: 80px; height: 80px; object-fit: cover;">
+                    <h5 id="agentName">Loading Agent...</h5>
+                    <p id="agentAgency" class="text-muted"></p>
+                </div>
+                
+                <hr>
+
+                <button id="chatButton" class="btn btn-lg btn-success w-100 mb-3" disabled>
+                    <i class="bi bi-chat-dots-fill"></i> Chat Live Now
+                </button>
+                <div id="chatMessage" class="small text-center mt-2"></div>
+                
+                <button id="favoriteButton" class="btn btn-outline-danger w-100 mb-2">
+                    <i class="bi bi-heart"></i> Add to Favorites
+                </button>
+                <a href="/evaluation.html" class="btn btn-outline-info w-100">Request Evaluation</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="loadingIndicator" class="text-center mt-5">
+    <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+    <p class="mt-2">Loading property details...</p>
+</div>
+<div id="errorMessage" class="alert alert-danger d-none mt-5" role="alert"></div>
+
+<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chatModalLabel">Chat with <span id="modalAgentName"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Chat session <strong id="modalSessionId"></strong> is ready!</p>
+                <div id="chatWindow" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
+                    </div>
+                <input type="text" id="chatInput" class="form-control mt-2" placeholder="Type a message..." disabled>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="sendMessageBtn" class="btn btn-primary" disabled>Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let currentPropertyId = null;
+    let currentAgentId = null;
+    let socket = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Get Property ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        currentPropertyId = urlParams.get('id');
+
+        if (currentPropertyId) {
+            fetchPropertyDetails(currentPropertyId);
+        } else {
+            showError("Missing property ID in the URL.");
+        }
+    });
+    
+    // --- Data Fetching Functions ---
+    async function fetchPropertyDetails(id) {
+        document.getElementById('loadingIndicator').classList.remove('d-none');
+        try {
+            const response = await fetch(`/api/properties/${id}`); // Assuming you have a GET /api/properties/<id> route
+            if (response.status === 404) throw new Error("Property not found.");
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+            
+            const property = await response.json();
+            
+            // 2. Render Property Details
+            renderProperty(property);
+
+            // 3. Fetch and Render Agent Details
+            if (property.agent_id) {
+                currentAgentId = property.agent_id;
+                fetchAgentDetails(currentAgentId);
+                document.getElementById('chatButton').addEventListener('click', startChatSession);
+            } else {
+                document.getElementById('agentName').textContent = 'Agent Unassigned';
+                document.getElementById('chatMessage').textContent = 'Cannot chat without an assigned agent.';
+            }
+
+        } catch (error) {
+            console.error('Error loading property:', error);
+            showError(error.message || 'Failed to load property details.');
+        } finally {
+            document.getElementById('loadingIndicator').classList.add('d-none');
+        }
+    }
+
+    async function fetchAgentDetails(agentId) {
+        try {
+            // NOTE: We rely on the User ID being the same as the agent's ID for simplicity here.
+            // A dedicated GET /api/agents/public/<user_id> route would be better.
+            const response = await fetch(`/api/agents/public/${agentId}`); 
+            if (!response.ok) throw new Error('Agent details not available.');
+            
+            const agent = await response.json();
+            
+            document.getElementById('agentName').textContent = agent.name;
+            document.getElementById('agentAgency').textContent = agent.agency || 'Independent';
+            if (agent.photo_url) {
+                document.getElementById('agentPhoto').src = agent.photo_url;
+            }
+            document.getElementById('chatButton').disabled = false;
+            document.getElementById('chatMessage').textContent = 'Click to start conversation.';
+
+        } catch (error) {
+            console.error('Error loading agent:', error);
+            document.getElementById('agentName').textContent = 'Agent Data Error';
+        }
+    }
+
+    // --- Rendering Logic ---
+    function renderProperty(p) {
+        document.getElementById('propertyTitle').textContent = p.title;
+        document.getElementById('propertyLocation').textContent = p.location;
+        document.getElementById('propertyDescription').textContent = p.description || 'No detailed description provided.';
+        
+        // Price/Rent Display
+        const price = p.purpose === 'RENT' ? p.monthly_rent : p.price;
+        const priceLabel = p.purpose === 'RENT' ? `/ month` : '';
+        document.getElementById('propertyPriceDisplay').textContent = `$${price.toLocaleString()} ${priceLabel}`;
+
+        // Specs
+        document.getElementById('propertyBeds').textContent = p.beds;
+        document.getElementById('propertyBaths').textContent = p.baths;
+        document.getElementById('propertySize').textContent = p.size;
+        document.getElementById('propertyType').textContent = p.property_type;
+
+        // NEW FIELDS
+        if (p.zestimate_value) {
+            document.getElementById('propertyAVM').textContent = `AVM Estimate: ${p.zestimate_value}`;
+        }
+        if (p.virtual_tour_url) {
+            document.getElementById('virtualTourLink').href = p.virtual_tour_url;
+            document.getElementById('propertyTour').classList.remove('d-none');
+        }
+
+        // Image Gallery (Simple primary image fallback)
+        const imageHtml = `
+            <div class="carousel-item active">
+                <img src="${p.image_url || '/static/images/placeholder.jpg'}" class="d-block w-100" style="height: 400px; object-fit: cover;" alt="${p.title}">
+            </div>
+        `;
+        document.querySelector('.carousel-inner').innerHTML = imageHtml;
+        
+        document.getElementById('propertyDetailContent').classList.remove('d-none');
+    }
+
+    function showError(message) {
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorMessage').classList.remove('d-none');
+    }
+
+
+    // --- Chat Integration Logic (Key New Feature) ---
+
+    async function startChatSession() {
+        const chatButton = document.getElementById('chatButton');
+        chatButton.disabled = true;
+        chatButton.textContent = 'Starting chat...';
+        
+        try {
+            const response = await fetch('/api/chat/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': window.CSRF_TOKEN // Essential for JWT security
+                },
+                body: JSON.stringify({ 
+                    agent_id: currentAgentId, 
+                    property_id: currentPropertyId 
+                })
+            });
+
+            if (response.status === 401) {
+                alert('You must be signed in to start a chat.');
+                window.location.href = '/signin.html';
+                return;
+            }
+            if (!response.ok) throw new Error('Could not start chat session.');
+
+            const data = await response.json();
+            const sessionId = data.session_id;
+
+            // Initialize the SocketIO connection
+            initSocketIO(sessionId); 
+
+            // Update modal and show the chat window
+            document.getElementById('modalAgentName').textContent = document.getElementById('agentName').textContent;
+            document.getElementById('modalSessionId').textContent = sessionId;
+            const chatModal = new bootstrap.Modal(document.getElementById('chatModal'));
+            chatModal.show();
+
+        } catch (error) {
+            console.error('Chat initiation failed:', error);
+            document.getElementById('chatMessage').textContent = 'Failed to start chat. Log in and try again.';
+        } finally {
+            chatButton.disabled = false;
+            chatButton.textContent = 'Chat Live Now';
+        }
+    }
+
+    function initSocketIO(sessionId) {
+        // Socket.IO is globally available from base.html
+        socket = io(); 
+
+        socket.on('connect', () => {
+            console.log('Socket connected. Joining room:', sessionId);
+            // 1. Join the specific chat room
+            socket.emit('join_chat', { session_id: sessionId, user_id: '{{ current_user_id | default("guest") }}' });
+            
+            // 2. Enable chat input
+            document.getElementById('chatInput').disabled = false;
+            document.getElementById('sendMessageBtn').disabled = false;
+        });
+
+        socket.on('new_message', (msg) => {
+            const chatWindow = document.getElementById('chatWindow');
+            const senderName = msg.sender_id == currentAgentId ? document.getElementById('agentName').textContent : 'You';
+            chatWindow.innerHTML += `
+                <div class="p-1 small" style="background-color: ${msg.sender_id == currentAgentId ? '#f0f0f0' : '#e6f7ff'}; border-radius: 5px; margin-bottom: 5px;">
+                    <strong>${senderName}:</strong> ${msg.content}
+                </div>
+            `;
+            chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll to bottom
+        });
+
+        socket.on('status', (msg) => {
+             // Display status messages (e.g., user joined)
+             console.log(msg.msg);
+        });
+
+        // Setup send message handler
+        document.getElementById('sendMessageBtn').onclick = () => {
+            const input = document.getElementById('chatInput');
+            const content = input.value;
+            if (content.trim()) {
+                // Assuming you can get the current user's ID (e.g., stored in a JS variable after signin)
+                const currentUserId = '{{ current_user_id | default("unknown") }}'; 
+                
+                socket.emit('send_message', { 
+                    session_id: sessionId, 
+                    sender_id: currentUserId, 
+                    content: content 
+                });
+                input.value = '';
+            }
+        };
+    }
+</script>
+{% endblock %}
