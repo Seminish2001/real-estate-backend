@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <h2 class="mb-4 text-center">Create Your Account</h2>
+        
+        <div id="alertMessage" class="alert alert-danger d-none" role="alert"></div>
+
+        <form id="signupForm">
+            <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <div class="mb-3">
+                <label for="role" class="form-label">I am signing up as a:</label>
+                <select class="form-select" id="role" required>
+                    <option value="USER" selected>Buyer / Renter (Regular User)</option>
+                    <option value="AGENT">Real Estate Agent</option>
+                    <option value="BROKER">Brokerage Owner</option>
+                </select>
+                <div class="form-text">Agents/Brokers will be prompted to complete a profile after signing up.</div>
+            </div>
+            
+            <button type="submit" class="btn btn-success w-100">Sign Up</button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <a href="/signin.html">Already have an account? Sign In</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('signupForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const alertElement = document.getElementById('alertMessage');
+    alertElement.classList.add('d-none');
+    
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value; // Retrieve the selected role
+
+    try {
+        const response = await fetch('/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // X-CSRF-TOKEN is handled by base.html
+            },
+            body: JSON.stringify({ name, email, password, role })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            alertElement.classList.remove('alert-danger');
+            alertElement.classList.add('alert-success');
+            alertElement.textContent = `Success! Account created as ${data.user.role}. Redirecting...`;
+            alertElement.classList.remove('d-none');
+            
+            // Redirect based on the user's role, similar to signin.html
+            setTimeout(() => {
+                if (role === 'AGENT' || role === 'BROKER') {
+                    // Redirect agents to their dashboard for immediate profile setup
+                    window.location.href = '/dashboard-agency.html';
+                } else {
+                    // Redirect standard users
+                    window.location.href = '/dashboard-buyer-renter.html';
+                }
+            }, 1500);
+
+        } else {
+            const errorData = await response.json();
+            alertElement.textContent = errorData.message || 'Registration failed due to a server error.';
+            alertElement.classList.remove('d-none');
+        }
+    } catch (error) {
+        console.error('Sign-up failed:', error);
+        alertElement.textContent = 'Network error. Please check your connection.';
+        alertElement.classList.remove('d-none');
+    }
+});
+</script>
+{% endblock %}
