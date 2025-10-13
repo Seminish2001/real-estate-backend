@@ -1,16 +1,22 @@
 import os
 import eventlet
-# CRITICAL: Monkey-patch standard Python libraries to be cooperative.
-# This must happen before importing the Flask app, extensions, or routes.
+
+# CRITICAL FIX: 1. Patch Eventlet BEFORE anything else runs from other modules.
 eventlet.monkey_patch()
 
-# --- Now, and only now, import the core Flask/DB objects ---
-# The code in app.py now runs AFTER the patch is complete.
+# --- 2. Import the core Flask/DB objects ---
+# 'db' is now an unattached SQLAlchemy object from app.py
 from app import app, db, socketio 
 
-# --- Import modules containing Blueprints/Event Handlers/Models ---
-# The mere act of importing these files registers the blueprints and event handlers.
-import models
+# --- 3. Initialize the DB object with the app ---
+# This associates the 'db' object with 'app' explicitly.
+with app.app_context():
+    db.init_app(app) 
+
+# --- 4. Import models/events/routes ---
+# These are imported AFTER db.init_app(app) so that when they reference 'db', 
+# the association is complete, eliminating circular import issues.
+import models 
 import chat_events
 import auth_routes
 import property_routes
@@ -19,7 +25,7 @@ from template_routes import template_bp
 
 if __name__ == "__main__":
     
-    # 1. Run database setup within the app context
+    # Database setup must happen inside an app context (which we already established)
     with app.app_context():
         print("Ensuring database tables exist...")
         db.create_all() 
@@ -28,12 +34,11 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
     print(f"Starting server on port {port} using Eventlet...")
     
-    # 2. Run the application via socketio.run
+    # Run the application via socketio.run
     socketio.run(
         app, 
         host="0.0.0.0", 
         port=port, 
-        # Debug should be False on production (Render)
         debug=False, 
         allow_unsafe_werkzeug=True 
     )
