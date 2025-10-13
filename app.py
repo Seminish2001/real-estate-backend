@@ -72,6 +72,19 @@ def handle_exception(e):
 
 # --- Register Blueprints and Routes ---
 # IMPORTANT: This step connects the separate route files to the app instance.
+# --- In app.py ---
+
+# ... (Existing imports and blueprint registrations)
+
+# NEW: Agent Management and Public Profiles
+from agent_routes import agent_bp
+app.register_blueprint(agent_bp)
+
+# NEW: Chat Session and History APIs
+from chat_routes import chat_bp
+app.register_blueprint(chat_bp)
+
+# ... (rest of app.py)
 
 # 1. Update models.py to use the configured db/bcrypt instances
 from models import db as models_db, bcrypt as models_bcrypt
