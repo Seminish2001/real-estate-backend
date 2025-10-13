@@ -13,3 +13,6 @@ psycopg2-binary>=2.9.9
 google-auth>=2.29.0
 facebook-sdk>=3.1.0
 pytest>=8.0.0
+# REQUIRED NEW DEPENDENCIES for WebSockets (Real-Time Chat)
+flask-socketio>=5.3.6  # For handling real-time connections
+eventlet>=0.35.2       # For asynchronous, production-ready SocketIO server
