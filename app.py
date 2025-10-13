@@ -71,6 +71,20 @@ def handle_exception(e):
 
 
 # --- Register Blueprints and Routes ---
+# --- In app.py ---
+
+# ... (Existing imports: db, app, User, etc.)
+
+# Import Template Routes
+from template_routes import template_bp
+
+# ... (Existing Blueprint Registrations)
+
+# NEW: Register Template Routes (Frontend Views)
+app.register_blueprint(template_bp)
+
+# ... (rest of app.py)
+
 # IMPORTANT: This step connects the separate route files to the app instance.
 # --- In app.py ---
 
