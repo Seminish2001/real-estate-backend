@@ -1,1906 +1,282 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agency Dashboard | Albania Properties</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.css" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #1a73e8;
-      --primary-dark: #1557b0;
-      --secondary: #2d3748;
-      --accent: #00c4b4;
-      --danger: #e83f6f;
-      --warning: #ffc107;
-      --success: #28a745;
-      --light: #f9fafb;
-      --dark: #1f2a44;
-      --border-radius: 12px;
-      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.08);
-      --shadow-md: 0 6px 25px rgba(0, 0, 0, 0.12);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f5f7fa;
-      color: var(--dark);
-    }
+{% extends "base.html" %}
 
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 280px;
-      background: white;
-      box-shadow: var(--shadow-md);
-      z-index: 1000;
-      transition: var(--transition);
-      overflow-y: auto;
-    }
+{% block title %}Agent Dashboard{% endblock %}
 
-    .sidebar-brand {
-      padding: 1.5rem;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-    }
-
-    .sidebar-brand img {
-      height: 40px;
-      margin-right: 10px;
-    }
-
-    .sidebar-menu {
-      padding: 1rem 0;
-    }
-
-    .menu-title {
-      padding: 0.5rem 1.5rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: #718096;
-      letter-spacing: 0.5px;
-    }
-
-    .menu-item {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1.5rem;
-      color: var(--secondary);
-      text-decoration: none;
-      transition: var(--transition);
-      border-left: 3px solid transparent;
-    }
-
-    .menu-item:hover, .menu-item.active {
-      background: rgba(26, 115, 232, 0.05);
-      color: var(--primary);
-      border-left-color: var(--primary);
-    }
-
-    .menu-item i {
-      margin-right: 12px;
-      font-size: 1.1rem;
-      width: 24px;
-      text-align: center;
-    }
-
-    .menu-badge {
-      margin-left: auto;
-      background: var(--primary);
-      color: white;
-      font-size: 0.7rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 10px;
-    }
-
-    /* Main Content */
-    .main-content {
-      margin-left: 280px;
-      min-height: 100vh;
-      transition: var(--transition);
-    }
-
-    /* Topbar */
-    .topbar {
-      position: sticky;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 70px;
-      background: white;
-      box-shadow: var(--shadow-sm);
-      z-index: 999;
-      display: flex;
-      align-items: center;
-      padding: 0 1.5rem;
-    }
-
-    .search-bar {
-      position: relative;
-      max-width: 400px;
-      width: 100%;
-    }
-
-    .search-bar input {
-      width: 100%;
-      padding: 0.7rem 1rem 0.7rem 2.5rem;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
-      transition: var(--transition);
-    }
-
-    .search-bar input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
-      outline: none;
-    }
-
-    .search-bar i {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #a0aec0;
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      margin-left: auto;
-      gap: 1rem;
-    }
-
-    .notification-btn, .message-btn {
-      position: relative;
-      background: none;
-      border: none;
-      font-size: 1.2rem;
-      color: var(--secondary);
-      cursor: pointer;
-    }
-
-    .notification-badge, .message-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      width: 18px;
-      height: 18px;
-      background: var(--danger);
-      color: white;
-      border-radius: 50%;
-      font-size: 0.6rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 10px;
-    }
-
-    .user-name {
-      font-weight: 500;
-      margin-right: 5px;
-    }
-
-    /* Dashboard Content */
-    .content-wrapper {
-      padding: 1.5rem;
-    }
-
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .page-title {
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: var(--dark);
-    }
-
-    .page-actions .btn {
-      margin-left: 0.5rem;
-    }
-
-    /* Stats Cards */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .stat-card {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
-      position: relative;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .stat-title {
-      font-size: 0.9rem;
-      color: #718096;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-value {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--dark);
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-change {
-      display: flex;
-      align-items: center;
-      font-size: 0.85rem;
-    }
-
-    .stat-change.up {
-      color: var(--success);
-    }
-
-    .stat-change.down {
-      color: var(--danger);
-    }
-
-    .stat-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      position: absolute;
-      right: 1.5rem;
-      top: 1.5rem;
-      opacity: 0.1;
-    }
-
-    /* Main Content Grid */
-    .content-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 1.5rem;
-    }
-
-    @media (max-width: 1200px) {
-      .content-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Chart Cards */
-    .chart-card {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 1.5rem;
-    }
-
-    .chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .chart-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--dark);
-    }
-
-    .chart-actions select {
-      padding: 0.3rem 0.5rem;
-      border-radius: 6px;
-      border: 1px solid #e2e8f0;
-      font-size: 0.85rem;
-    }
-
-    /* Properties Table */
-    .properties-table {
-      width: 100%;
-      background: white;
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow-sm);
-      overflow: hidden;
-    }
-
-    .table-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .table-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--dark);
-    }
-
-    .table-actions .btn {
-      margin-left: 0.5rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th {
-      padding: 1rem 1.5rem;
-      text-align: left;
-      font-weight: 600;
-      color: var(--secondary);
-      background: #f9fafb;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    td {
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid #f1f5f9;
-      color: var(--secondary);
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .property-info {
-      display: flex;
-      align-items: center;
-    }
-
-    .property-img {
-      width: 60px;
-      height: 60px;
-      border-radius: 8px;
-      object-fit: cover;
-      margin-right: 1rem;
-    }
-
-    .property-title {
-      font-weight: 500;
-      margin-bottom: 0.25rem;
-    }
-
-    .property-location {
-      font-size: 0.85rem;
-      color: #718096;
-    }
-
-    .status-badge {
-      padding: 0.3rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-
-    .status-active {
-      background: rgba(40, 167, 69, 0.1);
-      color: var(--success);
-    }
-
-    .status-pending {
-      background: rgba(255, 193, 7, 0.1);
-      color: var(--warning);
-    }
-
-    .status-sold {
-      background: rgba(232, 63, 111, 0.1);
-      color: var(--danger);
-    }
-
-    /* Activity Feed */
-    .activity-card {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .activity-item {
-      display: flex;
-      padding: 1rem 0;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .activity-item:last-child {
-      border-bottom: none;
-    }
-
-    .activity-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(26, 115, 232, 0.1);
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 1rem;
-      flex-shrink: 0;
-    }
-
-    .activity-content {
-      flex-grow: 1;
-    }
-
-    .activity-message {
-      margin-bottom: 0.25rem;
-      font-size: 0.95rem;
-    }
-
-    .activity-time {
-      font-size: 0.8rem;
-      color: #718096;
-    }
-
-    /* Form Styles */
-    .form-card {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 1.5rem;
-    }
-
-    .form-section {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-section-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      color: var(--dark);
-      border-bottom: 1px solid #f1f5f9;
-      padding-bottom: 0.5rem;
-    }
-
-    /* Property Gallery */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .gallery-item {
-      position: relative;
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
-    }
-
-    .gallery-item:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .gallery-img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-    }
-
-    .gallery-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-      padding: 1rem;
-      color: white;
-    }
-
-    .gallery-actions {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    /* Client Cards */
-    .client-card {
-      display: flex;
-      align-items: center;
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 1rem;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
-      margin-bottom: 1rem;
-    }
-
-    .client-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .client-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 1rem;
-    }
-
-    .client-info {
-      flex-grow: 1;
-    }
-
-    .client-name {
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-
-    .client-meta {
-      font-size: 0.85rem;
-      color: #718096;
-    }
-
-    /* Calendar */
-    .calendar-card {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .calendar-nav {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 0.5rem;
-    }
-
-    .calendar-day-header {
-      text-align: center;
-      font-weight: 600;
-      font-size: 0.85rem;
-      padding: 0.5rem;
-      color: var(--secondary);
-    }
-
-    .calendar-day {
-      aspect-ratio: 1;
-      padding: 0.5rem;
-      border-radius: 8px;
-      background: #f9fafb;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .calendar-day.empty {
-      background: transparent;
-    }
-
-    .calendar-day.current {
-      background: rgba(26, 115, 232, 0.1);
-      font-weight: 600;
-    }
-
-    .calendar-day.has-events::after {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: var(--primary);
-      border-radius: 50%;
-      align-self: center;
-      margin-top: auto;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 992px) {
-      .sidebar {
-        transform: translateX(-100%);
-      }
-      .sidebar.active {
-        transform: translateX(0);
-      }
-      .main-content {
-        margin-left: 0;
-      }
-      .menu-toggle {
-        display: block;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .stats-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .topbar-actions {
-        display: none;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-      .page-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .page-actions {
-        margin-top: 1rem;
-        width: 100%;
-      }
-      .page-actions .btn {
-        width: 100%;
-        margin: 0.5rem 0;
-      }
-    }
-
-    /* Tab Content */
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    /* Agency-specific styles */
-    .team-card {
-      display: flex;
-      align-items: center;
-      padding: 1rem;
-      background: white;
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 1rem;
-      transition: var(--transition);
-    }
-    
-    .team-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-md);
-    }
-    
-    .team-avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 1rem;
-    }
-    
-    .team-info {
-      flex-grow: 1;
-    }
-    
-    .team-name {
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-    
-    .team-role {
-      font-size: 0.85rem;
-      color: #718096;
-    }
-    
-    .team-stats {
-      display: flex;
-      gap: 1rem;
-      text-align: center;
-    }
-    
-    .stat-number {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--primary);
-    }
-    
-    .stat-label {
-      font-size: 0.75rem;
-      color: #718096;
-    }
-    
-    .agent-form-card {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 1.5rem;
-    }
-  </style>
-</head>
-<body>
-  <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <img src="https://via.placeholder.com/40x40?text=AP" alt="Albania Properties">
-      <span>Albania Properties</span>
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">Agent/Broker Dashboard</h1>
+    <div id="loadingIndicator" class="text-center mt-5">
+        <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+        <p class="mt-2">Loading dashboard data...</p>
     </div>
-    <div class="sidebar-menu">
-      <div class="menu-title">Main</div>
-      <a href="#" class="menu-item active" data-tab="dashboard">
-        <i class="fas fa-tachometer-alt"></i>
-        <span>Dashboard</span>
-      </a>
-      <a href="#" class="menu-item" data-tab="properties">
-        <i class="fas fa-home"></i>
-        <span>Properties</span>
-        <span class="menu-badge">42</span>
-      </a>
-      <a href="#" class="menu-item" data-tab="agents">
-        <i class="fas fa-users"></i>
-        <span>Agents</span>
-        <span class="menu-badge">8</span>
-      </a>
-      <a href="#" class="menu-item" data-tab="clients">
-        <i class="fas fa-user-friends"></i>
-        <span>Clients</span>
-      </a>
-      <a href="#" class="menu-item" data-tab="commissions">
-        <i class="fas fa-file-invoice-dollar"></i>
-        <span>Commissions</span>
-      </a>
+    
+    <div id="dashboardContent" class="row d-none">
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-success">Your Agent Profile</h5>
+                    <div id="profileSummary">
+                        <p><strong>Name:</strong> <span id="agentName"></span></p>
+                        <p><strong>Agency:</strong> <span id="agentAgency"></span></p>
+                        <p><strong>Tier:</strong> <span id="agentTier" class="badge bg-warning"></span></p>
+                        <p><strong>Rating:</strong> <span id="agentRating"></span>/5.0</p>
+                    </div>
+                    
+                    <h5 class="mt-4">Listing Metrics</h5>
+                    <p><strong>Total Listings:</strong> <span id="totalListings"></span></p>
+                    <p><strong>Active Listings:</strong> <span id="activeIndex"></span></p>
+                    
+                    <a href="/private-agent.html" class="btn btn-sm btn-outline-primary mt-2">Edit Profile</a>
+                    <a href="/properties.html?action=new" class="btn btn-sm btn-success mt-2">Add New Listing</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">Live Chat Sessions</h5>
+                    <p class="card-text text-muted">Manage all active conversations with buyers/renters.</p>
+                    
+                    <div id="sessionList" class="list-group mb-3" style="max-height: 350px; overflow-y: auto;">
+                        <p class="text-center text-muted p-3" id="noSessions">You have no active chat sessions.</p>
+                    </div>
 
-      <div class="menu-title">Management</div>
-      <a href="#" class="menu-item" data-tab="team">
-        <i class="fas fa-user-plus"></i>
-        <span>Team Management</span>
-      </a>
-      <a href="#" class="menu-item" data-tab="reports">
-        <i class="fas fa-chart-line"></i>
-        <span>Performance Reports</span>
-      </a>
-      <a href="#" class="menu-item" data-tab="billing">
-        <i class="fas fa-credit-card"></i>
-        <span>Billing</span>
-      </a>
-
-      <div class="menu-title">Administrative</div>
-      <a href="#" class="menu-item" data-tab="settings">
-        <i class="fas fa-cog"></i>
-        <span>Settings</span>
-      </a>
-      <a href="#" class="menu-item" data-tab="support">
-        <i class="fas fa-question-circle"></i>
-        <span>Support</span>
-      </a>
+                    <div id="activeChatWindow" class="card d-none">
+                        <div class="card-header bg-light">
+                            Chat with <strong id="chatUserName"></strong> (Property: <span id="chatPropertyId"></span>)
+                        </div>
+                        <div id="chatMessages" class="card-body" style="height: 300px; overflow-y: scroll;">
+                            </div>
+                        <div class="card-footer d-flex">
+                            <input type="text" id="chatInput" class="form-control me-2" placeholder="Type your message..." disabled>
+                            <button id="sendMessageBtn" class="btn btn-primary" disabled>Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
+{% endblock %}
 
-  <!-- Main Content -->
-  <div class="main-content">
-    <!-- Topbar -->
-    <div class="topbar">
-      <button class="btn btn-link menu-toggle d-lg-none" id="menuToggle">
-        <i class="fas fa-bars"></i>
-      </button>
-      <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search properties, agents, etc...">
-      </div>
-      <div class="topbar-actions">
-        <button class="notification-btn">
-          <i class="fas fa-bell"></i>
-          <span class="notification-badge">5</span>
-        </button>
-        <button class="message-btn">
-          <i class="fas fa-envelope"></i>
-          <span class="message-badge">3</span>
-        </button>
-        <div class="user-profile dropdown">
-          <div data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="user-avatar">
-            <span class="user-name">Mark Johnson</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
-            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
+{% block extra_scripts %}
+<script>
+    let currentSessionId = null;
+    let currentAgentUserId = null;
+    let socket = null;
 
-    <!-- Content Wrapper -->
-    <div class="content-wrapper">
-      <!-- Dashboard Tab -->
-      <div class="tab-content active" id="dashboard-tab">
-        <!-- Page Header -->
-        <div class="page-header">
-          <h1 class="page-title">Agency Dashboard</h1>
-          <div class="page-actions">
-            <button class="btn btn-primary">
-              <i class="fas fa-plus me-2"></i> Add Agent
-            </button>
-            <button class="btn btn-outline-secondary">
-              <i class="fas fa-download me-2"></i> Export Report
-            </button>
-          </div>
-        </div>
-
-        <!-- Stats Grid -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-title">Total Agents</div>
-            <div class="stat-value">8</div>
-            <div class="stat-change up">
-              <i class="fas fa-arrow-up me-1"></i> 2 new this month
-            </div>
-            <div class="stat-icon">
-              <i class="fas fa-users"></i>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-title">Active Listings</div>
-            <div class="stat-value">42</div>
-            <div class="stat-change up">
-              <i class="fas fa-arrow-up me-1"></i> 5 new this week
-            </div>
-            <div class="stat-icon">
-              <i class="fas fa-home"></i>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-title">Commission This Month</div>
-            <div class="stat-value">€24,800</div>
-            <div class="stat-change up">
-              <i class="fas fa-arrow-up me-1"></i> 15% from last month
-            </div>
-            <div class="stat-icon">
-              <i class="fas fa-euro-sign"></i>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-title">Pending Deals</div>
-            <div class="stat-value">6</div>
-            <div class="stat-change down">
-              <i class="fas fa-arrow-down me-1"></i> 3 completed
-            </div>
-            <div class="stat-icon">
-              <i class="fas fa-handshake"></i>
-            </div>
-          </div>
-        </div>
-
-        <!-- Main Content Grid -->
-        <div class="content-grid">
-          <!-- Left Column -->
-          <div class="left-column">
-            <!-- Performance Chart -->
-            <div class="chart-card">
-              <div class="chart-header">
-                <h3 class="chart-title">Agency Performance</h3>
-                <div class="chart-actions">
-                  <select class="form-select form-select-sm">
-                    <option>Last 6 Months</option>
-                    <option>Last 12 Months</option>
-                    <option>Year to Date</option>
-                  </select>
-                </div>
-              </div>
-              <div id="performanceChart" style="height: 300px;"></div>
-            </div>
-
-            <!-- Top Agents -->
-            <div class="chart-card">
-              <div class="table-header">
-                <h3 class="table-title">Top Performing Agents</h3>
-                <div class="table-actions">
-                  <button class="btn btn-sm btn-outline-secondary">View All</button>
-                </div>
-              </div>
-              <div class="activity-feed">
-                <div class="team-card">
-                  <img src="https://randomuser.me/api/portraits/women/44.jpg" class="team-avatar">
-                  <div class="team-info">
-                    <div class="team-name">Elena K.</div>
-                    <div class="team-role">Senior Agent</div>
-                  </div>
-                  <div class="team-stats">
-                    <div>
-                      <div class="stat-number">12</div>
-                      <div class="stat-label">Listings</div>
-                    </div>
-                    <div>
-                      <div class="stat-number">€124k</div>
-                      <div class="stat-label">Earnings</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="team-card">
-                  <img src="https://randomuser.me/api/portraits/men/22.jpg" class="team-avatar">
-                  <div class="team-info">
-                    <div class="team-name">David S.</div>
-                    <div class="team-role">Sales Director</div>
-                  </div>
-                  <div class="team-stats">
-                    <div>
-                      <div class="stat-number">8</div>
-                      <div class="stat-label">Listings</div>
-                    </div>
-                    <div>
-                      <div class="stat-number">€86k</div>
-                      <div class="stat-label">Earnings</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="team-card">
-                  <img src="https://randomuser.me/api/portraits/women/32.jpg" class="team-avatar">
-                  <div class="team-info">
-                    <div class="team-name">Sarah W.</div>
-                    <div class="team-role">Agent</div>
-                  </div>
-                  <div class="team-stats">
-                    <div>
-                      <div class="stat-number">6</div>
-                      <div class="stat-label">Listings</div>
-                    </div>
-                    <div>
-                      <div class="stat-number">€72k</div>
-                      <div class="stat-label">Earnings</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="team-card">
-                  <img src="https://randomuser.me/api/portraits/men/41.jpg" class="team-avatar">
-                  <div class="team-info">
-                    <div class="team-name">Michael T.</div>
-                    <div class="team-role">Junior Agent</div>
-                  </div>
-                  <div class="team-stats">
-                    <div>
-                      <div class="stat-number">4</div>
-                      <div class="stat-label">Listings</div>
-                    </div>
-                    <div>
-                      <div class="stat-number">€48k</div>
-                      <div class="stat-label">Earnings</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Column -->
-          <div class="right-column">
-            <!-- Activity Feed -->
-            <div class="activity-card">
-              <div class="chart-header">
-                <h3 class="chart-title">Recent Activity</h3>
-                <div class="chart-actions">
-                  <button class="btn btn-sm btn-outline-secondary">View All</button>
-                </div>
-              </div>
-              <div class="activity-feed">
-                <div class="activity-item">
-                  <div class="activity-icon">
-                    <i class="fas fa-user-plus"></i>
-                  </div>
-                  <div class="activity-content">
-                    <div class="activity-message">New agent added: Michael T.</div>
-                    <div class="activity-time">2 hours ago</div>
-                  </div>
-                </div>
-                <div class="activity-item">
-                  <div class="activity-icon">
-                    <i class="fas fa-home"></i>
-                  </div>
-                  <div class="activity-content">
-                    <div class="activity-message">Elena K. listed a new property: Tirana Skyline Penthouse</div>
-                    <div class="activity-time">1 day ago</div>
-                  </div>
-                </div>
-                <div class="activity-item">
-                  <div class="activity-icon">
-                    <i class="fas fa-handshake"></i>
-                  </div>
-                  <div class="activity-content">
-                    <div class="activity-message">David S. closed deal for Vlora Coastal Villa</div>
-                    <div class="activity-time">2 days ago</div>
-                  </div>
-                </div>
-                <div class="activity-item">
-                  <div class="activity-icon">
-                    <i class="fas fa-file-signature"></i>
-                  </div>
-                  <div class="activity-content">
-                    <div class="activity-message">New contract signed for Saranda Seafront Apartment</div>
-                    <div class="activity-time">3 days ago</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="chart-card">
-              <div class="chart-header">
-                <h3 class="chart-title">Market Share</h3>
-              </div>
-              <div id="marketShareChart" style="height: 200px;"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Agents Tab -->
-      <div class="tab-content" id="agents-tab">
-        <div class="page-header">
-          <h1 class="page-title">Agent Management</h1>
-          <div class="page-actions">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAgentModal">
-              <i class="fas fa-plus me-2"></i> Add New Agent
-            </button>
-            <button class="btn btn-outline-secondary">
-              <i class="fas fa-download me-2"></i> Export List
-            </button>
-          </div>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-title">Total Agents</div>
-            <div class="stat-value">8</div>
-            <div class="stat-change up">
-              <i class="fas fa-arrow-up me-1"></i> 2 new this month
-            </div>
-            <div class="stat-icon">
-              <i class="fas fa-users"></i>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-title">Active Agents</div>
-            <div class="stat-value">7</div>
-            <div class="stat-change down">
-              <i class="fas fa-arrow-down me-1"></i> 1 on leave
-            </div>
-            <div class="stat-icon">
-              <i class="fas fa-user-check"></i>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-title">Avg. Listings per Agent</div>
-            <div class="stat-value">5.25</div>
-            <div class="stat-change up">
-              <i class="fas fa-arrow-up me-1"></i> 0.5 improvement
-            </div>
-            <div class="stat-icon">
-              <i class="fas fa-home"></i>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-title">Avg. Commission</div>
-            <div class="stat-value">€3,100</div>
-            <div class="stat-change up">
-              <i class="fas fa-arrow-up me-1"></i> 8% increase
-            </div>
-            <div class="stat-icon">
-              <i class="fas fa-euro-sign"></i>
-            </div>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <div class="table-header">
-            <h3 class="table-title">Agent Directory</h3>
-            <div class="table-actions">
-              <div class="input-group" style="max-width: 300px;">
-                <input type="text" class="form-control form-control-sm" placeholder="Search agents...">
-                <button class="btn btn-sm btn-outline-secondary" type="button">
-                  <i class="fas fa-search"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <div class="table-responsive">
-            <table class="properties-table">
-              <thead>
-                <tr>
-                  <th>Agent</th>
-                  <th>Role</th>
-                  <th>Contact</th>
-                  <th>Listings</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="property-info">
-                      <img src="https://randomuser.me/api/portraits/women/44.jpg" class="property-img">
-                      <div>
-                        <div class="property-title">Elena K.</div>
-                        <div class="property-location">Senior Agent</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Senior Agent</td>
-                  <td>elena.k@agency.com</td>
-                  <td>12</td>
-                  <td><span class="status-badge status-active">Active</span></td>
-                  <td>
-                    <div class="dropdown">
-                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-ellipsis-h"></i>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-lock me-2"></i>Permissions</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Remove</a></li>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="property-info">
-                      <img src="https://randomuser.me/api/portraits/men/22.jpg" class="property-img">
-                      <div>
-                        <div class="property-title">David S.</div>
-                        <div class="property-location">Sales Director</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Sales Director</td>
-                  <td>david.s@agency.com</td>
-                  <td>8</td>
-                  <td><span class="status-badge status-active">Active</span></td>
-                  <td>
-                    <div class="dropdown">
-                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-ellipsis-h"></i>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-lock me-2"></i>Permissions</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Remove</a></li>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="property-info">
-                      <img src="https://randomuser.me/api/portraits/women/32.jpg" class="property-img">
-                      <div>
-                        <div class="property-title">Sarah W.</div>
-                        <div class="property-location">Agent</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Agent</td>
-                  <td>sarah.w@agency.com</td>
-                  <td>6</td>
-                  <td><span class="status-badge status-active">Active</span></td>
-                  <td>
-                    <div class="dropdown">
-                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-ellipsis-h"></i>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-lock me-2"></i>Permissions</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Remove</a></li>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="property-info">
-                      <img src="https://randomuser.me/api/portraits/men/41.jpg" class="property-img">
-                      <div>
-                        <div class="property-title">Michael T.</div>
-                        <div class="property-location">Junior Agent</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Junior Agent</td>
-                  <td>michael.t@agency.com</td>
-                  <td>4</td>
-                  <td><span class="status-badge status-pending">Training</span></td>
-                  <td>
-                    <div class="dropdown">
-                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-ellipsis-h"></i>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-lock me-2"></i>Permissions</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Remove</a></li>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <nav class="mt-3">
-            <ul class="pagination justify-content-center">
-              <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
-              </li>
-              <li class="page-item active"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-
-      <!-- Team Management Tab -->
-      <div class="tab-content" id="team-tab">
-        <div class="page-header">
-          <h1 class="page-title">Team Management</h1>
-          <div class="page-actions">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAgentModal">
-              <i class="fas fa-user-plus me-2"></i> Add Agent
-            </button>
-          </div>
-        </div>
-
-        <div class="content-grid">
-          <div class="left-column">
-            <div class="agent-form-card">
-              <h3 class="chart-title mb-4">Create New Agent Account</h3>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">First Name</label>
-                  <input type="text" class="form-control" placeholder="Enter first name">
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Last Name</label>
-                  <input type="text" class="form-control" placeholder="Enter last name">
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Email</label>
-                  <input type="email" class="form-control" placeholder="Enter email">
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Phone</label>
-                  <input type="tel" class="form-control" placeholder="Enter phone number">
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Role</label>
-                  <select class="form-select">
-                    <option>Select role</option>
-                    <option>Junior Agent</option>
-                    <option>Agent</option>
-                    <option>Senior Agent</option>
-                    <option>Team Lead</option>
-                  </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Commission Rate</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Commission rate">
-                    <span class="input-group-text">%</span>
-                  </div>
-                </div>
-                <div class="col-md-12 mb-3">
-                  <label class="form-label">Permissions</label>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="perm1" checked>
-                        <label class="form-check-label" for="perm1">Add Listings</label>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="perm2" checked>
-                        <label class="form-check-label" for="perm2">Edit Listings</label>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="perm3">
-                        <label class="form-check-label" for="perm3">Delete Listings</label>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="perm4">
-                        <label class="form-check-label" for="perm4">Manage Contracts</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <button class="btn btn-primary w-100">Create Agent Account</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="right-column">
-            <div class="chart-card">
-              <div class="chart-header">
-                <h3 class="chart-title">Team Structure</h3>
-              </div>
-              <div class="text-center py-4">
-                <img src="https://via.placeholder.com/600x300?text=Team+Structure+Chart" class="img-fluid rounded" alt="Team Structure">
-                <p class="mt-3">Visual representation of your agency's team hierarchy</p>
-              </div>
-            </div>
-            <div class="chart-card">
-              <div class="chart-header">
-                <h3 class="chart-title">Recent Agent Activity</h3>
-              </div>
-              <div class="activity-feed">
-                <div class="activity-item">
-                  <div class="activity-icon" style="background: rgba(40, 167, 69, 0.1); color: var(--success);">
-                    <i class="fas fa-home"></i>
-                  </div>
-                  <div class="activity-content">
-                    <div class="activity-message">Elena K. added a new listing: Luxury Apartment in Tirana</div>
-                    <div class="activity-time">2 hours ago</div>
-                  </div>
-                </div>
-                <div class="activity-item">
-                  <div class="activity-icon" style="background: rgba(232, 63, 111, 0.1); color: var(--danger);">
-                    <i class="fas fa-user"></i>
-                  </div>
-                  <div class="activity-content">
-                    <div class="activity-message">Michael T. completed training module</div>
-                    <div class="activity-time">1 day ago</div>
-                  </div>
-                </div>
-                <div class="activity-item">
-                  <div class="activity-icon" style="background: rgba(26, 115, 232, 0.1); color: var(--primary);">
-                    <i class="fas fa-handshake"></i>
-                  </div>
-                  <div class="activity-content">
-                    <div class="activity-message">David S. closed deal for Coastal Villa</div>
-                    <div class="activity-time">2 days ago</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Properties Tab -->
-      <div class="tab-content" id="properties-tab">
-        <div class="page-header">
-          <h1 class="page-title">Property Portfolio</h1>
-          <div class="page-actions">
-            <button class="btn btn-primary">
-              <i class="fas fa-plus me-2"></i> Add Property
-            </button>
-            <button class="btn btn-outline-secondary">
-              <i class="fas fa-filter me-2"></i> Filters
-            </button>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <div class="table-header">
-            <h3 class="table-title">All Agency Properties</h3>
-            <div class="table-actions">
-              <div class="input-group" style="max-width: 300px;">
-                <input type="text" class="form-control form-control-sm" placeholder="Search properties...">
-                <button class="btn btn-sm btn-outline-secondary" type="button">
-                  <i class="fas fa-search"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="table-responsive">
-            <table class="properties-table">
-              <thead>
-                <tr>
-                  <th>Property</th>
-                  <th>Agent</th>
-                  <th>Price</th>
-                  <th>Location</th>
-                  <th>Status</th>
-                  <th>Days Listed</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="property-info">
-                      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
-                      <div>
-                        <div class="property-title">Tirana Skyline Penthouse</div>
-                        <div class="property-location">Blloku, Tirana</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Elena K.</td>
-                  <td>€450,000</td>
-                  <td>Tirana</td>
-                  <td><span class="status-badge status-active">Active</span></td>
-                  <td>12</td>
-                  <td>
-                    <div class="dropdown">
-                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-ellipsis-h"></i>
-                      </button>
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="property-info">
-                      <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
-                      <div>
-                        <div class="property-title">Vlora Coastal Villa</div>
-                        <div class="property-location">Vlorë, Albania</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>David S.</td>
-                  <td>€780,000</td>
-                  <td>Vlorë</td>
-                  <td><span class="status-badge status-pending">Pending</span></td>
-                  <td>24</td>
-                  <td>
-                    <div class="dropdown">
-                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-ellipsis-h"></i>
-                      </button>
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="property-info">
-                      <img src="https://images.unsplash.com/photo-1600585154526-990dced4363d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="property-img">
-                      <div>
-                        <div class="property-title">Saranda Seafront Apartment</div>
-                        <div class="property-location">Sarandë, Albania</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Sarah W.</td>
-                  <td>€220,000</td>
-                  <td>Sarandë</td>
-                  <td><span class="status-badge status-sold">Sold</span></td>
-                  <td>42</td>
-                  <td>
-                    <div class="dropdown">
-                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-ellipsis-h"></i>
-                      </button>
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-file-archive me-2"></i>Archive</a></li>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <nav class="mt-3">
-            <ul class="pagination justify-content-center">
-              <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
-              </li>
-              <li class="page-item active"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-
-      <!-- Settings Tab -->
-      <div class="tab-content" id="settings-tab">
-        <div class="page-header">
-          <h1 class="page-title">Agency Settings</h1>
-          <div class="page-actions">
-            <button class="btn btn-primary">
-              <i class="fas fa-save me-2"></i> Save Changes
-            </button>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4">
-            <div class="chart-card">
-              <div class="chart-header">
-                <h3 class="chart-title">Agency Information</h3>
-              </div>
-              <div class="form-section">
-                <div class="text-center mb-3">
-                  <img src="https://via.placeholder.com/150x150?text=AGENCY+LOGO" class="rounded" width="120">
-                  <div class="mt-2">
-                    <button class="btn btn-sm btn-outline-primary">Change Logo</button>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Agency Name</label>
-                  <input type="text" class="form-control" value="Elite Properties Albania">
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Contact Email</label>
-                  <input type="email" class="form-control" value="info@eliteproperties.al">
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Phone</label>
-                  <input type="tel" class="form-control" value="+355 4 123 4567">
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Address</label>
-                  <textarea class="form-control">Rr. Deshmoret e Kombit, Tirana, Albania</textarea>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-8">
-            <div class="chart-card">
-              <div class="chart-header">
-                <h3 class="chart-title">Agency Configuration</h3>
-              </div>
-              <div class="form-section">
-                <div class="form-section-title">Commission Structure</div>
-                <div class="mb-3">
-                  <label class="form-label">Default Commission Rate</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" value="3.5">
-                    <span class="input-group-text">%</span>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Agent Commission Split</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" value="70">
-                    <span class="input-group-text">%</span>
-                  </div>
-                  <div class="form-text">Percentage of commission that goes to agents</div>
-                </div>
-              </div>
-
-              <div class="form-section">
-                <div class="form-section-title">Listing Approval</div>
-                <div class="mb-3">
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="approvalToggle" checked>
-                    <label class="form-check-label" for="approvalToggle">Require approval for new listings</label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-section">
-                <div class="form-section-title">Agent Permissions</div>
-                <div class="row mb-3">
-                  <div class="col-md-4">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="permListing" checked>
-                      <label class="form-check-label" for="permListing">Create Listings</label>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="permEdit" checked>
-                      <label class="form-check-label" for="permEdit">Edit Listings</label>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="permDelete">
-                      <label class="form-check-label" for="permDelete">Delete Listings</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <div class="col-md-4">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="permContracts">
-                      <label class="form-check-label" for="permContracts">Create Contracts</label>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="permClients" checked>
-                      <label class="form-check-label" for="permClients">Manage Clients</label>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="permReports">
-                      <label class="form-check-label" for="permReports">View Reports</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add Agent Modal -->
-  <div class="modal fade" id="addAgentModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add New Agent</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">First Name</label>
-              <input type="text" class="form-control" placeholder="Enter first name">
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Last Name</label>
-              <input type="text" class="form-control" placeholder="Enter last name">
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-control" placeholder="Enter email">
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Phone</label>
-              <input type="tel" class="form-control" placeholder="Enter phone number">
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Role</label>
-              <select class="form-select">
-                <option>Select role</option>
-                <option>Junior Agent</option>
-                <option>Agent</option>
-                <option>Senior Agent</option>
-                <option>Team Lead</option>
-              </select>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Commission Rate</label>
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Commission rate">
-                <span class="input-group-text">%</span>
-              </div>
-            </div>
-            <div class="col-md-12 mb-3">
-              <label class="form-label">Profile Photo</label>
-              <input type="file" class="form-control">
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary">Create Agent</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Toggle sidebar on mobile
-      const menuToggle = document.getElementById('menuToggle');
-      const sidebar = document.getElementById('sidebar');
-      
-      menuToggle.addEventListener('click', function() {
-        sidebar.classList.toggle('active');
-      });
-
-      // Tab switching functionality
-      const menuItems = document.querySelectorAll('.menu-item');
-      menuItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-          e.preventDefault();
-          
-          // Remove active class from all menu items
-          menuItems.forEach(i => i.classList.remove('active'));
-          
-          // Add active class to clicked menu item
-          this.classList.add('active');
-          
-          // Hide all tab content
-          document.querySelectorAll('.tab-content').forEach(tab => {
-            tab.classList.remove('active');
-          });
-          
-          // Show the selected tab content
-          const tabId = this.getAttribute('data-tab') + '-tab';
-          document.getElementById(tabId).classList.add('active');
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Fetch Agent Profile and Metrics
+        fetchAgentProfile();
+        // 2. Fetch Chat Sessions
+        fetchChatSessions();
+        
+        // 3. Setup message sending handler
+        document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            } else {
+                // Optional: Emit typing event
+                // socket.emit('typing', { session_id: currentSessionId, sender_id: currentAgentUserId });
+            }
         });
-      });
-
-      // Initialize Performance Chart
-      const performanceChart = new ApexCharts(document.querySelector("#performanceChart"), {
-        series: [{
-          name: 'Listings',
-          data: [28, 32, 36, 38, 40, 42]
-        }, {
-          name: 'Sales',
-          data: [8, 10, 12, 14, 16, 18]
-        }, {
-          name: 'Commission (€)',
-          data: [12000, 15000, 18000, 21000, 23000, 24800]
-        }],
-        chart: {
-          type: 'area',
-          height: '100%',
-          toolbar: {
-            show: false
-          },
-          zoom: {
-            enabled: false
-          }
-        },
-        colors: ['var(--primary)', 'var(--success)', 'var(--accent)'],
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          curve: 'smooth',
-          width: 2
-        },
-        fill: {
-          type: 'gradient',
-          gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.7,
-            opacityTo: 0.2,
-          }
-        },
-        xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        },
-        tooltip: {
-          shared: true,
-          intersect: false,
-          y: {
-            formatter: function (value, { seriesIndex }) {
-              if (seriesIndex === 2) {
-                return '€' + value.toLocaleString();
-              }
-              return value;
-            }
-          }
-        },
-        legend: {
-          position: 'top',
-          horizontalAlign: 'right'
-        }
-      });
-      performanceChart.render();
-
-      // Initialize Market Share Chart
-      const marketShareChart = new ApexCharts(document.querySelector("#marketShareChart"), {
-        series: [65, 20, 15],
-        chart: {
-          type: 'donut',
-          height: '100%',
-          toolbar: {
-            show: false
-          }
-        },
-        colors: ['var(--primary)', 'var(--success)', 'var(--warning)'],
-        labels: ['Our Agency', 'Competitor A', 'Competitor B'],
-        responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
-            },
-            legend: {
-              position: 'bottom'
-            }
-          }
-        }],
-        plotOptions: {
-          pie: {
-            donut: {
-              labels: {
-                show: true,
-                total: {
-                  show: true,
-                  label: 'Market Share',
-                  formatter: function () {
-                    return '65%'
-                  }
-                }
-              }
-            }
-          }
-        }
-      });
-      marketShareChart.render();
-
-      // Notification dropdown
-      const notificationBtn = document.querySelector('.notification-btn');
-      notificationBtn.addEventListener('click', function() {
-        alert('You have 5 new notifications');
-      });
-
-      // Message dropdown
-      const messageBtn = document.querySelector('.message-btn');
-      messageBtn.addEventListener('click', function() {
-        alert('You have 3 new messages');
-      });
     });
-  </script>
-</body>
-</html>
+
+    function showDashboard() {
+        document.getElementById('loadingIndicator').classList.add('d-none');
+        document.getElementById('dashboardContent').classList.remove('d-none');
+    }
+
+    // --- Profile and Metrics Logic ---
+
+    async function fetchAgentProfile() {
+        try {
+            const response = await fetch('/api/agents/me');
+            
+            if (response.status === 403) {
+                alert('Access Denied. You must be logged in as an Agent/Broker.');
+                window.location.href = '/signin.html';
+                return;
+            }
+            if (response.status === 404) {
+                 // Agent needs to complete setup
+                 alert('Profile incomplete. Redirecting to setup...');
+                 window.location.href = '/private-agent.html'; // Assume this is your setup page
+                 return;
+            }
+            if (!response.ok) throw new Error('Failed to load profile.');
+
+            const data = await response.json();
+            const profile = data.profile;
+
+            // Store the agent's User ID (essential for sending messages)
+            currentAgentUserId = profile.user_id;
+
+            document.getElementById('agentName').textContent = profile.name;
+            document.getElementById('agentAgency').textContent = profile.agency || 'Independent Agent';
+            document.getElementById('agentTier').textContent = profile.tier.toUpperCase();
+            document.getElementById('agentRating').textContent = profile.rating.toFixed(1);
+            document.getElementById('totalListings').textContent = profile.listings_total;
+            document.getElementById('activeIndex').textContent = profile.listings_active;
+
+        } catch (error) {
+            console.error('Profile load error:', error);
+            document.getElementById('profileSummary').innerHTML = `<p class="text-danger">Error loading profile: ${error.message}</p>`;
+        } finally {
+            showDashboard();
+        }
+    }
+
+    // --- Chat Session Logic ---
+
+    async function fetchChatSessions() {
+        const sessionList = document.getElementById('sessionList');
+        sessionList.innerHTML = '';
+        document.getElementById('noSessions').classList.add('d-none');
+
+        try {
+            const response = await fetch('/api/chat/sessions');
+            if (response.status === 401) return; // Not logged in
+            if (!response.ok) throw new Error('Failed to load sessions.');
+
+            const sessions = await response.json();
+
+            if (sessions.length === 0) {
+                document.getElementById('noSessions').classList.remove('d-none');
+                return;
+            }
+
+            sessions.forEach(session => {
+                const sessionItem = document.createElement('a');
+                sessionItem.href = "#";
+                sessionItem.classList.add('list-group-item', 'list-group-item-action');
+                sessionItem.setAttribute('data-session-id', session.session_id);
+                sessionItem.innerHTML = `
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">${session.other_party.name} <span class="badge bg-secondary">${session.other_party.role}</span></h6>
+                        <small>${new Date(session.last_message_at).toLocaleTimeString()}</small>
+                    </div>
+                    <p class="mb-1 small">${session.last_message ? session.last_message.substring(0, 50) + '...' : 'No messages yet.'}</p>
+                    <small class="text-info">Property: ${session.property_id || 'General Inquiry'}</small>
+                `;
+                sessionItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    loadChatHistory(session.session_id, session.other_party.name, session.property_id);
+                });
+                sessionList.appendChild(sessionItem);
+            });
+
+        } catch (error) {
+            console.error('Session load error:', error);
+            sessionList.innerHTML = `<p class="text-danger p-3">Error loading chat sessions.</p>`;
+        }
+    }
+
+    async function loadChatHistory(sessionId, userName, propertyId) {
+        currentSessionId = sessionId;
+        document.getElementById('chatUserName').textContent = userName;
+        document.getElementById('chatPropertyId').textContent = propertyId || 'N/A';
+        document.getElementById('chatMessages').innerHTML = '<p class="text-center text-muted">Loading messages...</p>';
+        document.getElementById('activeChatWindow').classList.remove('d-none');
+        
+        try {
+            const response = await fetch(`/api/chat/messages/${sessionId}`);
+            if (!response.ok) throw new Error('Failed to load messages.');
+
+            const data = await response.json();
+            document.getElementById('chatMessages').innerHTML = ''; // Clear loading message
+
+            data.messages.forEach(msg => displayMessage(msg, userName));
+            
+            // Connect to SocketIO for real-time updates
+            initSocketIO(sessionId);
+            
+            // Re-enable input fields after history load and socket connection
+            document.getElementById('chatInput').disabled = false;
+            document.getElementById('sendMessageBtn').disabled = false;
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight; // Scroll to bottom
+
+        } catch (error) {
+            console.error('History load error:', error);
+            document.getElementById('chatMessages').innerHTML = `<p class="text-danger p-3">Error loading message history.</p>`;
+        }
+    }
+    
+    function displayMessage(msg, userName) {
+        const isSelf = msg.sender_id == currentAgentUserId;
+        const sender = isSelf ? 'You' : userName;
+        const alignment = isSelf ? 'text-end' : 'text-start';
+        const color = isSelf ? '#dcf8c6' : '#ffffff'; // Light green for self, white for other
+
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('mb-1', alignment);
+        messageDiv.innerHTML = `
+            <div style="background-color: ${color}; padding: 8px; border-radius: 10px; display: inline-block; max-width: 70%;">
+                <small class="text-muted">${sender}</small><br>
+                ${msg.content}
+                <div class="small text-end text-muted" style="margin-top: 3px;">${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+            </div>
+        `;
+        document.getElementById('chatMessages').appendChild(messageDiv);
+    }
+    
+    // --- SocketIO and Sending Message Logic ---
+    
+    function initSocketIO(sessionId) {
+        // Only connect if not already connected or if switching rooms
+        if (socket && socket.connected && socket.sessionId === sessionId) return;
+
+        // If switching rooms or re-connecting, close old socket
+        if (socket && socket.connected) {
+             socket.close();
+        }
+        
+        socket = io(); 
+        socket.sessionId = sessionId; // Store the session ID on the socket object
+        
+        socket.on('connect', () => {
+            console.log('Socket connected. Joining room:', sessionId);
+            socket.emit('join_chat', { session_id: sessionId, user_id: currentAgentUserId });
+        });
+
+        socket.on('new_message', (msg) => {
+            // Only process messages for the currently viewed session
+            if (msg.session_id == currentSessionId) {
+                const userName = document.getElementById('chatUserName').textContent;
+                displayMessage(msg, userName);
+                document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+            }
+            // Optional: Refresh session list to update last message time
+            fetchChatSessions(); 
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Socket disconnected.');
+        });
+    }
+
+    function sendMessage() {
+        if (!socket || !socket.connected) {
+            alert('Chat connection not established. Please reload.');
+            return;
+        }
+        
+        const input = document.getElementById('chatInput');
+        const content = input.value.trim();
+
+        if (content) {
+            socket.emit('send_message', { 
+                session_id: currentSessionId, 
+                sender_id: currentAgentUserId, 
+                content: content 
+            });
+            input.value = '';
+        }
+    }
+
+</script>
+{% endblock %}
