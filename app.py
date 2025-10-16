@@ -18,10 +18,17 @@ app = Flask(__name__, template_folder="templates")
 app._check_setup_finished = lambda *a, **k: None
 
 # Load config from environment variables
-app.config["SQLALCHEMY_DATABASE_URI"] = config(
-    "DATABASE_URL", default="sqlite:///properties.db"
-)
+db_uri = config("DATABASE_URL", default="sqlite:///properties.db")
+
+app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# CRITICAL FOR DEPLOYMENT: Configure connection pooling settings
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True, # Automatically check if connections are live
+    "pool_size": 20, 
+    "max_overflow": 30
+}
+
 app.config["JWT_SECRET_KEY"] = config("JWT_SECRET_KEY", default="default_secret_key")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
@@ -35,8 +42,11 @@ app.config["GOOGLE_MAPS_API_KEY"] = config("GOOGLE_MAPS_API_KEY", default="")
 if app.config["JWT_SECRET_KEY"] == "default_secret_key":
     app.logger.warning("Using default JWT_SECRET_KEY. Set this in production!")
 
+# Diagnostic Log: Check what URI the app is attempting to use
+masked_uri = db_uri.split('@')[-1] if '@' in db_uri else db_uri
+app.logger.info(f"Connecting to database: ...@{masked_uri}")
+
 # --- Core Extensions (Deferred initialization for DB) ---
-# CRITICAL FIX: Initialize SQLAlchemy without the app instance.
 db = SQLAlchemy() 
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
@@ -90,3 +100,4 @@ app.register_blueprint(chat_bp)
 app.register_blueprint(template_bp)
 
 app.logger.info("All blueprints registered.")
+
