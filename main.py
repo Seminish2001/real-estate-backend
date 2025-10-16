@@ -28,6 +28,7 @@ if __name__ == "__main__":
     # Database setup must happen inside an app context (which we already established)
     with app.app_context():
         print("Ensuring database tables exist...")
+        # The database connection failure happens HERE:
         db.create_all() 
         print("Database setup complete.")
         
@@ -42,3 +43,4 @@ if __name__ == "__main__":
         debug=False, 
         allow_unsafe_werkzeug=True 
     )
+
