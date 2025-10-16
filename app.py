@@ -20,11 +20,17 @@ app._check_setup_finished = lambda *a, **k: None
 # Load config from environment variables
 db_uri = config("DATABASE_URL", default="sqlite:///properties.db")
 
+# Render/PostgreSQL-specific adjustment for SQLAlchemy 2.0+
+if db_uri.startswith('postgres://'):
+    db_uri = db_uri.replace('postgres://', 'postgresql+psycopg2://', 1)
+elif db_uri.startswith('postgresql://') and not db_uri.startswith('postgresql+'):
+    db_uri = db_uri.replace('postgresql://', 'postgresql+psycopg2://', 1)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-# CRITICAL FOR DEPLOYMENT: Configure connection pooling settings
+# Configure connection pooling settings for deployment stability
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "pool_pre_ping": True, # Automatically check if connections are live
+    "pool_pre_ping": True, 
     "pool_size": 20, 
     "max_overflow": 30
 }
@@ -42,9 +48,24 @@ app.config["GOOGLE_MAPS_API_KEY"] = config("GOOGLE_MAPS_API_KEY", default="")
 if app.config["JWT_SECRET_KEY"] == "default_secret_key":
     app.logger.warning("Using default JWT_SECRET_KEY. Set this in production!")
 
-# Diagnostic Log: Check what URI the app is attempting to use
-masked_uri = db_uri.split('@')[-1] if '@' in db_uri else db_uri
-app.logger.info(f"Connecting to database: ...@{masked_uri}")
+# Diagnostic Log: CRITICAL - Log the HOST part of the URI to confirm environment variable value
+try:
+    if 'sqlite' in db_uri:
+        log_uri = db_uri
+    else:
+        # Mask credentials but show host:port/dbname
+        parts = db_uri.split('@')
+        if len(parts) > 1:
+             # This will show 'host:port/dbname'
+             log_uri = f"postgresql+psycopg2://***@ {parts[1]}"
+        else:
+             # This will likely show the incorrect 'localhost' URI if no host/port was provided.
+             log_uri = db_uri 
+except Exception:
+    log_uri = "URI extraction failed"
+
+app.logger.info(f"--- DIAGNOSTIC: Database URI being used: {log_uri}")
+app.logger.info("Application configuration loaded.")
 
 # --- Core Extensions (Deferred initialization for DB) ---
 db = SQLAlchemy() 
