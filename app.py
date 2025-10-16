@@ -18,7 +18,8 @@ app = Flask(__name__, template_folder="templates")
 app._check_setup_finished = lambda *a, **k: None
 
 # Load config from environment variables
-db_uri = config("DATABASE_URL", default="sqlite:///properties.db")
+# CRITICAL CHANGE: Use EXTERNAL_DATABASE_URL if available, then fallback to DATABASE_URL
+db_uri = config("EXTERNAL_DATABASE_URL", config("DATABASE_URL", default="sqlite:///properties.db"))
 
 # Render/PostgreSQL-specific adjustment for SQLAlchemy 2.0+
 if db_uri.startswith('postgres://'):
