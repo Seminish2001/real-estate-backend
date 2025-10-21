@@ -1,15 +1,8 @@
 import re
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
 from marshmallow import Schema, fields, ValidationError, pre_load
 
-# We need the db and bcrypt objects, but we'll import them from app.py when needed.
-# For now, these classes define the structure:
-
-# Placeholder definitions for external use
-db = SQLAlchemy()
-bcrypt = Bcrypt()
+from extensions import db, bcrypt
 
 
 def slugify(text: str) -> str:

@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
-from app import db 
+
+from extensions import db
 from models import User, ChatSession, Message, Property
 from sqlalchemy import or_
 
