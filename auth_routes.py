@@ -5,7 +5,8 @@ from google.auth.transport import requests as google_requests
 import facebook
 import logging
 from decouple import config
-from app import app, limiter
+
+from extensions import limiter
 from models import User, db, bcrypt
 
 # Create a Blueprint instance

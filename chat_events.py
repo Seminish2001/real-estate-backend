@@ -1,6 +1,7 @@
 from flask_socketio import join_room, leave_room, send, emit
-from app import socketio 
-from models import ChatSession, Message, db
+
+from extensions import socketio, db
+from models import ChatSession, Message
 from datetime import datetime
 
 # --- WebSockets Handlers ---

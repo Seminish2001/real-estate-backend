@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_req
 from cloudinary.uploader import upload
 import logging
 from marshmallow import ValidationError
-from app import app # Needed for the config
+
 from models import Property, User, Favorite, EvaluationRequest, AlertPreference, property_schema, db, slugify
 
 # Create a Blueprint instance

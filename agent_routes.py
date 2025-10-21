@@ -2,8 +2,9 @@ from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from marshmallow import ValidationError
 import logging
-from app import db # Import the db instance from the core app
-from models import User, AgentProfile, agent_profile_schema, Property, slugify 
+
+from extensions import db
+from models import User, AgentProfile, agent_profile_schema, Property, slugify
 from sqlalchemy import or_
 
 # Create a Blueprint instance

@@ -1,17 +1,21 @@
 import os
+import sys
 import logging
 from datetime import timedelta
-from decouple import config
+from pathlib import Path
 
+# Ensure the repository root is available on the import path when the module is
+# loaded dynamically (e.g., via importlib in tests).
+project_root = Path(__file__).resolve().parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
+from decouple import config
 from flask import Flask, jsonify, make_response
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager
 from flask_cors import CORS
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from flask_socketio import SocketIO
 from werkzeug.exceptions import HTTPException
+
+from extensions import db, bcrypt, jwt, limiter, socketio
 
 # --- App & Config Initialization ---
 app = Flask(__name__, template_folder="templates")
@@ -30,11 +34,11 @@ elif db_uri.startswith('postgresql://') and not db_uri.startswith('postgresql+')
 app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # Configure connection pooling settings for deployment stability
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "pool_pre_ping": True, 
-    "pool_size": 20, 
-    "max_overflow": 30
-}
+engine_options = {"pool_pre_ping": True}
+if not db_uri.startswith("sqlite"):
+    engine_options.update({"pool_size": 20, "max_overflow": 30})
+
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = engine_options
 
 app.config["JWT_SECRET_KEY"] = config("JWT_SECRET_KEY", default="default_secret_key")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
@@ -69,20 +73,13 @@ app.logger.info(f"--- DIAGNOSTIC: Database URI being used: {log_uri}")
 app.logger.info("Application configuration loaded.")
 
 # --- Core Extensions (Deferred initialization for DB) ---
-db = SQLAlchemy() 
-bcrypt = Bcrypt(app)
-jwt = JWTManager(app)
+db.init_app(app)
+bcrypt.init_app(app)
+jwt.init_app(app)
 CORS(app)
-limiter = Limiter(
-    get_remote_address, app=app, default_limits=["200 per day", "50 per hour"]
-)
-limiter.enabled = True 
-socketio = SocketIO(
-    app, 
-    manage_session=False, 
-    cors_allowed_origins="*", 
-    async_mode='eventlet'
-)
+limiter.init_app(app)
+limiter.enabled = True
+socketio.init_app(app)
 
 logging.basicConfig(level=logging.INFO)
 app.logger.info("Application extensions loaded.")
@@ -122,4 +119,26 @@ app.register_blueprint(chat_bp)
 app.register_blueprint(template_bp)
 
 app.logger.info("All blueprints registered.")
+
+# Re-export models for compatibility with modules/tests that import them from
+# the application package.
+from models import (  # noqa: E402
+    User,
+    AgentProfile,
+    Property,
+    PropertyImage,
+    ChatSession,
+    Message,
+    Appointment,
+    EvaluationRequest,
+    AlertPreference,
+    Favorite,
+    Offer,
+    AgentProfileSchema,
+    agent_profile_schema,
+    property_schema,
+)
+
+# Legacy alias maintained for backward compatibility.
+Agent = AgentProfile
 
