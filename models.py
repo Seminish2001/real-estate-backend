@@ -10,12 +10,27 @@ def slugify(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
 
+def safe_get(model, identity):
+    """Retrieve a model instance by primary key using SQLAlchemy 2.x APIs."""
+
+    if identity is None:
+        return None
+
+    try:
+        lookup_id = int(identity)
+    except (TypeError, ValueError):
+        return None
+
+    return db.session.get(model, lookup_id)
+
+
 # --- Core Models ---
 
 # UPDATED: User Model with Granular Roles and Agent/Broker Linkage
 class User(db.Model):
     """Application user with authentication credentials and defined role."""
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), unique=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
@@ -25,17 +40,22 @@ class User(db.Model):
     role = db.Column(db.String(20), default='USER', nullable=False) 
     
     # Link to a dedicated agent profile if the user is an AGENT or BROKER
-    agent_profile_id = db.Column(db.Integer, db.ForeignKey('agent_profile.id'), nullable=True)
-    
     # NEW: Fields for personalization and lead routing
-    lead_score = db.Column(db.Integer, default=0) 
-    preferences = db.Column(db.JSON, default={})  
-    
+    lead_score = db.Column(db.Integer, default=0)
+    preferences = db.Column(db.JSON, default={})
+
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     is_active = db.Column(db.Boolean, default=True)
-    
+    is_admin = db.Column(db.Boolean, default=False)
+
     # Relationships
-    agent_profile = db.relationship('AgentProfile', backref=db.backref('user', uselist=False))
+    agent_profile = db.relationship(
+        'AgentProfile',
+        uselist=False,
+        primaryjoin='User.id == AgentProfile.user_id',
+        foreign_keys='AgentProfile.user_id',
+        backref=db.backref('user', uselist=False),
+    )
 
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password).decode("utf-8")
@@ -48,6 +68,7 @@ class User(db.Model):
 class AgentProfile(db.Model):
     """Dedicated profile for agents and brokers, linked to a User."""
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True)
     name = db.Column(db.String(100), nullable=False)
     slug = db.Column(db.String(120), unique=True, index=True)
     email = db.Column(db.String(100))
@@ -223,7 +244,12 @@ class PropertySchema(Schema):
         if "bathrooms" in data and "baths" not in data:
             data["baths"] = data["bathrooms"]
         if "purpose" in data:
-            data["purpose"] = data["purpose"].upper()
+            purpose_value = data["purpose"].upper()
+            if purpose_value in ["BUY", "SELL"]:
+                purpose_value = "SALE"
+            elif purpose_value in ["RENT", "LEASE"]:
+                purpose_value = "RENT"
+            data["purpose"] = purpose_value
         return data
 
 

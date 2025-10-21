@@ -1,7 +1,7 @@
 from flask_socketio import join_room, leave_room, send, emit
 
 from extensions import socketio, db
-from models import ChatSession, Message
+from models import ChatSession, Message, safe_get
 from datetime import datetime
 
 # --- WebSockets Handlers ---
@@ -42,7 +42,7 @@ def handle_message(data):
     db.session.add(new_message)
     
     # Update the last_message_at timestamp on the session
-    session = ChatSession.query.get(data['session_id'])
+    session = safe_get(ChatSession, data['session_id'])
     if session:
         session.last_message_at = datetime.utcnow()
     

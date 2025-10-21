@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
 
 from extensions import db
-from models import User, ChatSession, Message, Property
+from models import ChatSession, Message, Property, User, safe_get
 from sqlalchemy import or_
 
 # Create a Blueprint instance
@@ -29,12 +29,15 @@ def list_sessions():
     for session in sessions:
         # Determine the "other party" (the person not the current user)
         if session.user_id == user_id:
-            other_party = User.query.get(session.agent_id)
+            other_party = safe_get(User, session.agent_id)
             is_agent = False
         else:
-            other_party = User.query.get(session.user_id)
+            other_party = safe_get(User, session.user_id)
             is_agent = True
-            
+
+        if not other_party:
+            abort(404, description="Participant not found")
+
         # Get the latest message (optimized query could be used here)
         latest_message = Message.query.filter_by(session_id=session.id).order_by(Message.timestamp.desc()).first()
         
@@ -70,7 +73,7 @@ def start_session():
         return jsonify({"message": "Missing agent_id to start chat"}), 400
 
     # 1. Validate Agent
-    agent_user = User.query.get(agent_id)
+    agent_user = safe_get(User, agent_id)
     if not agent_user or agent_user.role not in ['AGENT', 'BROKER', 'ADMIN']:
         return jsonify({"message": "Invalid agent ID or user not an authorized agent"}), 404
 
@@ -104,7 +107,9 @@ def get_messages(session_id):
     """Retrieve the message history for a specific chat session."""
     user_id = get_jwt_identity()
     
-    session = ChatSession.query.get_or_404(session_id)
+    session = safe_get(ChatSession, session_id)
+    if not session:
+        abort(404)
     
     # Authorization: User must be either the user or the agent in the session
     if session.user_id != user_id and session.agent_id != user_id:
@@ -126,3 +131,30 @@ def get_messages(session_id):
         "property_id": session.property_id,
         "messages": message_list
     })
+
+
+@chat_bp.route("/messages/<int:session_id>", methods=["POST"])
+@jwt_required()
+def post_message(session_id):
+    """Post a new message in a chat session."""
+
+    user_id = get_jwt_identity()
+    session = safe_get(ChatSession, session_id)
+    if not session:
+        abort(404)
+
+    if session.user_id != user_id and session.agent_id != user_id:
+        return jsonify({"message": "Forbidden: You are not a participant in this session"}), 403
+
+    payload = request.get_json() or {}
+    content = (payload.get("content") or "").strip()
+    if not content:
+        return jsonify({"message": "Message content is required"}), 400
+
+    message = Message(session_id=session_id, sender_id=user_id, content=content)
+    db.session.add(message)
+
+    session.last_message_at = datetime.utcnow()
+    db.session.commit()
+
+    return jsonify({"id": message.id, "timestamp": message.timestamp.isoformat()}), 201

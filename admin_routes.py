@@ -8,8 +8,62 @@ db = None
 User = None
 Property = None
 EvaluationRequest = None
-AgentProfile = None # CHANGED: Rename Agent to AgentProfile
+AgentProfile = None  # CHANGED: Rename Agent to AgentProfile
 slugify = None
+
+
+def configure_admin_blueprint(database, user_model, property_model, evaluation_model, agent_profile_model, slugify_func):
+    """Bind real model classes to the admin blueprint after app initialization."""
+
+    global db, User, Property, EvaluationRequest, AgentProfile, slugify
+
+    db = database
+    User = user_model
+    Property = property_model
+    EvaluationRequest = evaluation_model
+    AgentProfile = agent_profile_model
+    slugify = slugify_func
+
+
+def _safe_get(model, identity):
+    if identity is None or db is None:
+        return None
+
+    try:
+        lookup_id = int(identity)
+    except (TypeError, ValueError):
+        return None
+
+    return db.session.get(model, lookup_id)
+
+
+def _get_or_404(model, identity):
+    instance = _safe_get(model, identity)
+    if not instance:
+        abort(404)
+    return instance
+
+
+def _normalize_role(data):
+    role = data.get("role")
+    if role:
+        return role.upper()
+
+    user_type = data.get("user_type") or data.get("userType")
+    if user_type:
+        mapping = {
+            "BUYER/RENTER": "USER",
+            "BUYER": "USER",
+            "RENTER": "USER",
+            "LANDLORD": "LANDLORD",
+            "AGENCY": "AGENT",
+            "AGENT": "AGENT",
+            "BROKER": "BROKER",
+            "ADMIN": "ADMIN",
+        }
+        return mapping.get(user_type.strip().upper(), "USER")
+
+    return "USER"
 
 
 def admin_required(fn):
@@ -18,9 +72,9 @@ def admin_required(fn):
     @jwt_required()
     def wrapper(*args, **kwargs):
         user_id = get_jwt_identity()
-        user = User.query.get(user_id)
+        user = _safe_get(User, user_id)
         # REQUIRED CHANGE: Check for 'ADMIN' role instead of just is_admin flag
-        if not user or user.role != 'ADMIN':
+        if not user or (user.role != 'ADMIN' and not getattr(user, 'is_admin', False)):
             abort(403)
         return fn(*args, **kwargs)
 
@@ -42,6 +96,7 @@ def list_users():
             "email": u.email,
             "role": u.role, # CHANGED: user_type -> role
             "is_active": u.is_active, # Added for completeness
+            "is_admin": getattr(u, "is_admin", False),
         }
         for u in users
     ])
@@ -50,7 +105,7 @@ def list_users():
 @admin_bp.route("/users/<int:user_id>", methods=["GET"])
 @admin_required
 def get_user(user_id):
-    user = User.query.get_or_404(user_id)
+    user = _get_or_404(User, user_id)
     return jsonify(
         {
             "id": user.id,
@@ -58,6 +113,7 @@ def get_user(user_id):
             "email": user.email,
             "role": user.role, # CHANGED: user_type -> role
             "is_active": user.is_active,
+            "is_admin": getattr(user, "is_admin", False),
         }
     )
 
@@ -66,17 +122,20 @@ def get_user(user_id):
 @admin_required
 def create_user():
     data = request.get_json() or {}
-    # REQUIRED CHANGE: Check for 'role' instead of 'user_type'
-    if not all(k in data for k in ("name", "email", "password", "role")):
+    if not all(k in data for k in ("name", "email", "password")):
         return jsonify({"message": "Missing fields"}), 400
-    
+
+    role = _normalize_role(data)
+    email = data["email"].strip().lower()
+    if User.query.filter_by(email=email).first():
+        return jsonify({"message": "Email already registered"}), 409
     new_user = User(
         name=data["name"],
-        email=data["email"],
-        role=data["role"].upper(), # Use uppercase role
-        # is_admin is replaced by role='ADMIN' in the new model
+        email=email,
+        role=role,
         password="",
     )
+    new_user.is_admin = role == 'ADMIN'
     new_user.set_password(data["password"])
     db.session.add(new_user)
     db.session.commit()
@@ -86,19 +145,22 @@ def create_user():
 @admin_bp.route("/users/<int:user_id>", methods=["PUT"])
 @admin_required
 def update_user(user_id):
-    user = User.query.get_or_404(user_id)
+    user = _get_or_404(User, user_id)
     data = request.get_json() or {}
     
     # REQUIRED CHANGE: Check for 'role' instead of 'user_type' and 'is_admin'
     if "name" in data:
         user.name = data["name"]
     if "email" in data:
-        user.email = data["email"]
-    if "role" in data:
-        user.role = data["role"].upper()
+        user.email = data["email"].strip().lower()
+    if "role" in data or "user_type" in data or "userType" in data:
+        user.role = _normalize_role(data)
+        user.is_admin = user.role == 'ADMIN'
     if "is_active" in data:
         user.is_active = data["is_active"]
-        
+    if "is_admin" in data:
+        user.is_admin = bool(data["is_admin"])
+
     if "password" in data:
         user.set_password(data["password"])
         
@@ -109,7 +171,7 @@ def update_user(user_id):
 @admin_bp.route("/users/<int:user_id>", methods=["DELETE"])
 @admin_required
 def delete_user(user_id):
-    user = User.query.get_or_404(user_id)
+    user = _get_or_404(User, user_id)
     db.session.delete(user)
     db.session.commit()
     return jsonify({"message": "User deleted"})
@@ -138,7 +200,7 @@ def list_properties():
 @admin_bp.route("/properties/<int:prop_id>", methods=["GET"])
 @admin_required
 def get_property(prop_id):
-    prop = Property.query.get_or_404(prop_id)
+    prop = _get_or_404(Property, prop_id)
     return jsonify(
         {
             "id": prop.id,
@@ -168,21 +230,25 @@ def create_property():
         "baths",
         "size",
     ]
+    purpose_value = data.get("purpose", "").upper()
+    if purpose_value in ('BUY', 'SELL'):
+        purpose_value = 'SALE'
+
     # NEW: Check for price OR monthly_rent based on purpose
-    if data.get("purpose", "").upper() == 'SALE' and 'price' not in data:
+    if purpose_value == 'SALE' and 'price' not in data:
         return jsonify({"message": "Missing 'price' for sale property"}), 400
-    if data.get("purpose", "").upper() == 'RENT' and 'monthly_rent' not in data:
+    if purpose_value == 'RENT' and 'monthly_rent' not in data:
         return jsonify({"message": "Missing 'monthly_rent' for rental property"}), 400
 
     if not all(k in data for k in required):
         return jsonify({"message": "Missing fields"}), 400
-        
+
     prop = Property(
         user_id=data["user_id"],
         title=data["title"],
         slug=slugify(data["title"]),
         location=data["location"],
-        purpose=data["purpose"],
+        purpose=purpose_value,
         property_type=data["property_type"],
         price=data.get("price"),
         monthly_rent=data.get("monthly_rent"), # NEW FIELD
@@ -201,8 +267,16 @@ def create_property():
 @admin_bp.route("/properties/<int:prop_id>", methods=["PUT"])
 @admin_required
 def update_property(prop_id):
-    prop = Property.query.get_or_404(prop_id)
+    prop = _get_or_404(Property, prop_id)
     data = request.get_json() or {}
+
+    if "purpose" in data:
+        purpose_value = data["purpose"].upper()
+        if purpose_value in ('BUY', 'SELL'):
+            data["purpose"] = 'SALE'
+        else:
+            data["purpose"] = purpose_value
+
     for field in [
         "title",
         "location",
@@ -229,7 +303,7 @@ def update_property(prop_id):
 @admin_bp.route("/properties/<int:prop_id>", methods=["DELETE"])
 @admin_required
 def delete_property(prop_id):
-    prop = Property.query.get_or_404(prop_id)
+    prop = _get_or_404(Property, prop_id)
     db.session.delete(prop)
     db.session.commit()
     return jsonify({"message": "Property deleted"})
@@ -255,7 +329,7 @@ def list_requests():
 @admin_bp.route("/evaluation-requests/<int:req_id>", methods=["GET"])
 @admin_required
 def get_request(req_id):
-    r = EvaluationRequest.query.get_or_404(req_id)
+    r = _get_or_404(EvaluationRequest, req_id)
     return jsonify(
         {
             "id": r.id,
@@ -270,7 +344,59 @@ def get_request(req_id):
         }
     )
 
-# ... (POST/PUT/DELETE for Evaluation Requests remain the same)
+@admin_bp.route("/evaluation-requests", methods=["POST"])
+@admin_required
+def create_request():
+    data = request.get_json() or {}
+    required = ["user_id", "location", "property_type", "area", "bedrooms", "bathrooms", "condition"]
+    if not all(field in data for field in required):
+        return jsonify({"message": "Missing fields"}), 400
+
+    req = EvaluationRequest(
+        user_id=data.get("user_id"),
+        location=data["location"],
+        property_type=data["property_type"],
+        area=data["area"],
+        bedrooms=data["bedrooms"],
+        bathrooms=data["bathrooms"],
+        condition=data["condition"],
+        estimated_value=data.get("estimated_value"),
+    )
+    db.session.add(req)
+    db.session.commit()
+    return jsonify({"id": req.id}), 201
+
+
+@admin_bp.route("/evaluation-requests/<int:req_id>", methods=["PUT"])
+@admin_required
+def update_request(req_id):
+    req = _get_or_404(EvaluationRequest, req_id)
+    data = request.get_json() or {}
+
+    for field in [
+        "user_id",
+        "location",
+        "property_type",
+        "area",
+        "bedrooms",
+        "bathrooms",
+        "condition",
+        "estimated_value",
+    ]:
+        if field in data:
+            setattr(req, field, data[field])
+
+    db.session.commit()
+    return jsonify({"message": "Evaluation request updated"})
+
+
+@admin_bp.route("/evaluation-requests/<int:req_id>", methods=["DELETE"])
+@admin_required
+def delete_request(req_id):
+    req = _get_or_404(EvaluationRequest, req_id)
+    db.session.delete(req)
+    db.session.commit()
+    return jsonify({"message": "Evaluation request deleted"})
 
 
 # --- Agent Profile CRUD (UPDATED) ---
@@ -296,7 +422,7 @@ def list_agents():
 @admin_required
 def get_agent(agent_id):
     # CHANGED: Agent -> AgentProfile
-    a = AgentProfile.query.get_or_404(agent_id) 
+    a = _get_or_404(AgentProfile, agent_id)
     return jsonify(
         {
             "id": a.id,
@@ -344,7 +470,7 @@ def create_agent():
 @admin_required
 def update_agent(agent_id):
     # CHANGED: Agent -> AgentProfile
-    a = AgentProfile.query.get_or_404(agent_id) 
+    a = _get_or_404(AgentProfile, agent_id)
     data = request.get_json() or {}
     
     for field in [
@@ -377,7 +503,7 @@ def update_agent(agent_id):
 @admin_required
 def delete_agent(agent_id):
     # CHANGED: Agent -> AgentProfile
-    a = AgentProfile.query.get_or_404(agent_id) 
+    a = _get_or_404(AgentProfile, agent_id)
     db.session.delete(a)
     db.session.commit()
     return jsonify({"message": "Agent deleted"})
