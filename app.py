@@ -89,7 +89,7 @@ app.logger.info("Application extensions loaded.")
 @jwt.unauthorized_loader
 def unauthorized_callback(reason):
     """Handler for missing or invalid JWTs."""
-    return jsonify(msg="Missing or Invalid Authorization Token"), 401
+    return jsonify(msg="Missing Authorization Header"), 401
 
 @app.errorhandler(Exception)
 def handle_exception(e):
@@ -107,14 +107,16 @@ def handle_exception(e):
 # --- BLUEPRINT REGISTRATION (Routes) ---
 from auth_routes import auth_bp
 from property_routes import property_bp
-from agent_routes import agent_bp
+from agent_routes import agent_bp, agency_bp
 from chat_routes import chat_bp
 from template_routes import template_bp
+from admin_routes import admin_bp, configure_admin_blueprint
 
 # Register all routes
 app.register_blueprint(auth_bp)
 app.register_blueprint(property_bp)
 app.register_blueprint(agent_bp)
+app.register_blueprint(agency_bp)
 app.register_blueprint(chat_bp)
 app.register_blueprint(template_bp)
 
@@ -137,8 +139,13 @@ from models import (  # noqa: E402
     AgentProfileSchema,
     agent_profile_schema,
     property_schema,
+    slugify,
 )
 
 # Legacy alias maintained for backward compatibility.
 Agent = AgentProfile
+
+configure_admin_blueprint(db, User, Property, EvaluationRequest, AgentProfile, slugify)
+app.register_blueprint(admin_bp)
+app.logger.info("Admin blueprint registered.")
 

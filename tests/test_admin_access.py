@@ -118,12 +118,12 @@ def test_admin_user_crud(client, admin_user):
     resp = client.put(f"/admin/users/{new_id}", json={"name": "B"}, headers=headers)
     assert resp.status_code == 200
     with app.app_context():
-        assert User.query.get(new_id).name == "B"
+        assert db.session.get(User, new_id).name == "B"
 
     resp = client.delete(f"/admin/users/{new_id}", headers=headers)
     assert resp.status_code == 200
     with app.app_context():
-        assert User.query.get(new_id) is None
+        assert db.session.get(User, new_id) is None
 
 
 def test_user_endpoints_forbidden(client, normal_user):
@@ -168,12 +168,12 @@ def test_admin_property_crud(client, admin_user, normal_user, sample_property):
     resp = client.put(f"/admin/properties/{sample_property}", json={"title": "Updated"}, headers=headers)
     assert resp.status_code == 200
     with app.app_context():
-        assert Property.query.get(sample_property).title == "Updated"
+        assert db.session.get(Property, sample_property).title == "Updated"
 
     resp = client.delete(f"/admin/properties/{sample_property}", headers=headers)
     assert resp.status_code == 200
     with app.app_context():
-        assert Property.query.get(sample_property) is None
+        assert db.session.get(Property, sample_property) is None
 
 
 def test_property_endpoints_forbidden(client, normal_user, sample_property):
@@ -230,12 +230,12 @@ def test_admin_request_crud(client, admin_user, normal_user, sample_request):
     )
     assert resp.status_code == 200
     with app.app_context():
-        assert EvaluationRequest.query.get(sample_request).location == "New City"
+        assert db.session.get(EvaluationRequest, sample_request).location == "New City"
 
     resp = client.delete(f"/admin/evaluation-requests/{sample_request}", headers=headers)
     assert resp.status_code == 200
     with app.app_context():
-        assert EvaluationRequest.query.get(sample_request) is None
+        assert db.session.get(EvaluationRequest, sample_request) is None
 
 
 def test_request_endpoints_forbidden(client, normal_user, sample_request):
@@ -276,12 +276,12 @@ def test_admin_agent_crud(client, admin_user, sample_agent):
     )
     assert resp.status_code == 200
     with app.app_context():
-        assert Agent.query.get(sample_agent).name == "Updated"
+        assert db.session.get(Agent, sample_agent).name == "Updated"
 
     resp = client.delete(f"/admin/agents/{sample_agent}", headers=headers)
     assert resp.status_code == 200
     with app.app_context():
-        assert Agent.query.get(sample_agent) is None
+        assert db.session.get(Agent, sample_agent) is None
 
 
 def test_agent_endpoints_forbidden(client, normal_user, sample_agent):
