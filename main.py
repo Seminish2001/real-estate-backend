@@ -8,14 +8,9 @@ eventlet.monkey_patch()
 # 'db' is now an unattached SQLAlchemy object from app.py
 from app import app, db, socketio 
 
-# --- 3. Initialize the DB object with the app ---
-# This associates the 'db' object with 'app' explicitly.
-with app.app_context():
-    db.init_app(app) 
-
-# --- 4. Import models/events/routes ---
-# These are imported AFTER db.init_app(app) so that when they reference 'db', 
-# the association is complete, eliminating circular import issues.
+# --- 3. Import models/events/routes ---
+# These are imported after the Flask app has been configured in app.py so
+# that when they reference 'db', the association is already complete.
 import models 
 import chat_events
 import auth_routes
